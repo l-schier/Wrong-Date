@@ -1,6 +1,6 @@
-package dk.sdu.mmmi.cbse.common.events;
+package dk.sdu.mmmi.common.events;
 
-import dk.sdu.mmmi.cbse.common.data.Entity;
+import dk.sdu.mmmi.common.data.Entity;
 import java.io.Serializable;
 
 public class Event implements Serializable{

@@ -1,7 +1,7 @@
-package dk.sdu.mmmi.cbse.common.services;
+package dk.sdu.mmmi.common.services;
 
-import dk.sdu.mmmi.cbse.common.data.GameData;
-import dk.sdu.mmmi.cbse.common.data.World;
+import dk.sdu.mmmi.common.data.GameData;
+import dk.sdu.mmmi.common.data.World;
 
 public interface IGamePluginService {
     void start(GameData gameData, World world);

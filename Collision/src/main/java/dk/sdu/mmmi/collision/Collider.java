@@ -1,11 +1,11 @@
-package dk.sdu.mmmi.cbse.osgicollision;
+package dk.sdu.mmmi.collision;
 
-import dk.sdu.mmmi.cbse.common.data.Entity;
-import dk.sdu.mmmi.cbse.common.data.GameData;
-import dk.sdu.mmmi.cbse.common.data.World;
-import dk.sdu.mmmi.cbse.common.data.entityparts.PositionPart;
-import dk.sdu.mmmi.cbse.common.data.entityparts.LifePart;
-import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
+import dk.sdu.mmmi.common.data.Entity;
+import dk.sdu.mmmi.common.data.GameData;
+import dk.sdu.mmmi.common.data.World;
+import dk.sdu.mmmi.common.data.entityparts.PositionPart;
+import dk.sdu.mmmi.common.data.entityparts.LifePart;
+import dk.sdu.mmmi.common.services.IPostEntityProcessingService;
 
 public class Collider implements IPostEntityProcessingService {
 
