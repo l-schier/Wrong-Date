@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -19,12 +20,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Game implements ApplicationListener {
 
-    private static int Width = 800;
+    private static int gameWidth = 800;
+    private static int menuWidth = 300;
+    private static int Width = gameWidth + menuWidth;
     private static int Height = 600;
     
     private static OrthographicCamera cam;
     private ShapeRenderer sr;
     private final GameData gameData = new GameData();
+    private final Menu menu = new Menu();
     private static World world = new World();
     private static final List<IEntityProcessingService> entityProcessorList = new CopyOnWriteArrayList<>();
     private static final List<IGamePluginService> gamePluginList = new CopyOnWriteArrayList<>();
@@ -32,8 +36,11 @@ public class Game implements ApplicationListener {
 
     public Game(){
         init();
-        gameData.setDisplayWidth(Width);
+        gameData.setDisplayWidth(gameWidth);
         gameData.setDisplayHeight(Height);
+        menu.setWidth(menuWidth);
+        menu.setHeight(Height);
+        menu.setWindowWidth(Width);
     }
 
     public void init() {
@@ -82,6 +89,8 @@ public class Game implements ApplicationListener {
     }
 
     private void draw() {
+        drawMenu();
+        
         for (Entity entity : world.getEntities()) {
             sr.setColor(1, 1, 1, 1);
 
@@ -142,4 +151,12 @@ public class Game implements ApplicationListener {
         this.gamePluginList.remove(plugin);
         plugin.stop(gameData, world);
     }
+    
+    private void drawMenu(){
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+        sr.setColor(255, 0, 0, 1);
+        sr.rect(gameWidth, 0, Width, Height);
+        sr.end();
+    }
+
 }
