@@ -1,5 +1,7 @@
 target/
-runner/
+runner/bundles/
+runner/felix/cache
+
 # Created by https://www.toptal.com/developers/gitignore/api/java,code-java,netbeans,visualstudiocode,intellij,intellij+all,intellij+iml,maven
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,code-java,netbeans,visualstudiocode,intellij,intellij+all,intellij+iml,maven
 
