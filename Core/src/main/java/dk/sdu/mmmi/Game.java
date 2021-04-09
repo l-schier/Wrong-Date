@@ -4,7 +4,6 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -153,10 +152,23 @@ public class Game implements ApplicationListener {
     }
     
     private void drawMenu(){
+        //Menu field
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setColor(255, 0, 0, 1);
         sr.rect(gameWidth, 0, Width, Height);
         sr.end();
+        
+        
+        //Picture field
+        int spacing = 20;
+        int x = (100 - spacing*2)/2 + gameWidth + spacing;
+        int r = (100 - spacing)/2;
+        int y = Height - (spacing + r);
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+        sr.setColor(0, 255, 0, 1);
+        sr.circle(x, y, r);
+        sr.end();
+        
     }
 
 }
