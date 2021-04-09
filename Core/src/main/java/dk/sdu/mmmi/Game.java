@@ -65,6 +65,9 @@ public class Game implements ApplicationListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         gameData.setDelta(Gdx.graphics.getDeltaTime());
         update();
+        // https://www.codeandweb.com/texturepacker/tutorials/libgdx-physics
+        // https://stackoverflow.com/questions/6474634/how-do-i-access-a-file-inside-an-osgi-bundle
+        // https://stackoverflow.com/questions/6244993/no-access-to-bundle-resource-file-osgi
         draw();
         gameData.getKeys().update();
     }
