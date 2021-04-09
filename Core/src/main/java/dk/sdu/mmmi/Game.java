@@ -2,11 +2,17 @@ package dk.sdu.mmmi;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
@@ -26,6 +32,8 @@ public class Game implements ApplicationListener {
     
     private static OrthographicCamera cam;
     private ShapeRenderer sr;
+    private SpriteBatch batch; //For sprites
+    private Stage stage;
     private final GameData gameData = new GameData();
     private final Menu menu = new Menu();
     private static World world = new World();
@@ -60,8 +68,17 @@ public class Game implements ApplicationListener {
         cam.update();
 
         sr = new ShapeRenderer();
+        batch = new SpriteBatch();
+        
+        stage = new Stage();
+        
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        Gdx.input.setInputProcessor(multiplexer);
+        multiplexer.addProcessor(new GameInputProcessor(gameData));
+        multiplexer.addProcessor(stage);
 
-        Gdx.input.setInputProcessor(new GameInputProcessor(gameData));
+//        Gdx.input.setInputProcessor(new GameInputProcessor(gameData));
+
     }
 
     @Override
@@ -73,6 +90,8 @@ public class Game implements ApplicationListener {
         update();
         draw();
         gameData.getKeys().update();
+        stage.draw();
+        stage.act();
     }
 
     private void update() {
@@ -168,6 +187,20 @@ public class Game implements ApplicationListener {
         sr.setColor(0, 255, 0, 1);
         sr.circle(x, y, r);
         sr.end();
+        
+        //Character name   
+        Skin skin = new Skin(Gdx.files.internal("C:\\Users\\tes_7\\OneDrive\\Skrivebord\\Wrong-Date\\Core\\src\\main\\java\\dk\\sdu\\mmmi\\uiskin.json"));
+        TextField name = new TextField("Hello", skin);
+        int textX = x + r + spacing;
+        int textLength = Width - textX - spacing;
+        name.setPosition(textX, y);
+        name.setScale(.25f);
+        name.setSize(textLength , r);
+        
+        stage.getActors().add(name);
+        
+
+            
         
     }
 
