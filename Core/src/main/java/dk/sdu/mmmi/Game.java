@@ -7,9 +7,15 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
@@ -178,7 +184,7 @@ public class Game implements ApplicationListener {
         //Profile Picture field
         int spacing = 20;
         int proPicX = (100 - spacing*2)/2 + gameWidth + spacing;
-        int proPicR = (100 - spacing)/2;
+        int proPicR = (100 - spacing*2)/2;
         int proPicY = Height - (spacing + proPicR);
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setColor(0, 255, 0, 1);
@@ -198,17 +204,55 @@ public class Game implements ApplicationListener {
         proNameTextField.setSize(proNameLength , proPicR);
         stage.getActors().add(proNameTextField);
         
+        //Weapon TextField
+        String weapStr = "WEAPON";
+        TextField weapTextField = new TextField(weapStr, skin);
+        int weapLength = menuWidth - (2*spacing);
+        int weapHeight = 25;
+        int weapX = gameWidth + spacing;
+        int weapY = proPicY - proPicR - spacing - weapHeight;
+        weapTextField.setPosition(weapX, weapY);
+        weapTextField.setScale(.25f);
+        weapTextField.setSize(weapLength, weapHeight);
+        stage.getActors().add(weapTextField);
+        
+        //Weapon Image
+        Image weapImage = new Image(new Texture(Gdx.files.internal("C:\\Users\\tes_7\\OneDrive\\Skrivebord\\Wrong-Date\\Core\\src\\main\\java\\dk\\sdu\\mmmi\\White-square.jpg")));
+        int weapImageHeight = proPicR * 2;
+        int weapImageWidth = proPicR * 2;
+        int weapImageX = weapX;
+        int weapImageY = weapY - spacing - weapImageHeight;
+        weapImage.setSize(weapImageWidth, weapImageHeight);
+        weapImage.setPosition(weapImageX, weapImageY);
+        stage.getActors().add(weapImage);
+        
+        //Weapon description TextArea
+        String weapDescString = "Weapon";
+        TextArea weapDescArea = new TextArea(weapDescString, skin);
+        int weapDescHeight = weapImageHeight;
+        int weapDescX = proNameX;
+        int weapDescLength = proNameLength;
+        int weapDescY = weapImageY;
+        weapDescArea.setWidth(weapDescLength);
+        weapDescArea.setHeight(weapDescHeight);
+        weapDescArea.setScale(.10f);
+        weapDescArea.setPosition(weapDescX, weapDescY);
+        stage.getActors().add(weapDescArea);
+        
         //Inventory TextField
         String invString = "INVENTORY";
         TextField invTextField = new TextField(invString, skin);
         int invLength = menuWidth - (2*spacing);
         int invHeight = 25;
         int invX = gameWidth + spacing;
-        int invY = proPicY - proPicR - spacing - invHeight;
+        int invY = weapImageY - weapImageHeight + spacing;
         invTextField.setPosition(invX, invY);
         invTextField.setScale(.25f);
         invTextField.setSize(invLength, invHeight);
         stage.getActors().add(invTextField);
+        
+
+
    
         
         
