@@ -3,13 +3,10 @@ package dk.sdu.mmmi;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.assets.loaders.resolvers.AbsoluteFileHandleResolver;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -188,17 +185,34 @@ public class Game implements ApplicationListener {
         sr.circle(proPicX, proPicY, proPicR);
         sr.end();
         
+     
         //Profile Name TextField   
         //TODO fix next line 
         skin = new Skin(Gdx.files.internal("C:\\Users\\tes_7\\OneDrive\\Skrivebord\\Wrong-Date\\Core\\src\\main\\java\\dk\\sdu\\mmmi\\uiskin.json"));
-        TextField proNameTextField = new TextField("Hello", skin);
+        String proNameStr = "Hello";
+        TextField proNameTextField = new TextField(proNameStr, skin);
         int proNameX = proPicX + proPicR + spacing;
         int proNameLength = Width - proNameX - spacing;
         proNameTextField.setPosition(proNameX, proPicY);
         proNameTextField.setScale(.25f);
         proNameTextField.setSize(proNameLength , proPicR);
-        
         stage.getActors().add(proNameTextField);
+        
+        //Inventory TextField
+        String invString = "INVENTORY";
+        TextField invTextField = new TextField(invString, skin);
+        int invLength = menuWidth - (2*spacing);
+        int invHeight = 25;
+        int invX = gameWidth + spacing;
+        int invY = proPicY - proPicR - spacing - invHeight;
+        invTextField.setPosition(invX, invY);
+        invTextField.setScale(.25f);
+        invTextField.setSize(invLength, invHeight);
+        stage.getActors().add(invTextField);
+   
+        
+        
+        
         
 
             
