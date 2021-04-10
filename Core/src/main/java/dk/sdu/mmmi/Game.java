@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -24,6 +25,7 @@ import dk.sdu.mmmi.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.common.services.IGamePluginService;
 import dk.sdu.mmmi.common.services.IPostEntityProcessingService;
 import dk.sdu.mmmi.core.managers.GameInputProcessor;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList; 
 
@@ -217,7 +219,8 @@ public class Game implements ApplicationListener {
         stage.getActors().add(weapTextField);
         
         //Weapon Image
-        Image weapImage = new Image(new Texture(Gdx.files.internal("C:\\Users\\tes_7\\OneDrive\\Skrivebord\\Wrong-Date\\Core\\src\\main\\java\\dk\\sdu\\mmmi\\White-square.jpg")));
+        String whiteSquare = "C:\\Users\\tes_7\\OneDrive\\Skrivebord\\Wrong-Date\\Core\\src\\main\\java\\dk\\sdu\\mmmi\\White-square.jpg";
+        Image weapImage = new Image(new Texture(Gdx.files.internal(whiteSquare)));
         int weapImageHeight = proPicR * 2;
         int weapImageWidth = proPicR * 2;
         int weapImageX = weapX;
@@ -250,6 +253,40 @@ public class Game implements ApplicationListener {
         invTextField.setScale(.25f);
         invTextField.setSize(invLength, invHeight);
         stage.getActors().add(invTextField);
+        
+        //inventory pictures 
+        int columns = 4, rows = 2;
+        int invWidth = menuWidth - 2*spacing;
+        int invPicHeight = invWidth/columns;
+        int invPicWidth = invWidth/columns;
+        int invPicX0 = gameWidth + spacing;
+        int invPicX = invPicX0;
+        int invPicY = invY - invHeight - spacing - invPicHeight/2;
+        
+
+        int count = 1;
+        List items = new ArrayList();
+        while(count < columns * rows + 1 ){
+
+            if(count%(columns+1) == 0){
+                invPicX = invPicX0;
+                invPicY -= invHeight;
+            }
+            Image img = new Image(new Texture(Gdx.files.internal(whiteSquare)));
+            img.setSize(invPicWidth, invPicHeight);
+            img.setPosition(invPicX, invPicY);
+            items.add(img);
+            count ++;
+            invPicX += invPicWidth;
+        }
+        
+        for(int i = 0; i < items.size(); i++){
+            stage.getActors().add((Actor) items.get(i));
+        }
+        
+   
+
+            
         
 
 
