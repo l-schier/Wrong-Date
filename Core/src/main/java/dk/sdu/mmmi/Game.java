@@ -3,6 +3,7 @@ package dk.sdu.mmmi;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.assets.loaders.resolvers.AbsoluteFileHandleResolver;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.files.FileHandle;
@@ -32,8 +33,8 @@ public class Game implements ApplicationListener {
     
     private static OrthographicCamera cam;
     private ShapeRenderer sr;
-    private SpriteBatch batch; //For sprites
     private Stage stage;
+    private Skin skin;
     private final GameData gameData = new GameData();
     private final Menu menu = new Menu();
     private static World world = new World();
@@ -45,9 +46,6 @@ public class Game implements ApplicationListener {
         init();
         gameData.setDisplayWidth(gameWidth);
         gameData.setDisplayHeight(Height);
-        menu.setWidth(menuWidth);
-        menu.setHeight(Height);
-        menu.setWindowWidth(Width);
     }
 
     public void init() {
@@ -67,17 +65,16 @@ public class Game implements ApplicationListener {
         cam.translate(gameData.getDisplayWidth() / 2, gameData.getDisplayHeight() / 2);
         cam.update();
 
-        sr = new ShapeRenderer();
-        batch = new SpriteBatch();
-        
+        sr = new ShapeRenderer();        
         stage = new Stage();
-        
+        //TODO få næste linje til at fungere
+//        skin = new Skin(Gdx.files.external("/uiskin.json"));
+        //Allows multiple inputprocessor
         InputMultiplexer multiplexer = new InputMultiplexer();
         Gdx.input.setInputProcessor(multiplexer);
         multiplexer.addProcessor(new GameInputProcessor(gameData));
         multiplexer.addProcessor(stage);
 
-//        Gdx.input.setInputProcessor(new GameInputProcessor(gameData));
 
     }
 
@@ -170,6 +167,9 @@ public class Game implements ApplicationListener {
         plugin.stop(gameData, world);
     }
     
+    /**
+     * Draws menu
+     */
     private void drawMenu(){
         //Menu field
         sr.begin(ShapeRenderer.ShapeType.Filled);
@@ -178,26 +178,27 @@ public class Game implements ApplicationListener {
         sr.end();
         
         
-        //Picture field
+        //Profile Picture field
         int spacing = 20;
-        int x = (100 - spacing*2)/2 + gameWidth + spacing;
-        int r = (100 - spacing)/2;
-        int y = Height - (spacing + r);
+        int proPicX = (100 - spacing*2)/2 + gameWidth + spacing;
+        int proPicR = (100 - spacing)/2;
+        int proPicY = Height - (spacing + proPicR);
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setColor(0, 255, 0, 1);
-        sr.circle(x, y, r);
+        sr.circle(proPicX, proPicY, proPicR);
         sr.end();
         
-        //Character name   
-        Skin skin = new Skin(Gdx.files.internal("C:\\Users\\tes_7\\OneDrive\\Skrivebord\\Wrong-Date\\Core\\src\\main\\java\\dk\\sdu\\mmmi\\uiskin.json"));
-        TextField name = new TextField("Hello", skin);
-        int textX = x + r + spacing;
-        int textLength = Width - textX - spacing;
-        name.setPosition(textX, y);
-        name.setScale(.25f);
-        name.setSize(textLength , r);
+        //Profile Name TextField   
+        //TODO fix next line 
+        skin = new Skin(Gdx.files.internal("C:\\Users\\tes_7\\OneDrive\\Skrivebord\\Wrong-Date\\Core\\src\\main\\java\\dk\\sdu\\mmmi\\uiskin.json"));
+        TextField proNameTextField = new TextField("Hello", skin);
+        int proNameX = proPicX + proPicR + spacing;
+        int proNameLength = Width - proNameX - spacing;
+        proNameTextField.setPosition(proNameX, proPicY);
+        proNameTextField.setScale(.25f);
+        proNameTextField.setSize(proNameLength , proPicR);
         
-        stage.getActors().add(name);
+        stage.getActors().add(proNameTextField);
         
 
             
