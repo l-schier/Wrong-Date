@@ -50,6 +50,15 @@ public class MovingPart implements EntityPart {
             y -= speed;
         }
         
+        float deadZoneStartX = 100;
+        float deadZoneStopX = 200;
+        float deadZoneStartY = 100;
+        float deadZoneStopY = 200;
+        
+        if (deadZoneStartX <= x && x <= deadZoneStopX && deadZoneStartY <= y && y <= deadZoneStopY) {
+            return;
+        }
+        
         // set position
         if (x > gameData.getDisplayWidth()) {
             x = 0;

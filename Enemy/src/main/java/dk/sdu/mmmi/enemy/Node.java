@@ -44,7 +44,13 @@ public class Node implements Comparable<Node> {
 
         return path;
     }
+    
+    @Override
+    public String toString() {
+        return String.format(state.getX()+":"+state.getY());
+    }
 
+    // for the PriorityQueue implementation
     @Override
     public int compareTo(Node other) {
         return Double.compare(this.f, other.f);
