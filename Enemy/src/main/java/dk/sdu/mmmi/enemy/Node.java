@@ -3,7 +3,7 @@ package dk.sdu.mmmi.enemy;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import java.util.ArrayList;
 
-public class Node implements Comparable<Node> {
+public class Node {
 
     public PositionPart state;
     public Node parent;
@@ -15,8 +15,14 @@ public class Node implements Comparable<Node> {
         this.state = state;
     }
 
-    public boolean isState(PositionPart goalState) {
-        return this.state.getX() == goalState.getX() && this.state.getY() == goalState.getY();
+    public String key() {
+        return state.getX() + ":" + state.getY();
+    }
+
+    public boolean isState(PositionPart otherPos) {
+        PositionPart myPos = this.state;
+        return myPos.getX() == otherPos.getX()
+                && myPos.getY() == otherPos.getY();
     }
 
     public PositionPart nextMove() {
@@ -43,16 +49,5 @@ public class Node implements Comparable<Node> {
         }
 
         return path;
-    }
-    
-    @Override
-    public String toString() {
-        return String.format(state.getX()+":"+state.getY());
-    }
-
-    // for the PriorityQueue implementation
-    @Override
-    public int compareTo(Node other) {
-        return Double.compare(this.f, other.f);
     }
 }

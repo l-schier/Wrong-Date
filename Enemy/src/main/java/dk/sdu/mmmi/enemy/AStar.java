@@ -2,26 +2,26 @@ package dk.sdu.mmmi.enemy;
 
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import java.util.ArrayList;
-import java.util.PriorityQueue;
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class AStar {
 
+    private static final int weight = 5;
+
     public static PositionPart search(int sightLimit, PositionPart initialState, PositionPart goalState) {
         // A* search
-        PriorityQueue<Node> fringe = new PriorityQueue<Node>();
-        HashSet<String> visited = new HashSet<>();
-        HashMap<String, Integer> bestFringeCost = new HashMap<>();
+        HashMap<String, Node> fringe = new HashMap<String, Node>();
+        HashMap<String, Node> visited = new HashMap<String, Node>();
 
         Node initialNode = new Node(initialState);
-        fringe.add(initialNode);
-        bestFringeCost.put(initialNode.toString(), initialNode.cost);
+        fringe.put(initialNode.key(), initialNode);
 
         while (!fringe.isEmpty()) {
 
-            Node node = removeCheapestNode(fringe);
-            System.out.println("cheapest: " + node.toString());
+            Node node = getCheapestNode(fringe);
+            fringe.remove(node.key());
+            visited.put(node.key(), node);
+
             if (node.isState(goalState)) {
                 return node.nextMove();
             }
@@ -30,29 +30,26 @@ public class AStar {
                 //break;
             }
 
-            visited.add(node.toString());
-            bestFringeCost.remove(node.toString());
-
-            ArrayList<Node> children = expandNode(node, goalState, visited, bestFringeCost);
-            fringe.addAll(children);
+            HashMap<String, Node> children = expandNode(node, goalState, fringe, visited);
+            fringe.putAll(children);
         }
 
         return initialState;
     }
 
-    private static ArrayList<Node> expandNode(
+    private static HashMap<String, Node> expandNode(
             Node node,
             PositionPart goalState,
-            HashSet<String> visited,
-            HashMap<String, Integer> bestFringeCost) {
-        ArrayList<Node> successors = new ArrayList<>();
+            HashMap<String, Node> fringe,
+            HashMap<String, Node> visited) {
+        HashMap<String, Node> successors = new HashMap<String, Node>();
         ArrayList<PositionPart> children = getChildren(node.state);
 
         for (PositionPart child : children) {
 
             Node s = new Node(child);
             // node already visited
-            if (visited.contains(s.toString())) {
+            if (visited.containsKey(s.key())) {
                 continue;
             }
 
@@ -62,12 +59,11 @@ public class AStar {
             s.f = f(s, goalState);
 
             // node already on fringe, and the node is worse than the fringe version
-            if (bestFringeCost.containsKey(s.toString()) && s.cost > bestFringeCost.get(s.toString())) {
+            if (fringe.containsKey(s.key()) && s.cost > fringe.get(s.key()).cost) {
                 continue;
             }
 
-            successors.add(s);
-            bestFringeCost.put(s.toString(), s.cost);
+            successors.put(s.key(), s);
         }
 
         return successors;
@@ -87,13 +83,13 @@ public class AStar {
         // go west
         addIfValid(children, x - 1, y);
         // go north east
-        /*addIfValid(children, x + 1, y + 1);
+        addIfValid(children, x + 1, y + 1);
         // go north west
         addIfValid(children, x - 1, y + 1);
         // go south east
         addIfValid(children, x + 1, y - 1);
         // go south west
-        addIfValid(children, x - 1, y - 1);*/
+        addIfValid(children, x - 1, y - 1);
 
         return children;
     }
@@ -112,12 +108,20 @@ public class AStar {
         children.add(new PositionPart(x, y));
     }
 
-    private static Node removeCheapestNode(PriorityQueue<Node> fringe) {
-        return fringe.poll();
+    private static Node getCheapestNode(HashMap<String, Node> fringe) {
+        Node cheapest = null;
+        for (Node n : fringe.values()) {
+            if (cheapest == null) {
+                cheapest = n;
+            } else if (cheapest.f > n.f) {
+                cheapest = n;
+            }
+        }
+        return cheapest;
     }
 
     private static double f(Node n, PositionPart targetPos) {
-        return g(n) + 5 * h(n, targetPos);
+        return g(n) + weight * h(n, targetPos);
     }
 
     private static double g(Node n) {
