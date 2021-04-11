@@ -27,14 +27,14 @@ public class AStar {
             }
 
             if (node.depth == sightLimit) {
-                //break;
+                break;
             }
 
             HashMap<String, Node> children = expandNode(node, goalState, fringe, visited);
             fringe.putAll(children);
         }
 
-        return initialState;
+        return null;
     }
 
     private static HashMap<String, Node> expandNode(
