@@ -11,12 +11,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
@@ -185,23 +187,28 @@ public class Game implements ApplicationListener {
         
         //Profile Picture field
         int spacing = 20;
-        int proPicX = (100 - spacing*2)/2 + gameWidth + spacing;
+        String proPicURL = "C:\\Users\\tes_7\\OneDrive\\Skrivebord\\Wrong-Date\\Core\\src\\main\\java\\dk\\sdu\\mmmi\\ProfilePicture.png";
+        Image proPicImage = new Image(new Texture(Gdx.files.internal(proPicURL)));
+        int proPicX = gameWidth + spacing;
         int proPicR = (100 - spacing*2)/2;
-        int proPicY = Height - (spacing + proPicR);
-        sr.begin(ShapeRenderer.ShapeType.Filled);
-        sr.setColor(0, 255, 0, 1);
-        sr.circle(proPicX, proPicY, proPicR);
-        sr.end();
-        
+        int proPicWidth = proPicR*2;
+        int proPicHeight = proPicWidth;
+        int proPicY = Height - spacing - proPicHeight;
+        proPicImage.setPosition(proPicX, proPicY);
+        proPicImage.setWidth(proPicWidth);
+        proPicImage.setHeight(proPicHeight);
+        stage.getActors().add(proPicImage);
+  
      
         //Profile Name TextField   
         //TODO fix next line 
         skin = new Skin(Gdx.files.internal("C:\\Users\\tes_7\\OneDrive\\Skrivebord\\Wrong-Date\\Core\\src\\main\\java\\dk\\sdu\\mmmi\\uiskin.json"));
         String proNameStr = "Hello";
         TextField proNameTextField = new TextField(proNameStr, skin);
-        int proNameX = proPicX + proPicR + spacing;
+        int proNameX = proPicX + proPicWidth + spacing;
+        int proNameY = proPicY + proPicHeight/2;
         int proNameLength = Width - proNameX - spacing;
-        proNameTextField.setPosition(proNameX, proPicY);
+        proNameTextField.setPosition(proNameX, proNameY);
         proNameTextField.setScale(.25f);
         proNameTextField.setSize(proNameLength , proPicR);
         stage.getActors().add(proNameTextField);
@@ -212,7 +219,7 @@ public class Game implements ApplicationListener {
         int weapLength = menuWidth - (2*spacing);
         int weapHeight = 25;
         int weapX = gameWidth + spacing;
-        int weapY = proPicY - proPicR - spacing - weapHeight;
+        int weapY = proPicY - spacing - weapHeight;
         weapTextField.setPosition(weapX, weapY);
         weapTextField.setScale(.25f);
         weapTextField.setSize(weapLength, weapHeight);
@@ -283,6 +290,65 @@ public class Game implements ApplicationListener {
         for(int i = 0; i < items.size(); i++){
             stage.getActors().add((Actor) items.get(i));
         }
+        
+        //Item Information Image
+        Image iteminfoImage = new Image(new Texture(Gdx.files.internal(whiteSquare)));
+        int itemInfoImageHeight = weapImageHeight;
+        int itemInfoImageWidth = weapImageWidth;
+        int itemInfoImageX = weapImageX;
+        int itemInfoImageY = invPicY - invPicHeight/2 - spacing*2;
+        iteminfoImage.setSize(itemInfoImageWidth, itemInfoImageHeight);
+        iteminfoImage.setPosition(itemInfoImageX, itemInfoImageY);
+        stage.getActors().add(iteminfoImage);
+        
+        //Item Information TextArea
+        String itemInfoStr = "Item information";
+        TextArea itemInfoArea = new TextArea(itemInfoStr, skin);
+        int itemInfoAreaHeight = weapDescHeight;
+        int itemInfoAreaX = weapDescX;
+        int itemInfoAreaWidth = weapDescLength;
+        int itemInfoAreaY = itemInfoImageY;
+        itemInfoArea.setWidth(itemInfoAreaWidth);
+        itemInfoArea.setHeight(itemInfoAreaHeight);
+        itemInfoArea.setPosition(itemInfoAreaX, itemInfoAreaY);
+        stage.getActors().add(itemInfoArea);
+        
+        //Help button
+        String helpButtonStr = "HELP";
+        Button helpButton = new TextButton(helpButtonStr, skin);
+        int helpButtonWidth = (Width - gameWidth) /2;
+        int helpButtonHeight = 50;
+        int helpButtonX = gameWidth;
+        int helpButtonY = 0;
+        helpButton.setPosition(helpButtonX, helpButtonY);  
+        helpButton.setWidth(helpButtonWidth);
+        helpButton.setHeight(helpButtonHeight);
+        stage.getActors().add(helpButton);
+        
+        //Settings button
+        String settingsStr = "SETTINGS";
+        Button settingsButton = new TextButton(settingsStr, skin);
+        int settingsButtonWidth = helpButtonWidth;
+        int settingsButtonHeight = helpButtonHeight;
+        int settingsButtonX = helpButtonX + helpButtonWidth;
+        int settingsButtonY = helpButtonY;
+        settingsButton.setPosition(settingsButtonX, settingsButtonY);  
+        settingsButton.setWidth(settingsButtonWidth);
+        settingsButton.setHeight(settingsButtonHeight);
+        stage.getActors().add(settingsButton);
+        
+        //Pause button
+        String pauseStr = "PAUSE";
+        Button pauseButton = new TextButton(pauseStr, skin);
+        int pauseButtonWidth = menuWidth;
+        int pauseButtonHeight = helpButtonHeight;
+        int pauseButtonX = gameWidth;
+        int pauseButtonY = helpButtonY + helpButtonHeight;
+        pauseButton.setWidth(pauseButtonWidth);
+        pauseButton.setHeight(pauseButtonHeight);
+        pauseButton.setPosition(pauseButtonX, pauseButtonY);
+        stage.getActors().add(pauseButton);
+        
         
    
 
