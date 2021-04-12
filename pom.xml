@@ -126,6 +126,7 @@
     <module>Core</module>
     <module>LibGDX</module>
     <module>Weapon</module>
+    <module>CommonWeapon</module>
   </modules>
             
   
