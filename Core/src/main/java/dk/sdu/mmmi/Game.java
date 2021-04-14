@@ -15,13 +15,13 @@ import dk.sdu.mmmi.common.services.IGamePluginService;
 import dk.sdu.mmmi.common.services.IPostEntityProcessingService;
 import dk.sdu.mmmi.core.managers.GameInputProcessor;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList; 
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Game implements ApplicationListener {
 
     private static int Width = 800;
     private static int Height = 600;
-    
+
     private static OrthographicCamera cam;
     private ShapeRenderer sr;
     private final GameData gameData = new GameData();
@@ -30,7 +30,7 @@ public class Game implements ApplicationListener {
     private static final List<IGamePluginService> gamePluginList = new CopyOnWriteArrayList<>();
     private static List<IPostEntityProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
 
-    public Game(){
+    public Game() {
         init();
         gameData.setDisplayWidth(Width);
         gameData.setDisplayHeight(Height);
@@ -65,6 +65,9 @@ public class Game implements ApplicationListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         gameData.setDelta(Gdx.graphics.getDeltaTime());
         update();
+        // https://www.codeandweb.com/texturepacker/tutorials/libgdx-physics
+        // https://stackoverflow.com/questions/6474634/how-do-i-access-a-file-inside-an-osgi-bundle
+        // https://stackoverflow.com/questions/6244993/no-access-to-bundle-resource-file-osgi
         draw();
         gameData.getKeys().update();
     }
@@ -99,6 +102,19 @@ public class Game implements ApplicationListener {
 
             sr.end();
         }
+
+        float deadZoneStartX = 100;
+        float deadZoneStopX = 200;
+        float deadZoneStartY = 100;
+        float deadZoneStopY = 200;
+        
+        sr.setColor(1, 0, 0, 1);
+        sr.begin(ShapeRenderer.ShapeType.Line);
+        sr.line(deadZoneStartX, deadZoneStartY, deadZoneStartX, deadZoneStopY);
+        sr.line(deadZoneStartX, deadZoneStopY, deadZoneStopX, deadZoneStopY);
+        sr.line(deadZoneStopX, deadZoneStopY, deadZoneStopX, deadZoneStartY);
+        sr.line(deadZoneStopX, deadZoneStartY, deadZoneStartX, deadZoneStartY);
+        sr.end();
     }
 
     @Override
