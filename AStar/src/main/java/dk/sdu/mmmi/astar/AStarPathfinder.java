@@ -6,9 +6,9 @@ import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.services.ICollisionChecker;
-import dk.sdu.mmmi.common.services.ISearcher;
+import dk.sdu.mmmi.common.services.IPathfinder;
 
-public class AStarSearcher implements ISearcher {
+public class AStarPathfinder implements IPathfinder {
 
     private AStarEngine aStar;
     private RandomEngine random;

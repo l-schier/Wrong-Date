@@ -7,18 +7,18 @@ import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
-import dk.sdu.mmmi.common.services.ISearcher;
+import dk.sdu.mmmi.common.services.IPathfinder;
 
 public class EnemySystem implements IEntityProcessingService {
 
-    private ISearcher aStarSearcher;
+    private IPathfinder aStarPathfinder;
 
-    public void addSearcher(ISearcher aStarSearcher) {
-        this.aStarSearcher = aStarSearcher;
+    public void addPathfinder(IPathfinder aStarPathfinder) {
+        this.aStarPathfinder = aStarPathfinder;
     }
 
-    public void removeSearcher(ISearcher aStarSearcher) {
-        this.aStarSearcher = null;
+    public void removePathfinder(IPathfinder aStarPathfinder) {
+        this.aStarPathfinder = null;
     }
 
     @Override
@@ -30,9 +30,9 @@ public class EnemySystem implements IEntityProcessingService {
             MovingPart movingPart = enemy.getPart(MovingPart.class);
             LifePart lifePart = enemy.getPart(LifePart.class);
 
-            if (aStarSearcher != null) {
+            if (aStarPathfinder != null) {
                 // find next position
-                PositionPart nextPos = aStarSearcher.findNextPosition(enemy, gameData, world);
+                PositionPart nextPos = aStarPathfinder.findNextPosition(enemy, gameData, world);
                 // move to next position
                 movingPart.setRight(positionPart.getX() < nextPos.getX());
                 movingPart.setLeft(positionPart.getX() > nextPos.getX());

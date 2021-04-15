@@ -9,6 +9,6 @@ import dk.sdu.mmmi.common.data.entityparts.PositionPart;
  *
  * @author Anton
  */
-public interface ISearcher {
+public interface IPathfinder {
     PositionPart findNextPosition(Entity me, GameData gameData, World world);
 }
