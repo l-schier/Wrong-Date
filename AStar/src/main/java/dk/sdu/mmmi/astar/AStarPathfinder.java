@@ -33,12 +33,12 @@ public class AStarPathfinder implements IPathfinder {
         if (target != null) {
             PositionPart targetPos = target.getPart(PositionPart.class);
             if (this.aStar != null) {
-                nextPos = this.aStar.search(me, 200, targetPos);
+                nextPos = this.aStar.search(world, me, 200, targetPos);
             }
         }
 
         if (random != null && nextPos == null) {
-            nextPos = random.randomMove(me);
+            nextPos = random.randomMove(world, me);
         }
 
         return nextPos;

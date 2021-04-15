@@ -51,7 +51,14 @@ public class Collider implements IPostEntityProcessingService, ICollisionChecker
     }
 
     @Override
-    public boolean isPositionFree(float x, float y) {
+    public boolean isPositionFree(World world, Entity me, float x, float y) {
+
+        for (Entity e : world.getEntities()) {
+            if (e != me) {
+                // check if the x and y collides with the entity
+                
+            }
+        }
 
         float deadZoneStartX = 100;
         float deadZoneStopX = 200;

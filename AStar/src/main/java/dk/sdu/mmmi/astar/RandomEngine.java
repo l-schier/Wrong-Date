@@ -1,6 +1,7 @@
 package dk.sdu.mmmi.astar;
 
 import dk.sdu.mmmi.common.data.Entity;
+import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.services.ICollisionChecker;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class RandomEngine {
         this.collisionChecker = collisionChecker;
     }
 
-    public PositionPart randomMove(Entity me) {
+    public PositionPart randomMove(World world, Entity me) {
         PositionPart positionPart = me.getPart(PositionPart.class);
         ArrayList<PositionPart> directions = new ArrayList<PositionPart>();
 
@@ -46,7 +47,7 @@ public class RandomEngine {
         float x = positionPart.getX() + randomPathX;
         float y = positionPart.getY() + randomPathY;
 
-        while (!this.collisionChecker.isPositionFree(x, y)) {
+        while (!this.collisionChecker.isPositionFree(world, me, x, y)) {
             setNewcourse(directions);
             x = positionPart.getX() + randomPathX;
             y = positionPart.getY() + randomPathY;

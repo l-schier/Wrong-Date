@@ -1,6 +1,7 @@
 package dk.sdu.mmmi.astar;
 
 import dk.sdu.mmmi.common.data.Entity;
+import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.services.ICollisionChecker;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class AStarEngine {
     }
 
     public PositionPart search(
+            World world,
             Entity me,
             int sightLimit,
             PositionPart goalState) {
@@ -43,7 +45,7 @@ public class AStarEngine {
                 break;
             }
 
-            HashMap<String, Node> children = expandNode(node, goalState, fringe, visited);
+            HashMap<String, Node> children = expandNode(world, me, node, goalState, fringe, visited);
             fringe.putAll(children);
         }
 
@@ -51,12 +53,14 @@ public class AStarEngine {
     }
 
     private HashMap<String, Node> expandNode(
+            World world,
+            Entity me,
             Node node,
             PositionPart goalState,
             HashMap<String, Node> fringe,
             HashMap<String, Node> visited) {
         HashMap<String, Node> successors = new HashMap<String, Node>();
-        ArrayList<PositionPart> children = getChildren(node.state);
+        ArrayList<PositionPart> children = getChildren(world, me, node.state);
 
         for (PositionPart child : children) {
 
@@ -82,33 +86,41 @@ public class AStarEngine {
         return successors;
     }
 
-    private ArrayList<PositionPart> getChildren(PositionPart state) {
+    private ArrayList<PositionPart> getChildren(
+            World world,
+            Entity me,
+            PositionPart state) {
         float x = state.getX();
         float y = state.getY();
         ArrayList<PositionPart> children = new ArrayList<>();
 
         // go north
-        addIfValid(children, x, y + 1);
+        addIfValid(world, me, children, x, y + 1);
         // go south
-        addIfValid(children, x, y - 1);
+        addIfValid(world, me, children, x, y - 1);
         // go east
-        addIfValid(children, x + 1, y);
+        addIfValid(world, me, children, x + 1, y);
         // go west
-        addIfValid(children, x - 1, y);
+        addIfValid(world, me, children, x - 1, y);
         // go north east
-        addIfValid(children, x + 1, y + 1);
+        addIfValid(world, me, children, x + 1, y + 1);
         // go north west
-        addIfValid(children, x - 1, y + 1);
+        addIfValid(world, me, children, x - 1, y + 1);
         // go south east
-        addIfValid(children, x + 1, y - 1);
+        addIfValid(world, me, children, x + 1, y - 1);
         // go south west
-        addIfValid(children, x - 1, y - 1);
+        addIfValid(world, me, children, x - 1, y - 1);
 
         return children;
     }
 
-    private void addIfValid(ArrayList<PositionPart> children, float x, float y) {
-        if (this.collisionChecker.isPositionFree(x, y)) {
+    private void addIfValid(
+            World world,
+            Entity me,
+            ArrayList<PositionPart> children,
+            float x,
+            float y) {
+        if (this.collisionChecker.isPositionFree(world, me, x, y)) {
             children.add(new PositionPart(x, y));
         }
     }
