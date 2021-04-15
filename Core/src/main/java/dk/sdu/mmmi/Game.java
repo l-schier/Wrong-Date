@@ -68,6 +68,7 @@ public class Game implements ApplicationListener {
         // https://www.codeandweb.com/texturepacker/tutorials/libgdx-physics
         // https://stackoverflow.com/questions/6474634/how-do-i-access-a-file-inside-an-osgi-bundle
         // https://stackoverflow.com/questions/6244993/no-access-to-bundle-resource-file-osgi
+        // URL file = this.getClass().getClassLoader().getResource("rocket.png");
         draw();
         gameData.getKeys().update();
     }

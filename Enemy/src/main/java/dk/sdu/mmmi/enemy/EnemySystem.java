@@ -89,21 +89,14 @@ public class EnemySystem implements IEntityProcessingService {
         directions.add(new PositionPart(0 - 1, 0 - 1));
 
         if (randomcount == 0) {
-            Collections.shuffle(directions);
-            randomPathX = directions.get(0).getX();
-            randomPathY = directions.get(0).getY();
-            randomcount = 20;
+            setNewcourse(directions);
         }
-
+        
         float x = positionPart.getX() + randomPathX;
         float y = positionPart.getY() + randomPathY;
 
         while (!this.collisionChecker.isPositionFree(x, y)) {
-            Collections.shuffle(directions);
-            randomPathX = directions.get(0).getX();
-            randomPathY = directions.get(0).getY();
-            randomcount = 20;
-
+            setNewcourse(directions);
             x = positionPart.getX() + randomPathX;
             y = positionPart.getY() + randomPathY;
         }
@@ -113,6 +106,13 @@ public class EnemySystem implements IEntityProcessingService {
         randomcount -= 1;
 
         return positionPart;
+    }
+
+    private void setNewcourse(ArrayList<PositionPart> directions) {
+        Collections.shuffle(directions);
+        randomPathX = directions.get(0).getX();
+        randomPathY = directions.get(0).getY();
+        randomcount = 20;
     }
 
     private Entity getTarget(Entity me, World world) {
