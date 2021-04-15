@@ -11,7 +11,7 @@ import java.awt.Image;
  */
 
 public interface ItemSPI {
-    Entity useWeapon(Entity shooter, GameData gameData);
+    void useItem(Entity shooter, GameData gameData);
     String getDescription();
     Image getSprite();
 }

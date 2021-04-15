@@ -30,4 +30,8 @@ public class InventoryPart implements EntityPart {
         }
     }
     
+    public Entity getWeapon (){
+        return weapon;
+    }
+    
 }

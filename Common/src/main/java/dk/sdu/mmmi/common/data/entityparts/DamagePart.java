@@ -11,6 +11,11 @@ public class DamagePart implements EntityPart {
     
     private int damage;
     private boolean weaponUsed;
+    
+    public DamagePart (int damage) {
+        this.damage = damage;
+        weaponUsed = false;
+    }
 
     @Override
     public void process(GameData gameData, Entity entity) {
@@ -44,7 +49,5 @@ public class DamagePart implements EntityPart {
     public void setWeaponUsed(boolean weaponUsed) {
         this.weaponUsed = weaponUsed;
     }
-    
-    
-    
+ 
 }

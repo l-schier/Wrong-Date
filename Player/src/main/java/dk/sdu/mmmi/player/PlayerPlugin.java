@@ -22,8 +22,8 @@ public class PlayerPlugin implements IGamePluginService {
     }
 
     private Entity createPlayer(GameData gameData) {
-        float x = gameData.getDisplayWidth() - 50;
-        float y = gameData.getDisplayHeight() - 50;
+        int x = gameData.getDisplayWidth() - 50;
+        int y = gameData.getDisplayHeight() - 50;
 
         Entity player = new Player();
 
