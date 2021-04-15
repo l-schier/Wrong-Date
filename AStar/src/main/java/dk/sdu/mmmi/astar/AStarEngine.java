@@ -3,6 +3,7 @@ package dk.sdu.mmmi.astar;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
+import dk.sdu.mmmi.common.data.entityparts.SightPart;
 import dk.sdu.mmmi.common.services.ICollisionChecker;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +20,6 @@ public class AStarEngine {
     public PositionPart search(
             World world,
             Entity me,
-            int sightLimit,
             PositionPart goalState) {
 
         // A* search
@@ -27,6 +27,8 @@ public class AStarEngine {
         HashMap<String, Node> visited = new HashMap<String, Node>();
 
         PositionPart initialState = me.getPart(PositionPart.class);
+        SightPart sightPart = me.getPart(SightPart.class);
+        float sightLimit = sightPart.getSightLimit();
 
         Node initialNode = new Node(initialState);
         fringe.put(initialNode.key(), initialNode);

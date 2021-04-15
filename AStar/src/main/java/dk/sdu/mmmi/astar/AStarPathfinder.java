@@ -33,7 +33,7 @@ public class AStarPathfinder implements IPathfinder {
         if (target != null) {
             PositionPart targetPos = target.getPart(PositionPart.class);
             if (this.aStar != null) {
-                nextPos = this.aStar.search(world, me, 200, targetPos);
+                nextPos = this.aStar.search(world, me, targetPos);
             }
         }
 
