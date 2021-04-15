@@ -31,8 +31,8 @@ public class MovingPart implements EntityPart {
     @Override
     public void process(GameData gameData, Entity entity) {
         PositionPart positionPart = entity.getPart(PositionPart.class);
-        float x = positionPart.getX();
-        float y = positionPart.getY();
+        int x = positionPart.getX();
+        int y = positionPart.getY();
         
         if (right) {
             x += speed;

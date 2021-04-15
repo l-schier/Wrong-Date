@@ -5,31 +5,31 @@ import dk.sdu.mmmi.common.data.GameData;
 
 public class PositionPart implements EntityPart {
 
-    private float x;
-    private float y;
+    private int x;
+    private int y;
 
-    public PositionPart(float x, float y) {
+    public PositionPart(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public float getX() {
+    public int getX() {
         return x;
     }
 
-    public float getY() {
+    public int getY() {
         return y;
     }
     
-    public void setX(float newX) {
+    public void setX(int newX) {
         this.x = newX;
     }
     
-    public void setY(float newY) {
+    public void setY(int newY) {
         this.y = newY;
     }
 
-    public void setPosition(float newX, float newY) {
+    public void setPosition(int newX, int newY) {
         this.x = newX;
         this.y = newY;
     }
