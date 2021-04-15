@@ -1,17 +1,31 @@
 package dk.sdu.mmmi.enemy;
 
+import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
+import dk.sdu.mmmi.common.services.ICollisionChecker;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AStar {
 
-    private static final int weight = 5;
+    private int weight;
+    private ICollisionChecker collisionChecker;
 
-    public static PositionPart search(int sightLimit, PositionPart initialState, PositionPart goalState) {
+    public AStar(int weight, ICollisionChecker collisionChecker) {
+        this.weight = weight;
+        this.collisionChecker = collisionChecker;
+    }
+
+    public PositionPart search(
+            int sightLimit,
+            Entity me,
+            PositionPart goalState) {
+
         // A* search
         HashMap<String, Node> fringe = new HashMap<String, Node>();
         HashMap<String, Node> visited = new HashMap<String, Node>();
+
+        PositionPart initialState = me.getPart(PositionPart.class);
 
         Node initialNode = new Node(initialState);
         fringe.put(initialNode.key(), initialNode);
@@ -37,7 +51,7 @@ public class AStar {
         return null;
     }
 
-    private static HashMap<String, Node> expandNode(
+    private HashMap<String, Node> expandNode(
             Node node,
             PositionPart goalState,
             HashMap<String, Node> fringe,
@@ -69,7 +83,7 @@ public class AStar {
         return successors;
     }
 
-    private static ArrayList<PositionPart> getChildren(PositionPart state) {
+    private ArrayList<PositionPart> getChildren(PositionPart state) {
         float x = state.getX();
         float y = state.getY();
         ArrayList<PositionPart> children = new ArrayList<>();
@@ -94,21 +108,14 @@ public class AStar {
         return children;
     }
 
-    private static void addIfValid(ArrayList<PositionPart> children, float x, float y) {
-
-        float deadZoneStartX = 100;
-        float deadZoneStopX = 200;
-        float deadZoneStartY = 100;
-        float deadZoneStopY = 200;
-
-        if (deadZoneStartX <= x && x <= deadZoneStopX && deadZoneStartY <= y && y <= deadZoneStopY) {
-            return;
+    private void addIfValid(ArrayList<PositionPart> children, float x, float y) {
+        if (this.collisionChecker.isPositionFree(x, y)) {
+            PositionPart newPos = new PositionPart(x, y);
+            children.add(newPos);
         }
-
-        children.add(new PositionPart(x, y));
     }
 
-    private static Node getCheapestNode(HashMap<String, Node> fringe) {
+    private Node getCheapestNode(HashMap<String, Node> fringe) {
         Node cheapest = null;
         for (Node n : fringe.values()) {
             if (cheapest == null) {
@@ -120,16 +127,16 @@ public class AStar {
         return cheapest;
     }
 
-    private static double f(Node n, PositionPart targetPos) {
+    private double f(Node n, PositionPart targetPos) {
         return g(n) + weight * h(n, targetPos);
     }
 
-    private static double g(Node n) {
+    private double g(Node n) {
         // travel cost (from initialState to this state)
         return n.cost;
     }
 
-    private static double h(Node n, PositionPart targetPos) {
+    private double h(Node n, PositionPart targetPos) {
         // heuristic cost (from this state to goalState)
 
         // x distance to target

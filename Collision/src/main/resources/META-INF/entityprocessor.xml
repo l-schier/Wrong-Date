@@ -3,5 +3,6 @@
     <implementation class="dk.sdu.mmmi.collision.Collider"/>
     <service>
         <provide interface="dk.sdu.mmmi.common.services.IPostEntityProcessingService"/>
+        <provide interface="dk.sdu.mmmi.common.services.ICollisionChecker"/>
     </service>
 </scr:component>

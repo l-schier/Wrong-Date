@@ -6,15 +6,29 @@ import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
+import dk.sdu.mmmi.common.services.ICollisionChecker;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class EnemySystem implements IEntityProcessingService {
 
+    private ICollisionChecker collisionChecker;
+    private AStar aStar;
+
     private int randomcount = 0;
     private float randomPathX;
     private float randomPathY;
+
+    public void addCollisionChecker(ICollisionChecker collisionChecker) {
+        this.collisionChecker = collisionChecker;
+        this.aStar = new AStar(5, collisionChecker);
+    }
+
+    public void removeCollisionChecker(ICollisionChecker collisionChecker) {
+        this.collisionChecker = null;
+        this.aStar = null;
+    }
 
     @Override
     public void process(GameData gameData, World world) {
@@ -29,7 +43,9 @@ public class EnemySystem implements IEntityProcessingService {
             PositionPart nextPos = null;
             if (target != null) {
                 PositionPart targetPos = target.getPart(PositionPart.class);
-                nextPos = AStar.search(200, positionPart, targetPos);
+                if (this.aStar != null) {
+                    nextPos = this.aStar.search(200, enemy, targetPos);
+                }
             }
 
             if (nextPos == null) {
@@ -54,11 +70,6 @@ public class EnemySystem implements IEntityProcessingService {
     }
 
     private PositionPart randomMove(PositionPart positionPart) {
-        float deadZoneStartX = 100;
-        float deadZoneStopX = 200;
-        float deadZoneStartY = 100;
-        float deadZoneStopY = 200;
-
         ArrayList<PositionPart> directions = new ArrayList<PositionPart>();
         // go north
         directions.add(new PositionPart(0, 0 + 1));
@@ -87,7 +98,7 @@ public class EnemySystem implements IEntityProcessingService {
         float x = positionPart.getX() + randomPathX;
         float y = positionPart.getY() + randomPathY;
 
-        while (deadZoneStartX <= x && x <= deadZoneStopX && deadZoneStartY <= y && y <= deadZoneStopY) {
+        while (!this.collisionChecker.isPositionFree(x, y)) {
             Collections.shuffle(directions);
             randomPathX = directions.get(0).getX();
             randomPathY = directions.get(0).getY();

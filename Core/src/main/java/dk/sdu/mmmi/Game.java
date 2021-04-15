@@ -103,17 +103,17 @@ public class Game implements ApplicationListener {
             sr.end();
         }
 
-        float deadZoneStartX = 100;
-        float deadZoneStopX = 200;
-        float deadZoneStartY = 100;
-        float deadZoneStopY = 200;
-        
+        float boxStartX = 100;
+        float boxStopX = 200;
+        float boxStartY = 100;
+        float boxStopY = 200;
+
         sr.setColor(1, 0, 0, 1);
         sr.begin(ShapeRenderer.ShapeType.Line);
-        sr.line(deadZoneStartX, deadZoneStartY, deadZoneStartX, deadZoneStopY);
-        sr.line(deadZoneStartX, deadZoneStopY, deadZoneStopX, deadZoneStopY);
-        sr.line(deadZoneStopX, deadZoneStopY, deadZoneStopX, deadZoneStartY);
-        sr.line(deadZoneStopX, deadZoneStartY, deadZoneStartX, deadZoneStartY);
+        sr.line(boxStartX, boxStartY, boxStartX, boxStopY);
+        sr.line(boxStartX, boxStopY, boxStopX, boxStopY);
+        sr.line(boxStopX, boxStopY, boxStopX, boxStartY);
+        sr.line(boxStopX, boxStartY, boxStartX, boxStartY);
         sr.end();
     }
 
