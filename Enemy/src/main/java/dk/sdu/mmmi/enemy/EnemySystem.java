@@ -6,28 +6,19 @@ import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
-import dk.sdu.mmmi.common.services.ICollisionChecker;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
-import java.util.ArrayList;
-import java.util.Collections;
+import dk.sdu.mmmi.common.services.ISearcher;
 
 public class EnemySystem implements IEntityProcessingService {
 
-    private ICollisionChecker collisionChecker;
-    private AStar aStar;
+    private ISearcher aStarSearcher;
 
-    private int randomcount = 0;
-    private float randomPathX;
-    private float randomPathY;
-
-    public void addCollisionChecker(ICollisionChecker collisionChecker) {
-        this.collisionChecker = collisionChecker;
-        this.aStar = new AStar(5, collisionChecker);
+    public void addSearcher(ISearcher aStarSearcher) {
+        this.aStarSearcher = aStarSearcher;
     }
 
-    public void removeCollisionChecker(ICollisionChecker collisionChecker) {
-        this.collisionChecker = null;
-        this.aStar = null;
+    public void removeSearcher(ISearcher aStarSearcher) {
+        this.aStarSearcher = null;
     }
 
     @Override
@@ -39,23 +30,15 @@ public class EnemySystem implements IEntityProcessingService {
             MovingPart movingPart = enemy.getPart(MovingPart.class);
             LifePart lifePart = enemy.getPart(LifePart.class);
 
-            Entity target = getTarget(enemy, world);
-            PositionPart nextPos = null;
-            if (target != null) {
-                PositionPart targetPos = target.getPart(PositionPart.class);
-                if (this.aStar != null) {
-                    nextPos = this.aStar.search(200, enemy, targetPos);
-                }
+            if (aStarSearcher != null) {
+                // find next position
+                PositionPart nextPos = aStarSearcher.findNextPosition(enemy, gameData, world);
+                // move to next position
+                movingPart.setRight(positionPart.getX() < nextPos.getX());
+                movingPart.setLeft(positionPart.getX() > nextPos.getX());
+                movingPart.setUp(positionPart.getY() < nextPos.getY());
+                movingPart.setDown(positionPart.getY() > nextPos.getY());
             }
-
-            if (nextPos == null) {
-                nextPos = randomMove(positionPart);
-            }
-
-            movingPart.setRight(positionPart.getX() < nextPos.getX());
-            movingPart.setLeft(positionPart.getX() > nextPos.getX());
-            movingPart.setUp(positionPart.getY() < nextPos.getY());
-            movingPart.setDown(positionPart.getY() > nextPos.getY());
 
             movingPart.process(gameData, enemy);
             positionPart.process(gameData, enemy);
@@ -67,65 +50,6 @@ public class EnemySystem implements IEntityProcessingService {
 
             updateShape(enemy);
         }
-    }
-
-    private PositionPart randomMove(PositionPart positionPart) {
-        ArrayList<PositionPart> directions = new ArrayList<PositionPart>();
-        // go north
-        directions.add(new PositionPart(0, 0 + 1));
-        // go south
-        directions.add(new PositionPart(0, 0 - 1));
-        // go east
-        directions.add(new PositionPart(0 + 1, 0));
-        // go west
-        directions.add(new PositionPart(0 - 1, 0));
-        // go north east
-        directions.add(new PositionPart(0 + 1, 0 + 1));
-        // go north west
-        directions.add(new PositionPart(0 - 1, 0 + 1));
-        // go south east
-        directions.add(new PositionPart(0 + 1, 0 - 1));
-        // go south west
-        directions.add(new PositionPart(0 - 1, 0 - 1));
-
-        if (randomcount == 0) {
-            setNewcourse(directions);
-        }
-        
-        float x = positionPart.getX() + randomPathX;
-        float y = positionPart.getY() + randomPathY;
-
-        while (!this.collisionChecker.isPositionFree(x, y)) {
-            setNewcourse(directions);
-            x = positionPart.getX() + randomPathX;
-            y = positionPart.getY() + randomPathY;
-        }
-
-        positionPart.setX(x);
-        positionPart.setY(y);
-        randomcount -= 1;
-
-        return positionPart;
-    }
-
-    private void setNewcourse(ArrayList<PositionPart> directions) {
-        Collections.shuffle(directions);
-        randomPathX = directions.get(0).getX();
-        randomPathY = directions.get(0).getY();
-        randomcount = 20;
-    }
-
-    private Entity getTarget(Entity me, World world) {
-        // find all entities
-        for (Entity entity : world.getEntities()) {
-            // player entities have lifeParts
-            LifePart lifePart = entity.getPart(LifePart.class);
-            if (entity != me && lifePart != null) {
-                return entity;
-            }
-        }
-
-        return null;
     }
 
     private void updateShape(Entity entity) {

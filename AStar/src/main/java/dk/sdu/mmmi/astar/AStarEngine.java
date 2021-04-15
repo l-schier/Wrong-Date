@@ -1,4 +1,4 @@
-package dk.sdu.mmmi.enemy;
+package dk.sdu.mmmi.astar;
 
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
@@ -6,19 +6,18 @@ import dk.sdu.mmmi.common.services.ICollisionChecker;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class AStar {
+public class AStarEngine {
 
-    private int weight;
     private ICollisionChecker collisionChecker;
+    private final int weight = 5;
 
-    public AStar(int weight, ICollisionChecker collisionChecker) {
-        this.weight = weight;
+    public AStarEngine(ICollisionChecker collisionChecker) {
         this.collisionChecker = collisionChecker;
     }
 
     public PositionPart search(
-            int sightLimit,
             Entity me,
+            int sightLimit,
             PositionPart goalState) {
 
         // A* search
@@ -110,8 +109,7 @@ public class AStar {
 
     private void addIfValid(ArrayList<PositionPart> children, float x, float y) {
         if (this.collisionChecker.isPositionFree(x, y)) {
-            PositionPart newPos = new PositionPart(x, y);
-            children.add(newPos);
+            children.add(new PositionPart(x, y));
         }
     }
 
