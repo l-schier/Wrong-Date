@@ -8,8 +8,8 @@ import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.TimerPart;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
-import dk.sdu.mmmi.commonweapon.Weapon;
-import dk.sdu.mmmi.commonweapon.WeaponSPI;
+import dk.sdu.mmmi.commonitem.ItemSPI;
+import java.awt.Image;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
@@ -17,7 +17,7 @@ import static java.lang.Math.sin;
  *
  * @author Jacob
  */
-public class WeaponProcessor implements IEntityProcessingService, WeaponSPI {
+public class WeaponProcessor implements IEntityProcessingService, ItemSPI {
 
     @Override
     public void process(GameData gameData, World world) {
@@ -38,39 +38,6 @@ public class WeaponProcessor implements IEntityProcessingService, WeaponSPI {
         }
     }
 
-    @Override
-    public Entity useWeapon(Entity shooter, GameData gameData) {
-        PositionPart shooterPos = shooter.getPart(PositionPart.class);
-
-        float x = shooterPos.getX();
-        float y = shooterPos.getY();
-        float radians = shooterPos.getRadians();
-        float dt = gameData.getDelta();
-        
-        //Weapon attributes, change this depending on weapon type
-        float deceleration = 0;
-        float acceleration = 5000000;
-        float speed = 350;
-        float rotationSpeed = 5;
-        int life = 1;
-        int expiration = 1;
-
-        Entity weapon = new Weapon();
-        weapon.setRadius(2);
-
-        float bx = (float) cos(radians) * shooter.getRadius() * weapon.getRadius();
-        float by = (float) sin(radians) * shooter.getRadius() * weapon.getRadius();
-        
-        weapon.add(new PositionPart(bx + x, by + y, radians));
-        weapon.add(new LifePart(life));
-        weapon.add(new MovingPart(deceleration, acceleration, speed, rotationSpeed));
-        weapon.add(new TimerPart(expiration));
-
-        weapon.setShapeX(new float[2]);
-        weapon.setShapeY(new float[2]);
-
-        return weapon;
-    }
     
     public void setShape(Entity entity) {
         float[] shapex = entity.getShapeX();
@@ -91,5 +58,20 @@ public class WeaponProcessor implements IEntityProcessingService, WeaponSPI {
 
         entity.setShapeX(shapex);
         entity.setShapeY(shapey);
+    }
+
+    @Override
+    public Entity useWeapon(Entity shooter, GameData gameData) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String getDescription() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Image getSprite() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

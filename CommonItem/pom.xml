@@ -9,15 +9,15 @@
     </parent>
 
     <groupId>dk.sdu.mmmi</groupId>
-    <artifactId>CommonWeapon</artifactId>
+    <artifactId>CommonItem</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
-    <name>CommonWeapon</name>
+    <name>CommonItem</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <bundle.symbolicName>dk.sdu.mmmi.commonweapon</bundle.symbolicName>
+        <bundle.symbolicName>dk.sdu.mmmi.commonitem</bundle.symbolicName>
         <bundle.namespace>dk.sdu.mmmi</bundle.namespace>
     </properties>
 

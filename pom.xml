@@ -149,14 +149,12 @@
     <module>Core</module>
         
     <module>LibGDX</module>
-
-    <module>CommonWeapon</module>
     <module>Weapon</module>
         
     <module>Enemy</module>
         
     <module>Player</module>
-      
+    <module>CommonItem</module>
   </modules>
               
   
