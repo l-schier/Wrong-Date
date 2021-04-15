@@ -7,9 +7,11 @@ public class MovingPart implements EntityPart {
 
     private boolean left, right, up, down;
     private int speed;
+    private float expiration;
 
     public MovingPart(int speed) {
         this.speed = speed;
+        this.expiration = 0;
     }
 
     public void setLeft(boolean left) {
@@ -28,8 +30,22 @@ public class MovingPart implements EntityPart {
         this.down = down;
     }
 
+    public void stunFor(float expiration) {
+        this.expiration = expiration;
+    }
+
+    private void reduceExpiration(float delta) {
+        this.expiration -= delta;
+    }
+    
     @Override
     public void process(GameData gameData, Entity entity) {
+        
+        if (expiration > 0) {
+            reduceExpiration(gameData.getDelta());
+            return;
+        }
+        
         PositionPart positionPart = entity.getPart(PositionPart.class);
         float x = positionPart.getX();
         float y = positionPart.getY();
