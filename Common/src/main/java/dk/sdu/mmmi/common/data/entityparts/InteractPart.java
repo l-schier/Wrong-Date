@@ -9,12 +9,18 @@ import dk.sdu.mmmi.common.data.GameData;
  */
 public class InteractPart implements EntityPart{
     //Is the player or enemy interacting?
-    private boolean interacting = false;
+    private boolean interacting;
     
     //Can you interact with the item or door?
     private boolean interactable;
     
+    public InteractPart(){
+        this.interacting = false;
+        this.interactable = false;
+    }
+    
     public InteractPart(boolean interactable){
+        this.interacting = false;
         this.interactable = interactable;
     }
 

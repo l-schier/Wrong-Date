@@ -12,10 +12,14 @@ public class InventoryPart implements EntityPart {
     
     private ArrayList<Entity> inventory;
     private Entity weapon;
+    
+    public InventoryPart(){
+        
+    }
 
     @Override
     public void process(GameData gameData, Entity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public ArrayList<Entity> getInventory() {

@@ -32,7 +32,7 @@ public class PlayerSystem implements IEntityProcessingService {
             movingPart.setLeft(gameData.getKeys().isDown(LEFT));
             movingPart.setUp(gameData.getKeys().isDown(UP));
             movingPart.setDown(gameData.getKeys().isDown(DOWN));
-            interactPart.setIsInteracting(gameData.getKeys().isPressed(ENTER));
+            interactPart.setIsInteracting(gameData.getKeys().isDown(ENTER));
             
 //            if (gameData.getKeys().isDown(SPACE)) {
 //                useItem(player, gameData);
@@ -74,9 +74,12 @@ public class PlayerSystem implements IEntityProcessingService {
         entity.setShapeY(shapey);
         
         InventoryPart inventoryPart = entity.getPart(InventoryPart.class);
-        for(Entity item : inventoryPart.getInventory()){
-            PositionPart pos = item.getPart(PositionPart.class);
-            pos.setPosition((int)x, (int)y);
+        if(inventoryPart.getInventory() != null){
+            for(Entity item : inventoryPart.getInventory()){
+                PositionPart pos = item.getPart(PositionPart.class);
+                pos.setPosition(x, y);
+            }
         }
+        
     }
 }

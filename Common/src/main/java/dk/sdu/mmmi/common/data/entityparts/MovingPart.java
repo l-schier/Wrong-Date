@@ -6,9 +6,9 @@ import dk.sdu.mmmi.common.data.GameData;
 public class MovingPart implements EntityPart {
 
     private boolean left, right, up, down;
-    private int speed;
+    private float speed;
 
-    public MovingPart(int speed) {
+    public MovingPart(float speed) {
         this.speed = speed;
     }
 
@@ -31,8 +31,8 @@ public class MovingPart implements EntityPart {
     @Override
     public void process(GameData gameData, Entity entity) {
         PositionPart positionPart = entity.getPart(PositionPart.class);
-        int x = positionPart.getX();
-        int y = positionPart.getY();
+        float x = positionPart.getX();
+        float y = positionPart.getY();
         
         if (right) {
             x += speed;
