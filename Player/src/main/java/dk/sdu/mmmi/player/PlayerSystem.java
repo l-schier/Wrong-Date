@@ -3,10 +3,14 @@ package dk.sdu.mmmi.player;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import static dk.sdu.mmmi.common.data.GameKeys.DOWN;
+import static dk.sdu.mmmi.common.data.GameKeys.ENTER;
 import static dk.sdu.mmmi.common.data.GameKeys.LEFT;
 import static dk.sdu.mmmi.common.data.GameKeys.RIGHT;
+import static dk.sdu.mmmi.common.data.GameKeys.SPACE;
 import static dk.sdu.mmmi.common.data.GameKeys.UP;
 import dk.sdu.mmmi.common.data.World;
+import dk.sdu.mmmi.common.data.entityparts.InteractPart;
+import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
 import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
@@ -22,11 +26,17 @@ public class PlayerSystem implements IEntityProcessingService {
             PositionPart positionPart = player.getPart(PositionPart.class);
             MovingPart movingPart = player.getPart(MovingPart.class);
             LifePart lifePart = player.getPart(LifePart.class);
+            InteractPart interactPart = player.getPart(InteractPart.class);
 
             movingPart.setRight(gameData.getKeys().isDown(RIGHT));
             movingPart.setLeft(gameData.getKeys().isDown(LEFT));
             movingPart.setUp(gameData.getKeys().isDown(UP));
             movingPart.setDown(gameData.getKeys().isDown(DOWN));
+            interactPart.setIsInteracting(gameData.getKeys().isPressed(ENTER));
+            
+//            if (gameData.getKeys().isDown(SPACE)) {
+//                useItem(player, gameData);
+//            }
 
             movingPart.process(gameData, player);
             positionPart.process(gameData, player);
@@ -62,5 +72,11 @@ public class PlayerSystem implements IEntityProcessingService {
 
         entity.setShapeX(shapex);
         entity.setShapeY(shapey);
+        
+        InventoryPart inventoryPart = entity.getPart(InventoryPart.class);
+        for(Entity item : inventoryPart.getInventory()){
+            PositionPart pos = item.getPart(PositionPart.class);
+            pos.setPosition((int)x, (int)y);
+        }
     }
 }
