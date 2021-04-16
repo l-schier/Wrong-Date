@@ -4,6 +4,7 @@ import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.DamagePart;
+import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
@@ -25,20 +26,9 @@ public class WeaponProcessor implements IEntityProcessingService, ItemSPI {
         for (Entity weapon : world.getEntities(Weapon.class)) {
 
             PositionPart positionPart = weapon.getPart(PositionPart.class);
-            MovingPart movingPart = weapon.getPart(MovingPart.class);
-            TimerPart timerPart = weapon.getPart(TimerPart.class);
             DamagePart damagePart = weapon.getPart(DamagePart.class);
 
-            
-            movingPart.setUp(true);
-            if (timerPart.getExpiration() < 0) {
-                world.removeEntity(weapon);
-            }
-            timerPart.process(gameData, weapon);
-            movingPart.process(gameData, weapon);
-            positionPart.process(gameData, weapon);
-
-            //setShape(weapon);
+            setShape(weapon);
         }
     }
 
@@ -49,33 +39,39 @@ public class WeaponProcessor implements IEntityProcessingService, ItemSPI {
         PositionPart positionPart = entity.getPart(PositionPart.class);
         float x = positionPart.getX();
         float y = positionPart.getY();
-        
-        //float radians = positionPart.getRadians();
+        float radians = 3.1415f / 2;
 
-        shapex[0] = x;
-        shapey[0] = y;
-        shapex[1] = x + 1;
-        shapex[1] = y + 1;
+        shapex[0] = (float) (x + Math.cos(radians) * 8);
+        shapey[0] = (float) (y + Math.sin(radians) * 8);
 
-        //shapex[1] = (float) (x + Math.cos(radians - 4 * 3.1415f / 5));
-        //shapey[1] = (float) (y + Math.sin(radians - 4 * 3.1145f / 5));
+        shapex[1] = (float) (x + Math.cos(radians - 4 * 3.1415f / 5) * 8);
+        shapey[1] = (float) (y + Math.sin(radians - 4 * 3.1145f / 5) * 8);
+
+        shapex[2] = (float) (x + Math.cos(radians + 3.1415f) * 5);
+        shapey[2] = (float) (y + Math.sin(radians + 3.1415f) * 5);
+
+        shapex[3] = (float) (x + Math.cos(radians + 4 * 3.1415f / 5) * 8);
+        shapey[3] = (float) (y + Math.sin(radians + 4 * 3.1415f / 5) * 8);
 
         entity.setShapeX(shapex);
         entity.setShapeY(shapey);
     }
 
-    @Override
-    public Entity useWeapon(Entity shooter, GameData gameData) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void useItem(Entity shooter, GameData gameData) {
+        InventoryPart inventory = shooter.getPart(InventoryPart.class);
+        DamagePart damage = inventory.getWeapon().getPart(DamagePart.class);
+        damage.setWeaponUsed(true);
+        
     }
 
     @Override
     public String getDescription() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "Melee weapon";
     }
 
     @Override
     public Image getSprite() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
 }

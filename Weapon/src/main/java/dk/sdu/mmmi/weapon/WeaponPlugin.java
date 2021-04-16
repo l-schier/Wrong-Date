@@ -4,6 +4,7 @@ import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.DamagePart;
+import dk.sdu.mmmi.common.data.entityparts.InteractPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.services.IGamePluginService;
 import java.util.Random;
@@ -24,12 +25,14 @@ public class WeaponPlugin implements IGamePluginService {
         Entity weapon = new Weapon();
         Random random = new Random();
         
-        int x = random.nextInt(gameData.getDisplayWidth());
-        int y = random.nextInt(gameData.getDisplayHeight());
+        float x = (float)random.nextInt(gameData.getDisplayWidth());
+        float y = (float)random.nextInt(gameData.getDisplayHeight());
         int damage = 1;
+        boolean interactable = true;
 
         weapon.add(new PositionPart(x, y));
         weapon.add(new DamagePart(damage));
+        weapon.add(new InteractPart(interactable));
         
         return weapon;
     }
