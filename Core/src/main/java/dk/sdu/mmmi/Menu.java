@@ -8,15 +8,14 @@ package dk.sdu.mmmi;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +30,8 @@ public class Menu {
     private static int Width;
     private static int Height;
     private static int spacing = 20;
+    String backgorundImageStr = "C:\\Users\\tes_7\\OneDrive\\Skrivebord\\Wrong-Date\\Core\\src\\main\\java\\dk\\sdu\\mmmi\\PinkSquare.jpg";
+
     
     public void setMenuData(int WidthWindow, int Width0, int Height){
         this.WidthWindow = WidthWindow;
@@ -40,6 +41,13 @@ public class Menu {
     }
     
     public void draw(Skin skin, Stage stage){
+        //Menu Field
+        Image backgroundImage = new Image(new Texture(Gdx.files.internal(backgorundImageStr)));
+        backgroundImage.setPosition(Width0, 0);
+        backgroundImage.setWidth(Width);
+        backgroundImage.setHeight(Height);
+        stage.getActors().add(backgroundImage);
+        
         //Profile Picture
         String proPicURL = "C:\\Users\\tes_7\\OneDrive\\Skrivebord\\Wrong-Date\\Core\\src\\main\\java\\dk\\sdu\\mmmi\\ProfilePicture.png";
         Image proPicImage = new Image(new Texture(Gdx.files.internal(proPicURL)));
@@ -207,6 +215,8 @@ public class Menu {
 //        }
 //        });
     }
+    
+
     
        
 

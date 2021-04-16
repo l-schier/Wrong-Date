@@ -70,6 +70,8 @@ public class Game implements ApplicationListener {
         Gdx.input.setInputProcessor(multiplexer);
         multiplexer.addProcessor(new GameInputProcessor(gameData));
         multiplexer.addProcessor(stage);
+        
+        drawMenu();
 
 
     }
@@ -100,7 +102,7 @@ public class Game implements ApplicationListener {
     }
 
     private void draw() {
-        drawMenu();
+//        drawMenu();
         
         for (Entity entity : world.getEntities()) {
             sr.setColor(1, 1, 1, 1);
@@ -167,11 +169,6 @@ public class Game implements ApplicationListener {
      * Draws menu
      */
     private void drawMenu(){
-        //Menu field
-        sr.begin(ShapeRenderer.ShapeType.Filled);
-        sr.setColor(255, 0, 0, 1);
-        sr.rect(gameWidth, 0, Width, Height);
-        sr.end();
         
         menu.draw(skin, stage);
         
