@@ -9,7 +9,6 @@ import static dk.sdu.mmmi.common.data.GameKeys.RIGHT;
 import static dk.sdu.mmmi.common.data.GameKeys.SPACE;
 import static dk.sdu.mmmi.common.data.GameKeys.UP;
 import dk.sdu.mmmi.common.data.World;
-import dk.sdu.mmmi.common.data.entityparts.InteractPart;
 import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
 import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
@@ -31,13 +30,15 @@ public class PlayerSystem implements IEntityProcessingService {
             PositionPart positionPart = player.getPart(PositionPart.class);
             MovingPart movingPart = player.getPart(MovingPart.class);
             LifePart lifePart = player.getPart(LifePart.class);
-            InteractPart interactPart = player.getPart(InteractPart.class);
 
             movingPart.setRight(gameData.getKeys().isDown(RIGHT));
             movingPart.setLeft(gameData.getKeys().isDown(LEFT));
             movingPart.setUp(gameData.getKeys().isDown(UP));
             movingPart.setDown(gameData.getKeys().isDown(DOWN));
-            interactPart.setIsInteracting(gameData.getKeys().isDown(ENTER));
+            
+            if(gameData.getKeys().isDown(ENTER)){
+                interactService.interact(player, world);
+            }
             
 //            if (gameData.getKeys().isDown(SPACE)) {
 //                useItem(player, gameData);

@@ -38,5 +38,10 @@
             <artifactId>CommonItem</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>CommonInteract</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

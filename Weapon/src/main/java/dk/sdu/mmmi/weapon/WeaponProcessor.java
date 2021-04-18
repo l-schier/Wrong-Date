@@ -8,8 +8,8 @@ import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
-import dk.sdu.mmmi.common.data.entityparts.TimerPart;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
+import dk.sdu.mmmi.commoninteract.InteractSPI;
 import dk.sdu.mmmi.commonitem.ItemSPI;
 import java.awt.Image;
 import static java.lang.Math.cos;
@@ -19,7 +19,7 @@ import static java.lang.Math.sin;
  *
  * @author Jacob
  */
-public class WeaponProcessor implements IEntityProcessingService, ItemSPI {
+public class WeaponProcessor implements IEntityProcessingService, ItemSPI, InteractSPI {
 
     @Override
     public void process(GameData gameData, World world) {
@@ -72,6 +72,16 @@ public class WeaponProcessor implements IEntityProcessingService, ItemSPI {
     @Override
     public Image getSprite() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void interact(Entity user, World world) {
+        for(Entity weapon : world.getEntities(Weapon.class)){
+            if(user.checkCollision(weapon)){
+                InventoryPart inventory = user.getPart(InventoryPart.class);
+                inventory.addItem(weapon);
+            }
+        }
     }
 
 }
