@@ -3,6 +3,7 @@ package dk.sdu.mmmi.collision;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
+import dk.sdu.mmmi.common.data.entityparts.DamagePart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.common.services.IPostEntityProcessingService;
@@ -18,12 +19,14 @@ public class Collider implements IPostEntityProcessingService {
                     continue;
                 }
 
-                LifePart e1l = e1.getPart(LifePart.class);
                 LifePart e2l = e2.getPart(LifePart.class);
-
-                if (circleCollision(e1, e2)) {
-                    e1l.setIsHit(true);
-                    e2l.setIsHit(true);
+                
+                if(e1.getPart(DamagePart.class) != null){
+                    DamagePart e1d = e1.getPart(DamagePart.class);
+                    
+                    if (circleCollision(e1, e2) && e1d.isWeaponUsed()) {
+                        e2l.takeLife(e1d.getDamage());
+                    }
                 }
             }
         }
