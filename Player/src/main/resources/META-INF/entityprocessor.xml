@@ -4,4 +4,10 @@
     <service>
         <provide interface="dk.sdu.mmmi.common.services.IEntityProcessingService"/>
     </service>
+    <reference bind="setItemService" cardinality="0..1"
+               interface="dk.sdu.mmmi.commonitem.ItemSPI"
+               name="ItemService" policy="dynamic" unbind="removeItemService"/>
+    <reference bind="setInteractService" cardinality="0..1"
+               interface="dk.sdu.mmmi.commoninteract.InteractSPI"
+               name="InteractService" policy="dynamic" unbind="removeInteractService"/>
 </scr:component>
