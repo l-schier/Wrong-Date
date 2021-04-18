@@ -155,6 +155,7 @@
         
     <module>Player</module>
     <module>CommonItem</module>
+    <module>CommonInteract</module>
   </modules>
               
   
