@@ -8,6 +8,10 @@ import dk.sdu.mmmi.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.common.services.ICollisionChecker;
 import dk.sdu.mmmi.common.services.IPostEntityProcessingService;
 
+/**
+ *
+ * @author Anton
+ */
 public class Collider implements IPostEntityProcessingService, ICollisionChecker {
 
     @Override

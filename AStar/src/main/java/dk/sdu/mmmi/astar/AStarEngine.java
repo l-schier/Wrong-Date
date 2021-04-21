@@ -8,6 +8,10 @@ import dk.sdu.mmmi.common.services.ICollisionChecker;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ *
+ * @author Anton
+ */
 public class AStarEngine {
 
     private ICollisionChecker collisionChecker;

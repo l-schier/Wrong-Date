@@ -8,6 +8,10 @@ import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.services.ICollisionChecker;
 import dk.sdu.mmmi.common.services.IPathfinder;
 
+/**
+ *
+ * @author Anton
+ */
 public class AStarPathfinder implements IPathfinder {
 
     private AStarEngine aStar;

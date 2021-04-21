@@ -7,6 +7,10 @@ import dk.sdu.mmmi.common.services.ICollisionChecker;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ *
+ * @author Anton
+ */
 public class RandomEngine {
 
     private ICollisionChecker collisionChecker;

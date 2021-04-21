@@ -9,6 +9,10 @@ import dk.sdu.mmmi.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.common.services.IPathfinder;
 
+/**
+ *
+ * @author Anton
+ */
 public class EnemySystem implements IEntityProcessingService {
 
     private IPathfinder aStarPathfinder;

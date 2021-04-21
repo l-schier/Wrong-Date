@@ -9,6 +9,10 @@ import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.SightPart;
 import dk.sdu.mmmi.common.services.IGamePluginService;
 
+/**
+ *
+ * @author Anton
+ */
 public class EnemyPlugin implements IGamePluginService {
 
     public EnemyPlugin() {
