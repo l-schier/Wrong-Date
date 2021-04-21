@@ -1,8 +1,12 @@
-package dk.sdu.mmmi.enemy;
+package dk.sdu.mmmi.astar;
 
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import java.util.ArrayList;
 
+/**
+ *
+ * @author Anton
+ */
 public class Node {
 
     public PositionPart state;

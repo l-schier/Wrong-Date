@@ -1,0 +1,3 @@
+Bundle-SymbolicName: AStar
+Bundle-ActivationPolicy: lazy
+Service-Component: META-INF/pathfinder.xml

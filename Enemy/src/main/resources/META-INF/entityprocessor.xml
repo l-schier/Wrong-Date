@@ -4,4 +4,8 @@
     <service>
         <provide interface="dk.sdu.mmmi.common.services.IEntityProcessingService"/>
     </service>
+    
+    <reference bind="addPathfinder" cardinality="0..n"
+               interface="dk.sdu.mmmi.common.services.IPathfinder"
+               name="IPathfinder" policy="dynamic" unbind="removePathfinder"/>
 </scr:component>
