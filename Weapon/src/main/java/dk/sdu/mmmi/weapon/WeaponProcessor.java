@@ -60,10 +60,9 @@ public class WeaponProcessor implements IEntityProcessingService, IItemService, 
     }
 
     public void useItem(Entity shooter, GameData gameData) {
-        InventoryPart inventory = shooter.getPart(InventoryPart.class);
-        DamagePart damage = inventory.getWeapon().getPart(DamagePart.class);
-        damage.setWeaponUsed(true);
-        
+        InventoryPart inventoryPart = shooter.getPart(InventoryPart.class);
+        DamagePart damagePart = inventoryPart.getWeapon().getPart(DamagePart.class);
+        damagePart.setWeaponUsed(true);
     }
 
     @Override

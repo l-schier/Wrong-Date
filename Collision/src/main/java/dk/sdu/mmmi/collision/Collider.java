@@ -4,6 +4,7 @@ import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.DamagePart;
+import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.common.services.ICollisionChecker;
@@ -23,14 +24,19 @@ public class Collider implements IPostEntityProcessingService, ICollisionChecker
                 if (e1.getID().equals(e2.getID())) {
                     continue;
                 }
+                if (e2.getPart(InventoryPart.class) != null){
+                    InventoryPart inventoryPart = e2.getPart(InventoryPart.class);
+                    if(inventoryPart.getWeapon() != null && inventoryPart.getWeapon().equals(e1)){
+                        continue;
+                    }
+                }
 
-                LifePart e2l = e2.getPart(LifePart.class);
-                
-                if(e1.getPart(DamagePart.class) != null){
+                if(e1.getPart(DamagePart.class) != null && e2.getPart(LifePart.class) != null){
                     DamagePart e1d = e1.getPart(DamagePart.class);
-                    
+                    LifePart e2l = e2.getPart(LifePart.class);
                     if (circleCollision(e1, e2) && e1d.isWeaponUsed()) {
                         e2l.takeLife(e1d.getDamage());
+                        e1d.setWeaponUsed(false);
                     }
                 }
             }
