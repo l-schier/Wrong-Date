@@ -30,6 +30,7 @@ public class PlayerSystem implements IEntityProcessingService {
             PositionPart positionPart = player.getPart(PositionPart.class);
             MovingPart movingPart = player.getPart(MovingPart.class);
             LifePart lifePart = player.getPart(LifePart.class);
+            InventoryPart inventoryPart = player.getPart(InventoryPart.class);
 
             movingPart.setRight(gameData.getKeys().isDown(RIGHT));
             movingPart.setLeft(gameData.getKeys().isDown(LEFT));
@@ -47,6 +48,7 @@ public class PlayerSystem implements IEntityProcessingService {
             movingPart.process(gameData, player);
             positionPart.process(gameData, player);
             lifePart.process(gameData, player);
+            inventoryPart.process(gameData, player);
 
             if (lifePart.getLife() <= 0) {
                 world.removeEntity(player);
@@ -78,15 +80,6 @@ public class PlayerSystem implements IEntityProcessingService {
 
         entity.setShapeX(shapex);
         entity.setShapeY(shapey);
-        
-        InventoryPart inventoryPart = entity.getPart(InventoryPart.class);
-        if(inventoryPart.getInventory() != null){
-            for(Entity item : inventoryPart.getInventory()){
-                PositionPart pos = item.getPart(PositionPart.class);
-                pos.setPosition(x, y);
-            }
-        }
-        
     }
 
     public void setItemService(IItemService itemService) {

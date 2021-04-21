@@ -14,12 +14,20 @@ public class InventoryPart implements EntityPart {
     private Entity weapon;
     
     public InventoryPart(){
-        
+        inventory = new ArrayList<Entity>();
     }
 
     @Override
     public void process(GameData gameData, Entity entity) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        PositionPart playerPos = entity.getPart(PositionPart.class);
+        if(this.getWeapon() != null){
+            PositionPart pos = this.getWeapon().getPart(PositionPart.class);
+            pos.setPosition(playerPos.getX(), playerPos.getY());
+        }
+        for(Entity item : this.getInventory()){
+            PositionPart pos = item.getPart(PositionPart.class);
+            pos.setPosition(playerPos.getX(), playerPos.getY());
+        }
     }
 
     public ArrayList<Entity> getInventory() {
