@@ -9,8 +9,9 @@ import dk.sdu.mmmi.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
-import dk.sdu.mmmi.commoninteract.InteractSPI;
-import dk.sdu.mmmi.commonitem.ItemSPI;
+import dk.sdu.mmmi.common.services.IInteractService;
+import dk.sdu.mmmi.common.services.IItemService;
+
 import java.awt.Image;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
@@ -19,7 +20,7 @@ import static java.lang.Math.sin;
  *
  * @author Jacob
  */
-public class WeaponProcessor implements IEntityProcessingService, ItemSPI, InteractSPI {
+public class WeaponProcessor implements IEntityProcessingService, IItemService, IInteractService {
 
     @Override
     public void process(GameData gameData, World world) {

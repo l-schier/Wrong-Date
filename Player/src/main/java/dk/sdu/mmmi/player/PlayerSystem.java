@@ -14,13 +14,13 @@ import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
-import dk.sdu.mmmi.commoninteract.InteractSPI;
-import dk.sdu.mmmi.commonitem.ItemSPI;
+import dk.sdu.mmmi.common.services.IInteractService;
+import dk.sdu.mmmi.common.services.IItemService;
 
 public class PlayerSystem implements IEntityProcessingService {
     
-    private ItemSPI itemService;
-    private InteractSPI interactService;
+    private IItemService itemService;
+    private IInteractService interactService;
 
     @Override
     public void process(GameData gameData, World world) {
@@ -89,7 +89,7 @@ public class PlayerSystem implements IEntityProcessingService {
         
     }
 
-    public void setItemService(ItemSPI itemService) {
+    public void setItemService(IItemService itemService) {
         this.itemService = itemService;
     }
     
@@ -97,7 +97,7 @@ public class PlayerSystem implements IEntityProcessingService {
         this.itemService = null;
     }
 
-    public void setInteractService(InteractSPI interactService) {
+    public void setInteractService(IInteractService interactService) {
         this.interactService = interactService;
     }
     
