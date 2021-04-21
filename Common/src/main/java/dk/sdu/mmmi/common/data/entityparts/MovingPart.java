@@ -2,16 +2,39 @@ package dk.sdu.mmmi.common.data.entityparts;
 
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
 
-public class MovingPart implements EntityPart {
+public class MovingPart
+        implements EntityPart {
 
-    private boolean left, right, up, down;
-    private int speed;
-    private float expiration;
+    private float dx, dy;
+    private float deceleration, acceleration;
+    private float maxSpeed, rotationSpeed;
+    private boolean left, right, up;
 
-    public MovingPart(int speed) {
-        this.speed = speed;
-        this.expiration = 0;
+    public MovingPart(float deceleration, float acceleration, float maxSpeed, float rotationSpeed) {
+        this.deceleration = deceleration;
+        this.acceleration = acceleration;
+        this.maxSpeed = maxSpeed;
+        this.rotationSpeed = rotationSpeed;
+    }
+
+    public void setDeceleration(float deceleration) {
+        this.deceleration = deceleration;
+    }
+
+    public void setAcceleration(float acceleration) {
+        this.acceleration = acceleration;
+    }
+
+    public void setMaxSpeed(float maxSpeed) {
+        this.maxSpeed = maxSpeed;
+    }
+
+    public void setRotationSpeed(float rotationSpeed) {
+        this.rotationSpeed = rotationSpeed;
     }
 
     public void setLeft(boolean left) {
@@ -26,69 +49,59 @@ public class MovingPart implements EntityPart {
         this.up = up;
     }
 
-    public void setDown(boolean down) {
-        this.down = down;
-    }
-
-    public void stunFor(float expiration) {
-        this.expiration = expiration;
-    }
-
-    private void reduceExpiration(float delta) {
-        this.expiration -= delta;
-    }
-    
     @Override
     public void process(GameData gameData, Entity entity) {
-        
-        if (expiration > 0) {
-            reduceExpiration(gameData.getDelta());
-            return;
-        }
-        
         PositionPart positionPart = entity.getPart(PositionPart.class);
         float x = positionPart.getX();
         float y = positionPart.getY();
+        float radians = positionPart.getRadians();
+        float dt = gameData.getDelta();
+        
+        // turning
+        if (left) {
+            radians += rotationSpeed * dt;
+        }
 
         if (right) {
-            x += speed;
+            radians -= rotationSpeed * dt;
         }
 
-        if (left) {
-            x -= speed;
-        }
-
+        // accelerating            
         if (up) {
-            y += speed;
+            dx += cos(radians) * acceleration * dt;
+            dy += sin(radians) * acceleration * dt;
         }
 
-        if (down) {
-            y -= speed;
+        // deccelerating
+        float vec = (float) sqrt(dx * dx + dy * dy);
+        if (vec > 0) {
+            dx -= (dx / vec) * deceleration * dt;
+            dy -= (dy / vec) * deceleration * dt;
         }
-
-        float deadZoneStartX = 100;
-        float deadZoneStopX = 200;
-        float deadZoneStartY = 100;
-        float deadZoneStopY = 200;
-
-        if (deadZoneStartX <= x && x <= deadZoneStopX && deadZoneStartY <= y && y <= deadZoneStopY) {
-            return;
+        if (vec > maxSpeed) {
+            dx = (dx / vec) * maxSpeed;
+            dy = (dy / vec) * maxSpeed;
         }
 
         // set position
+        x += dx * dt;
         if (x > gameData.getDisplayWidth()) {
             x = 0;
-        } else if (x < 0) {
+        }
+        else if (x < 0) {
             x = gameData.getDisplayWidth();
         }
 
+        y += dy * dt;
         if (y > gameData.getDisplayHeight()) {
             y = 0;
-        } else if (y < 0) {
+        }
+        else if (y < 0) {
             y = gameData.getDisplayHeight();
         }
 
         positionPart.setX(x);
         positionPart.setY(y);
+        positionPart.setRadians(radians);
     }
 }

@@ -5,14 +5,9 @@ import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
-import dk.sdu.mmmi.common.services.ICollisionChecker;
 import dk.sdu.mmmi.common.services.IPostEntityProcessingService;
 
-/**
- *
- * @author Anton
- */
-public class Collider implements IPostEntityProcessingService, ICollisionChecker {
+public class Collider implements IPostEntityProcessingService {
 
     @Override
     public void process(GameData gameData, World world) {
@@ -52,27 +47,5 @@ public class Collider implements IPostEntityProcessingService, ICollisionChecker
         }
 
         return false;
-    }
-
-    @Override
-    public boolean isPositionFree(World world, Entity me, float x, float y) {
-
-        for (Entity e : world.getEntities()) {
-            if (e != me) {
-                // check if the x and y collides with the entity
-                
-            }
-        }
-
-        float deadZoneStartX = 100;
-        float deadZoneStopX = 200;
-        float deadZoneStartY = 100;
-        float deadZoneStopY = 200;
-
-        if (deadZoneStartX <= x && x <= deadZoneStopX && deadZoneStartY <= y && y <= deadZoneStopY) {
-            return false;
-        }
-
-        return true;
     }
 }
