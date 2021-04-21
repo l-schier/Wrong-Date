@@ -1,6 +1,7 @@
 package dk.sdu.mmmi.common.data;
 
 import dk.sdu.mmmi.common.data.entityparts.EntityPart;
+import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.UUID;
@@ -93,6 +94,26 @@ public class Entity implements Serializable {
         if (distance < this.radius + entity.radius) {
             return true;
         }
+        return false;
+    }
+    
+    public boolean circleCollision(Entity entity) {
+        PositionPart e1p = this.getPart(PositionPart.class);
+        PositionPart e2p = entity.getPart(PositionPart.class);
+
+        float dx = e1p.getX() - e2p.getX();
+        float dy = e1p.getY() - e2p.getY();
+
+        // a^2 + b^2 = c^2
+        // c = sqrt(a^2 + b^2)
+        double distance = Math.sqrt(dx * dx + dy * dy);
+
+        // if radius overlap
+        if (distance < this.getRadius() + entity.getRadius()) {
+            // Collision!
+            return true;
+        }
+
         return false;
     }
 }

@@ -78,7 +78,8 @@ public class WeaponProcessor implements IEntityProcessingService, IItemService, 
     @Override
     public void interact(Entity user, World world) {
         for(Entity weapon : world.getEntities(Weapon.class)){
-            if(user.checkCollision(weapon)){
+            System.out.println("Collision: " + user.circleCollision(weapon));
+            if(user.circleCollision(weapon)){
                 InventoryPart inventory = user.getPart(InventoryPart.class);
                 inventory.addItem(weapon);
             }
