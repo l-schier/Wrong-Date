@@ -10,8 +10,7 @@ public class MovingPart implements EntityPart {
     private int speed;
     private float expiration;
 
-
-    public MovingPart(float speed) {
+    public MovingPart(int speed) {
         this.speed = speed;
         this.expiration = 0;
     }
