@@ -15,13 +15,16 @@ import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.common.services.IGamePluginService;
+import dk.sdu.mmmi.common.services.IGameSignal;
+import dk.sdu.mmmi.common.services.IHelp;
 import dk.sdu.mmmi.common.services.IPostEntityProcessingService;
 import dk.sdu.mmmi.core.managers.GameInputProcessor;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList; 
 
 public class Game implements ApplicationListener {
-
+    
     private static int gameWidth = 800;
     private static int menuWidth = 300;
     private static int Width = gameWidth + menuWidth;
@@ -37,6 +40,12 @@ public class Game implements ApplicationListener {
     private static final List<IEntityProcessingService> entityProcessorList = new CopyOnWriteArrayList<>();
     private static final List<IGamePluginService> gamePluginList = new CopyOnWriteArrayList<>();
     private static List<IPostEntityProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
+    private static final List<IHelp> helpList = new CopyOnWriteArrayList<>();
+    private static final List<IGameSignal> gameSignalList = new CopyOnWriteArrayList<>();
+  
+    
+
+    
 
     public Game(){
         init();
@@ -44,7 +53,7 @@ public class Game implements ApplicationListener {
         gameData.setDisplayHeight(Height);
         menu.setMenuData(Width, gameWidth, Height);
     }
-
+    
     public void init() {
         LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
         cfg.title = "Wrong-Date";
@@ -54,6 +63,8 @@ public class Game implements ApplicationListener {
         cfg.resizable = false;
 
         new LwjglApplication(this, cfg);
+        
+        
     }
 
     @Override
@@ -64,7 +75,7 @@ public class Game implements ApplicationListener {
 
         sr = new ShapeRenderer();        
         stage = new Stage();
-        skin = new Skin(Gdx.files.internal("C:\\Users\\tes_7\\OneDrive\\Skrivebord\\Wrong-Date\\Core\\src\\main\\java\\dk\\sdu\\mmmi\\uiskin.json"));;
+        skin = new Skin(Gdx.files.internal(Gdx.files.getLocalStoragePath() + "uiskin.json"));
         //Allows multiple inputprocessor
         InputMultiplexer multiplexer = new InputMultiplexer();
         Gdx.input.setInputProcessor(multiplexer);
@@ -99,6 +110,29 @@ public class Game implements ApplicationListener {
         for (IPostEntityProcessingService postEntityProcessorService : postEntityProcessorList) {
             postEntityProcessorService.process(gameData, world);
         }
+        
+        //Help files
+        //I want to move this to Menu class outside of constant update
+        ArrayList helpFiles = new ArrayList();
+        for (IHelp help : helpList) {
+            helpFiles.add(help.getFile());
+        }
+        menu.setHelpFiles(helpFiles);
+        
+        //cheking if pause
+        if (menu.getPause()){
+            pause();
+            menu.resetPause();
+            System.out.println("Pausing game");
+        }
+        
+        //Cheking if resume
+        if (menu.getResume()){
+            resume();
+            menu.resetResume();
+            System.out.println("resuming game");
+        }
+       
     }
 
     private void draw() {
@@ -129,6 +163,7 @@ public class Game implements ApplicationListener {
 
     @Override
     public void pause() {
+        System.out.println("Game pause");
     }
 
     @Override
@@ -165,6 +200,26 @@ public class Game implements ApplicationListener {
         plugin.stop(gameData, world);
     }
     
+    public void addHelp(IHelp plugin) {
+        this.helpList.add(plugin);
+    }
+
+    public void removeHelp(IHelp plugin) {
+        this.helpList.remove(plugin);
+    }
+    
+    public void addGameSignal(IGameSignal plugin) {
+        this.gameSignalList.add(plugin);
+        System.out.println("added Signal");
+    }
+
+    
+    public void removeGameSignal(IGameSignal plugin){
+        this.gameSignalList.remove(plugin);
+        System.out.println("Removed Signal");
+    }
+
+    
     /**
      * Draws menu
      */
@@ -173,5 +228,7 @@ public class Game implements ApplicationListener {
         menu.draw(skin, stage);
         
     }
+
+
 
 }
