@@ -3,6 +3,8 @@ package dk.sdu.mmmi.player;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
+import dk.sdu.mmmi.common.data.entityparts.InteractPart;
+import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
@@ -22,14 +24,16 @@ public class PlayerPlugin implements IGamePluginService {
     }
 
     private Entity createPlayer(GameData gameData) {
-        float x = gameData.getDisplayWidth() - 50;
-        float y = gameData.getDisplayHeight() - 50;
+        int x = gameData.getDisplayWidth() - 50;
+        int y = gameData.getDisplayHeight() - 50;
 
         Entity player = new Player();
 
         player.add(new LifePart(1));
         player.add(new MovingPart(2));
         player.add(new PositionPart(x, y));
+        player.add(new InteractPart());
+        player.add(new InventoryPart());
 
         player.setRadius(8);
 

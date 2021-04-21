@@ -3,16 +3,24 @@ package dk.sdu.mmmi.player;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import static dk.sdu.mmmi.common.data.GameKeys.DOWN;
+import static dk.sdu.mmmi.common.data.GameKeys.ENTER;
 import static dk.sdu.mmmi.common.data.GameKeys.LEFT;
 import static dk.sdu.mmmi.common.data.GameKeys.RIGHT;
+import static dk.sdu.mmmi.common.data.GameKeys.SPACE;
 import static dk.sdu.mmmi.common.data.GameKeys.UP;
 import dk.sdu.mmmi.common.data.World;
+import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
 import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
+import dk.sdu.mmmi.common.services.IInteractService;
+import dk.sdu.mmmi.common.services.IItemService;
 
 public class PlayerSystem implements IEntityProcessingService {
+    
+    private IItemService itemService;
+    private IInteractService interactService;
 
     @Override
     public void process(GameData gameData, World world) {
@@ -27,6 +35,14 @@ public class PlayerSystem implements IEntityProcessingService {
             movingPart.setLeft(gameData.getKeys().isDown(LEFT));
             movingPart.setUp(gameData.getKeys().isDown(UP));
             movingPart.setDown(gameData.getKeys().isDown(DOWN));
+            
+            if(gameData.getKeys().isDown(ENTER)){
+                interactService.interact(player, world);
+            }
+            
+//            if (gameData.getKeys().isDown(SPACE)) {
+//                useItem(player, gameData);
+//            }
 
             movingPart.process(gameData, player);
             positionPart.process(gameData, player);
@@ -62,5 +78,30 @@ public class PlayerSystem implements IEntityProcessingService {
 
         entity.setShapeX(shapex);
         entity.setShapeY(shapey);
+        
+        InventoryPart inventoryPart = entity.getPart(InventoryPart.class);
+        if(inventoryPart.getInventory() != null){
+            for(Entity item : inventoryPart.getInventory()){
+                PositionPart pos = item.getPart(PositionPart.class);
+                pos.setPosition(x, y);
+            }
+        }
+        
+    }
+
+    public void setItemService(IItemService itemService) {
+        this.itemService = itemService;
+    }
+    
+    public void removeItemService() {
+        this.itemService = null;
+    }
+
+    public void setInteractService(IInteractService interactService) {
+        this.interactService = interactService;
+    }
+    
+    public void removeInteractService() {
+        this.interactService = null;
     }
 }

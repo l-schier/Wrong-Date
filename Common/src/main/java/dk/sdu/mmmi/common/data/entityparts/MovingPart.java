@@ -6,10 +6,12 @@ import dk.sdu.mmmi.common.data.GameData;
 public class MovingPart implements EntityPart {
 
     private boolean left, right, up, down;
+
     private int speed;
     private float expiration;
 
-    public MovingPart(int speed) {
+
+    public MovingPart(float speed) {
         this.speed = speed;
         this.expiration = 0;
     }
