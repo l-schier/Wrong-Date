@@ -22,7 +22,7 @@ public class InventoryPart implements EntityPart {
         PositionPart playerPos = entity.getPart(PositionPart.class);
         if(this.getWeapon() != null){
             PositionPart pos = this.getWeapon().getPart(PositionPart.class);
-            pos.setPosition(playerPos.getX(), playerPos.getY());
+            pos.setPosition(playerPos.getX() + 3f, playerPos.getY() + 2f);
         }
         for(Entity item : this.getInventory()){
             PositionPart pos = item.getPart(PositionPart.class);

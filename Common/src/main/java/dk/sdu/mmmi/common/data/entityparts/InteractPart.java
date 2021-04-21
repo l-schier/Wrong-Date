@@ -15,32 +15,16 @@ public class InteractPart implements EntityPart{
     private boolean interactable;
     
     public InteractPart(){
-        this.interacting = false;
         this.interactable = false;
     }
     
     public InteractPart(boolean interactable){
-        this.interacting = false;
         this.interactable = interactable;
     }
 
     @Override
     public void process(GameData gameData, Entity entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    /**
-     * @return the isInteracting
-     */
-    public boolean isInteracting() {
-        return interacting;
-    }
-
-    /**
-     * @param interacting the interacting to set
-     */
-    public void setIsInteracting(boolean interacting) {
-        this.interacting = interacting;
     }
 
     /**

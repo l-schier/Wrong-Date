@@ -30,6 +30,7 @@ public class WeaponPlugin implements IGamePluginService {
         float y = (float)random.nextInt(gameData.getDisplayHeight());
         int damage = 1;
         boolean interactable = true;
+        weapon.setRadius(8);
 
         weapon.add(new PositionPart(x, y));
         weapon.add(new DamagePart(damage));
