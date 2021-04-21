@@ -37,11 +37,11 @@ public class PlayerSystem implements IEntityProcessingService {
             movingPart.setUp(gameData.getKeys().isDown(UP));
             movingPart.setDown(gameData.getKeys().isDown(DOWN));
             
-            if(gameData.getKeys().isDown(ENTER)){
+            if(gameData.getKeys().isPressed(ENTER)){
                 interactService.interact(player, world);
             }
             
-            if (gameData.getKeys().isDown(SPACE)) {
+            if (gameData.getKeys().isPressed(SPACE)) {
                 itemService.useItem(player, gameData);
             }
 
