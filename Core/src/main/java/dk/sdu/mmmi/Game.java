@@ -27,6 +27,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.RenderPart;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Game implements ApplicationListener {
     
@@ -66,6 +74,33 @@ public class Game implements ApplicationListener {
 
         new LwjglApplication(this, cfg);
         
+        //Use "dir /b > filenames.txt" to crearte file and remove redundant files within
+        renderFile("filenames.txt");
+        
+        try{
+            File fileNames = new File(Gdx.files.getLocalStoragePath() + "filenames.txt");
+            Scanner sc = new Scanner(fileNames);
+            
+            while (sc.hasNextLine()){
+                renderFile(sc.nextLine());
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+    }
+    
+    private void renderFile(String fileName){   
+        
+        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(fileName);
+        File temp = new File(fileName);
+
+        // copy module sprites to runner folder
+        try {
+            Files.copy(inputStream, temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (Exception e) {
+        }    
         
     }
 
@@ -77,7 +112,7 @@ public class Game implements ApplicationListener {
 
         sr = new ShapeRenderer();        
         stage = new Stage();
-        skin = new Skin(Gdx.files.internal(Gdx.files.getLocalStoragePath() + "uiskin.json"));
+        skin = new Skin(Gdx.files.internal(Gdx.files.getLocalStoragePath() + "comic-ui.json"));
         //Allows multiple inputprocessor
         InputMultiplexer multiplexer = new InputMultiplexer();
         Gdx.input.setInputProcessor(multiplexer);

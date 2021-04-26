@@ -21,9 +21,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,28 +48,6 @@ public class Menu{
     Skin skin;
     String backgorundImageStr;
 
-    public Menu(){
-        renderFiles();
-
-    }
-    
-    private void renderFiles(){
-        Array<String> files = new Array();
-        files.addAll("PinkSquare.jpg", "ProfilePicture.png",
-                "White-square.jpg", "default.fnt", "uiskin.atlas",
-                "uiskin.json", "uiskin.png");
-        
-        for(String s: files){
-            InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(s);
-            File temp = new File(s);
-
-            // copy module sprites to runner folder
-            try {
-                Files.copy(inputStream, temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            } catch (Exception e) {
-            }
-        }
-    }
     
     public void setMenuData(int WidthWindow, int Width0, int Height){
         this.WidthWindow = WidthWindow;
@@ -106,7 +81,6 @@ public class Menu{
         
         //Profile Name TextField   
         //TODO fix next line 
-        skin = new Skin(Gdx.files.internal(Gdx.files.getLocalStoragePath() + "uiskin.json"));
         String proNameStr = "Hello";
         TextField proNameTextField = new TextField(proNameStr, skin);
         int proNameX = proPicX + proPicWidth + spacing;
@@ -418,20 +392,12 @@ public class Menu{
     
     
     private boolean canPause(){
-        if(helpClicked || pauseClicked || settingsClicked){
-            return false;
-        } else {
-            return true;
-        }
+        return !(helpClicked || pauseClicked || settingsClicked);
     }
     
     private boolean canResume(){
-        if((helpClicked ^ pauseClicked ^ settingsClicked) || 
-                (!helpClicked & !pauseClicked & !settingsClicked)){
-            return true;
-        } else {
-            return false;
-        }
+        return (helpClicked ^ pauseClicked ^ settingsClicked) || 
+                (!helpClicked & !pauseClicked & !settingsClicked);
     }
     
     private void pause(){

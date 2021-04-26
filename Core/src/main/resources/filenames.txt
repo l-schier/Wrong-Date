@@ -5,7 +5,8 @@ filenames.txt
 font-button-export.fnt
 font-export.fnt
 font-title-export.fnt
-neon-ui.png
+META-INF
 PinkSquare.jpg
 ProfilePicture.png
+rocket.png
 White-square.jpg
