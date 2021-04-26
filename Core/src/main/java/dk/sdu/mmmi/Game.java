@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.RenderPart;
 
@@ -150,11 +151,16 @@ public class Game implements ApplicationListener {
             if (entity.getPart(RenderPart.class) != null && entity.getPart(PositionPart.class) != null) {
                 PositionPart pos = entity.getPart(PositionPart.class);
                 RenderPart render = entity.getPart(RenderPart.class);
-                Texture img = new Texture(Gdx.files.getLocalStoragePath() + render.getSpritePath());
+                try {
+                    Texture img = new Texture(Gdx.files.getLocalStoragePath() + render.getSpritePath());
 
                 batch.begin();
                 batch.draw(img, pos.getX() - 16, pos.getY() - 16);
                 batch.end();
+                } catch (GdxRuntimeException e) {
+                    System.out.println("Image not found");
+                }
+                
                 continue;
             }
 
