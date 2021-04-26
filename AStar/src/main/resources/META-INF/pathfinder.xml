@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="dk.sdu.mmmi.astar">
+    <implementation class="dk.sdu.mmmi.astar.AStarPathfinder"/>
+    <service>
+        <provide interface="dk.sdu.mmmi.common.services.IPathfinder"/>
+    </service>
+    <reference bind="addCollisionChecker" cardinality="0..n"
+               interface="dk.sdu.mmmi.common.services.ICollisionChecker"
+               name="ICollisionChecker" policy="dynamic" unbind="removeCollisionChecker"/>
+</scr:component>

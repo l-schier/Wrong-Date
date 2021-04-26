@@ -9,9 +9,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Entity implements Serializable {
 
     private final UUID ID = UUID.randomUUID();
+    
     private float[] color = new float[3];
     private float[] shapeX = new float[4];
     private float[] shapeY = new float[4];
+    
+    private String spriteFile;
+    
     private float radius;
     private float boundingCircleX;
     private float boundingCircleY;
@@ -44,6 +48,14 @@ public class Entity implements Serializable {
 
     public String getID() {
         return ID.toString();
+    }
+
+    public String getSpriteFile() {
+        return spriteFile;
+    }
+
+    public void setSpriteFile(String spriteFile) {
+        this.spriteFile = spriteFile;
     }
 
     public float[] getShapeX() {

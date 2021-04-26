@@ -20,7 +20,10 @@ import dk.sdu.mmmi.common.services.IPostEntityProcessingService;
 import dk.sdu.mmmi.core.managers.GameInputProcessor;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList; 
+import java.util.concurrent.CopyOnWriteArrayList;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 
 public class Game implements ApplicationListener {
     
@@ -28,7 +31,7 @@ public class Game implements ApplicationListener {
     private static int menuWidth = 300;
     private static int Width = gameWidth + menuWidth;
     private static int Height = 600;
-    
+
     private static OrthographicCamera cam;
     private ShapeRenderer sr;
     private Stage stage;
@@ -45,7 +48,9 @@ public class Game implements ApplicationListener {
 
     
 
-    public Game(){
+    private SpriteBatch batch;
+
+    public Game() {
         init();
         gameData.setDisplayWidth(gameWidth);
         gameData.setDisplayHeight(Height);
@@ -83,6 +88,9 @@ public class Game implements ApplicationListener {
         drawMenu();
 
 
+        Gdx.input.setInputProcessor(new GameInputProcessor(gameData));
+
+        batch = new SpriteBatch();
     }
 
     @Override
@@ -137,6 +145,17 @@ public class Game implements ApplicationListener {
 //        drawMenu();
         
         for (Entity entity : world.getEntities()) {
+
+            if (entity.getSpriteFile() != null) {
+                PositionPart pos = entity.getPart(PositionPart.class);
+                Texture img = new Texture(Gdx.files.getLocalStoragePath() + entity.getSpriteFile());
+                
+                batch.begin();
+                batch.draw(img, pos.getX() - 16, pos.getY() - 16);
+                batch.end();
+                continue;
+            }
+
             sr.setColor(1, 1, 1, 1);
 
             sr.begin(ShapeRenderer.ShapeType.Line);
@@ -153,6 +172,19 @@ public class Game implements ApplicationListener {
 
             sr.end();
         }
+
+        float boxStartX = 100;
+        float boxStopX = 200;
+        float boxStartY = 100;
+        float boxStopY = 200;
+
+        sr.setColor(1, 0, 0, 1);
+        sr.begin(ShapeRenderer.ShapeType.Line);
+        sr.line(boxStartX, boxStartY, boxStartX, boxStopY);
+        sr.line(boxStartX, boxStopY, boxStopX, boxStopY);
+        sr.line(boxStopX, boxStopY, boxStopX, boxStartY);
+        sr.line(boxStopX, boxStartY, boxStartX, boxStartY);
+        sr.end();
     }
 
     @Override

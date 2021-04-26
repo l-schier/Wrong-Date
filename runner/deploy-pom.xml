@@ -73,6 +73,27 @@
       <version>1.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>dk.sdu.mmmi.build</groupId>
+      <artifactId>Enemy</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <type>bundle</type>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>dk.sdu.mmmi.build</groupId>
+      <artifactId>Player</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <type>bundle</type>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>dk.sdu.mmmi.build</groupId>
+      <artifactId>AStar</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <type>bundle</type>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
   <repositories>
     <repository>
