@@ -25,6 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
+import dk.sdu.mmmi.common.data.entityparts.RenderPart;
 
 public class Game implements ApplicationListener {
     
@@ -45,10 +46,6 @@ public class Game implements ApplicationListener {
     private static List<IPostEntityProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
     private static final List<IHelp> helpList = new CopyOnWriteArrayList<>();
   
-    
-
-    
-
     private SpriteBatch batch;
 
     public Game() {
@@ -150,11 +147,11 @@ public class Game implements ApplicationListener {
 //        drawMenu();
         
         for (Entity entity : world.getEntities()) {
-
-            if (entity.getSpriteFile() != null) {
+            if (entity.getPart(RenderPart.class) != null && entity.getPart(PositionPart.class) != null) {
                 PositionPart pos = entity.getPart(PositionPart.class);
-                Texture img = new Texture(Gdx.files.getLocalStoragePath() + entity.getSpriteFile());
-                
+                RenderPart render = entity.getPart(RenderPart.class);
+                Texture img = new Texture(Gdx.files.getLocalStoragePath() + render.getSpritePath());
+
                 batch.begin();
                 batch.draw(img, pos.getX() - 16, pos.getY() - 16);
                 batch.end();
