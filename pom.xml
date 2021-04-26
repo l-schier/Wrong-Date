@@ -25,6 +25,7 @@
         <module>Enemy</module> 
         <module>Player</module> 
         <module>AStar</module> 
+        <module>Map</module>
     </modules> 
     <build> 
         <plugins> 
@@ -35,7 +36,7 @@
                 <configuration> <!-- | some example Pax-Runner settings --> 
                     <provision> 
                         <param>--platform=felix</param> 
-                        
+                        <param>--vmOptions=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</param> 
                     </provision> 
                 </configuration> 
                 <executions> <!-- | uncomment to auto-generate IDE files <execution> <id>ide-support</id> <goals> <goal>eclipse</goal> </goals> </execution> --> </executions> 

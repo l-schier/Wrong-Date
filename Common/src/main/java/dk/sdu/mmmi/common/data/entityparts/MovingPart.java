@@ -6,14 +6,18 @@ import dk.sdu.mmmi.common.data.GameData;
 public class MovingPart implements EntityPart {
 
     private boolean left, right, up, down;
-    private int speed;
+    private final int speed;
     private float expiration;
 
     public MovingPart(int speed) {
         this.speed = speed;
         this.expiration = 0;
     }
-
+    
+    public int getSpeed() {
+        return speed;
+    }
+ 
     public void setLeft(boolean left) {
         this.left = left;
     }
@@ -66,22 +70,13 @@ public class MovingPart implements EntityPart {
             y -= speed;
         }
 
-        float deadZoneStartX = 100;
-        float deadZoneStopX = 200;
-        float deadZoneStartY = 100;
-        float deadZoneStopY = 200;
-
-        if (deadZoneStartX <= x && x <= deadZoneStopX && deadZoneStartY <= y && y <= deadZoneStopY) {
-            return;
-        }
-
         // set position
         if (x > gameData.getDisplayWidth()) {
             x = 0;
         } else if (x < 0) {
             x = gameData.getDisplayWidth();
         }
-
+        
         if (y > gameData.getDisplayHeight()) {
             y = 0;
         } else if (y < 0) {

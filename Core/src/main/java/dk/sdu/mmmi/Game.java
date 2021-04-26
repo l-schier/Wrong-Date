@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
+import dk.sdu.mmmi.common.data.entityparts.DoorPart;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.common.services.IGamePluginService;
 import dk.sdu.mmmi.common.services.IHelp;
@@ -100,6 +101,10 @@ public class Game implements ApplicationListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         gameData.setDelta(Gdx.graphics.getDeltaTime());
         update();
+        // https://www.codeandweb.com/texturepacker/tutorials/libgdx-physics
+        // https://stackoverflow.com/questions/6474634/how-do-i-access-a-file-inside-an-osgi-bundle
+        // https://stackoverflow.com/questions/6244993/no-access-to-bundle-resource-file-osgi
+        // URL file = this.getClass().getClassLoader().getResource("rocket.png");
         draw();
         gameData.getKeys().update();
         stage.draw();
@@ -171,6 +176,19 @@ public class Game implements ApplicationListener {
             }
 
             sr.end();
+            
+            if (entity.getPart(DoorPart.class) != null) {
+                sr.setColor(1,0,0,1);
+                
+                DoorPart doorPart = entity.getPart(DoorPart.class);
+                float[][] doors = doorPart.getDoors();
+                for (int i = 0; i < 4; i++) {
+                    sr.begin(ShapeRenderer.ShapeType.Line);
+                    sr.line(doors[i][0], doors[i][1], doors[i][2], doors[i][3]);
+                    sr.end();
+                }
+                
+            }
         }
 
         float boxStartX = 100;

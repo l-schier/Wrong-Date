@@ -39,8 +39,8 @@ public class PlayerPlugin implements IGamePluginService {
     @Override
     public void stop(GameData gameData, World world) {
         // Remove entities
-        for (Entity enemy : world.getEntities(Player.class)) {
-            world.removeEntity(enemy);
+        for (Entity player : world.getEntities(Player.class)) {
+            world.removeEntity(player);
         }
     }
 }

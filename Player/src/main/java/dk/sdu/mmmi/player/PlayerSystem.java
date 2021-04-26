@@ -11,9 +11,10 @@ import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
+import dk.sdu.mmmi.common.services.ICollisionChecker;
 
 public class PlayerSystem implements IEntityProcessingService {
-
+    private ICollisionChecker collisionChecker;
     @Override
     public void process(GameData gameData, World world) {
 
@@ -23,11 +24,32 @@ public class PlayerSystem implements IEntityProcessingService {
             MovingPart movingPart = player.getPart(MovingPart.class);
             LifePart lifePart = player.getPart(LifePart.class);
 
-            movingPart.setRight(gameData.getKeys().isDown(RIGHT));
-            movingPart.setLeft(gameData.getKeys().isDown(LEFT));
-            movingPart.setUp(gameData.getKeys().isDown(UP));
-            movingPart.setDown(gameData.getKeys().isDown(DOWN));
-
+            float newX = positionPart.getX();
+            float newY = positionPart.getY();
+            float speed = movingPart.getSpeed();
+            if (gameData.getKeys().isDown(RIGHT)) {
+                newX += speed;
+            } else if (gameData.getKeys().isDown(LEFT)) {
+                newX -= speed;
+            }
+            if (gameData.getKeys().isDown(UP)) {
+                newY += speed;
+            } else if (gameData.getKeys().isDown(DOWN)) {
+                newY -= speed;
+            }
+            
+            if (collisionChecker.isPositionFree(world, player, newX, newY)) {
+                movingPart.setRight(gameData.getKeys().isDown(RIGHT));
+                movingPart.setLeft(gameData.getKeys().isDown(LEFT));
+                movingPart.setUp(gameData.getKeys().isDown(UP));
+                movingPart.setDown(gameData.getKeys().isDown(DOWN));
+            } else {
+                movingPart.setRight(false);
+                movingPart.setLeft(false);
+                movingPart.setUp(false);
+                movingPart.setDown(false);
+            }
+            
             movingPart.process(gameData, player);
             positionPart.process(gameData, player);
             lifePart.process(gameData, player);
@@ -62,5 +84,13 @@ public class PlayerSystem implements IEntityProcessingService {
 
         entity.setShapeX(shapex);
         entity.setShapeY(shapey);
+    }
+    
+    public void addCollisionChecker(ICollisionChecker collisionChecker) {
+        this.collisionChecker = collisionChecker;
+    }
+    
+    public void removeCollisionChecker(ICollisionChecker collisionChecker) {
+        this.collisionChecker = null;
     }
 }
