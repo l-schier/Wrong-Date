@@ -8,6 +8,7 @@ package dk.sdu.mmmi;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -42,11 +43,31 @@ public class Menu{
     private static int Width0;
     private static int Width;
     private static int Height;
-    private static int spacing = 20;
+    private static int spacing = 10;
     private boolean pause, resume;
     private boolean pauseClicked, helpClicked,settingsClicked;
     Skin skin;
+    
+    
+    //Menu
     String backgorundImageStr;
+    Image backgroundImage;
+    String proPicURL;
+    Image proPicImage;
+    String proNameStr = "";
+    TextField proNameTextField;
+    TextField weapTextField;
+    String whiteSquare;
+    Image weapImage;
+    String weapDescString;
+    TextArea weapDescArea;
+    TextField invTextField;
+    Image iteminfoImage;
+    String itemInfoStr = "";
+    TextArea itemInfoArea;
+    Button helpButton, settingsButton, pauseButton;
+    
+    
 
     
     public void setMenuData(int WidthWindow, int Width0, int Height){
@@ -57,172 +78,98 @@ public class Menu{
     }
     
     public void draw(Skin skin, Stage stage){
+        int x1 = Width0 + spacing;
+        int width1 = 90;
+        int x2 = x1 + width1 + spacing;
+        int width2 = WidthWindow - x2 - spacing;
+        int height2 = 40;
+        int width3 = Width - (2*spacing);
+        
         backgorundImageStr = Gdx.files.getLocalStoragePath() + "PinkSquare.jpg";
         this.skin = skin;
         //Menu Field
-        Image backgroundImage = new Image(new Texture(backgorundImageStr));
+        backgroundImage = new Image(new Texture(backgorundImageStr));
         backgroundImage.setPosition(Width0, 0);
-        backgroundImage.setWidth(Width);
-        backgroundImage.setHeight(Height);
+        backgroundImage.setSize(Width, Height);
         stage.getActors().add(backgroundImage);
         
         //Profile Picture
-        String proPicURL = Gdx.files.getLocalStoragePath() + "ProfilePicture.png";
-        Image proPicImage = new Image(new Texture(Gdx.files.internal(proPicURL)));
-        int proPicX = Width0 + spacing;
-        int proPicR = (100 - spacing*2)/2;
-        int proPicWidth = proPicR*2;
-        int proPicHeight = proPicWidth;
-        int proPicY = Height - spacing - proPicHeight;
-        proPicImage.setPosition(proPicX, proPicY);
-        proPicImage.setWidth(proPicWidth);
-        proPicImage.setHeight(proPicHeight);
+        proPicURL = Gdx.files.getLocalStoragePath() + "ProfilePicture.png";
+        proPicImage = new Image(new Texture(Gdx.files.internal(proPicURL)));
+        proPicImage.setPosition(x1, Height - spacing - width1);
+        proPicImage.setSize(width1, width1);
         stage.getActors().add(proPicImage);
         
-        //Profile Name TextField   
-        //TODO fix next line 
-        String proNameStr = "Hello";
-        TextField proNameTextField = new TextField(proNameStr, skin);
-        int proNameX = proPicX + proPicWidth + spacing;
-        int proNameY = proPicY + proPicHeight/2;
-        int proNameLength = WidthWindow - proNameX - spacing;
-        proNameTextField.setPosition(proNameX, proNameY);
-        proNameTextField.setSize(proNameLength , proPicR);
+        //Profile Name TextField 
+        proNameStr = "Test Name";
+        proNameTextField = new TextField(proNameStr, skin);
+        proNameTextField.setPosition(x2, proPicImage.getY() + width1 - height2);
+        proNameTextField.setSize(width2 , height2);
         stage.getActors().add(proNameTextField);
         
         //Weapon TextField
-        String weapStr = "WEAPON";
-        TextField weapTextField = new TextField(weapStr, skin);
-        int weapLength = Width - (2*spacing);
-        int weapHeight = 25;
-        int weapX = Width0 + spacing;
-        int weapY = proPicY - spacing - weapHeight;
-        weapTextField.setPosition(weapX, weapY);
-        weapTextField.setScale(.25f);
-        weapTextField.setSize(weapLength, weapHeight);
+        weapTextField = new TextField("WEAPON", skin);
+        weapTextField.setPosition(x1, proPicImage.getY() - spacing - height2);
+        weapTextField.setSize(width3, height2);
         stage.getActors().add(weapTextField);
         
         //Weapon Image
-        String whiteSquare = Gdx.files.getLocalStoragePath() + "White-square.jpg";
-        Image weapImage = new Image(new Texture(Gdx.files.internal(whiteSquare)));
-        int weapImageHeight = proPicR * 2;
-        int weapImageWidth = proPicR * 2;
-        int weapImageX = weapX;
-        int weapImageY = weapY - spacing - weapImageHeight;
-        weapImage.setSize(weapImageWidth, weapImageHeight);
-        weapImage.setPosition(weapImageX, weapImageY);
+        whiteSquare = Gdx.files.getLocalStoragePath() + "White-square.jpg";
+        weapImage = new Image(new Texture(Gdx.files.internal(whiteSquare)));
+        weapImage.setPosition(x1, weapTextField.getY() - spacing - width1);
+        weapImage.setSize(width1, width1);
         stage.getActors().add(weapImage);
         
         //Weapon description TextArea
-        String weapDescString = "Weapon";
-        TextArea weapDescArea = new TextArea(weapDescString, skin);
-        int weapDescHeight = weapImageHeight;
-        int weapDescX = proNameX;
-        int weapDescLength = proNameLength;
-        int weapDescY = weapImageY;
-        weapDescArea.setWidth(weapDescLength);
-        weapDescArea.setHeight(weapDescHeight);
-        weapDescArea.setScale(.10f);
-        weapDescArea.setPosition(weapDescX, weapDescY);
+        weapDescString = "Weapon";
+        weapDescArea = new TextArea(weapDescString, skin);
+        weapDescArea.setPosition(x2, weapImage.getY());
+        weapDescArea.setSize(width2, width1);
         stage.getActors().add(weapDescArea);
         
         //Inventory TextField
-        String invString = "INVENTORY";
-        TextField invTextField = new TextField(invString, skin);
-        int invLength = Width - (2*spacing);
-        int invHeight = 25;
-        int invX = Width0 + spacing;
-        int invY = weapImageY - weapImageHeight + spacing;
-        invTextField.setPosition(invX, invY);
-        invTextField.setScale(.25f);
-        invTextField.setSize(invLength, invHeight);
+        invTextField = new TextField( "INVENTORY", skin);
+        invTextField.setPosition(x1, weapImage.getY() - spacing - height2);
+        invTextField.setSize(width3, height2);
         stage.getActors().add(invTextField);
         
         //inventory pictures 
-        int columns = 4, rows = 2;
-        int invWidth = Width - 2*spacing;
-        int invPicHeight = invWidth/columns;
-        int invPicWidth = invWidth/columns;
-        int invPicX0 = Width0 + spacing;
-        int invPicX = invPicX0;
-        int invPicY = invY - invHeight - spacing - invPicHeight/2;      
-
-        int count = 1;
-        List items = new ArrayList();
-        while(count < columns * rows + 1 ){
-
-            if(count%(columns+1) == 0){
-                invPicX = invPicX0;
-                invPicY -= invHeight;
-            }
-            Image img = new Image(new Texture(whiteSquare));
-            img.setSize(invPicWidth, invPicHeight);
-            img.setPosition(invPicX, invPicY);
-            items.add(img);
-            count ++;
-            invPicX += invPicWidth;
-        }
-        
-        for(int i = 0; i < items.size(); i++){
-            stage.getActors().add((Actor) items.get(i));
-        }
-        
+        Image tempImage = new Image(new Texture(Gdx.files.internal(whiteSquare)));
+        tempImage.setPosition(x1, invTextField.getY() - spacing - 100);
+        tempImage.setSize(width3, 100);
+        stage.getActors().add(tempImage);
+  
         //Item Information Image
-        Image iteminfoImage = new Image(new Texture(Gdx.files.internal(whiteSquare)));
-        int itemInfoImageHeight = weapImageHeight;
-        int itemInfoImageWidth = weapImageWidth;
-        int itemInfoImageX = weapImageX;
-        int itemInfoImageY = invPicY - invPicHeight/2 - spacing*2;
-        iteminfoImage.setSize(itemInfoImageWidth, itemInfoImageHeight);
-        iteminfoImage.setPosition(itemInfoImageX, itemInfoImageY);
+        iteminfoImage = new Image(new Texture(Gdx.files.internal(whiteSquare)));
+        iteminfoImage.setPosition(x1, tempImage.getY() - spacing - width1);
+        iteminfoImage.setSize(width1, width1);
         stage.getActors().add(iteminfoImage);
         
         //Item Information TextArea
-        String itemInfoStr = "Item information";
-        TextArea itemInfoArea = new TextArea(itemInfoStr, skin);
-        int itemInfoAreaHeight = weapDescHeight;
-        int itemInfoAreaX = weapDescX;
-        int itemInfoAreaWidth = weapDescLength;
-        int itemInfoAreaY = itemInfoImageY;
-        itemInfoArea.setWidth(itemInfoAreaWidth);
-        itemInfoArea.setHeight(itemInfoAreaHeight);
-        itemInfoArea.setPosition(itemInfoAreaX, itemInfoAreaY);
+        itemInfoStr = "Item information";
+        itemInfoArea = new TextArea(itemInfoStr, skin);
+        itemInfoArea.setPosition(x2, iteminfoImage.getY());
+        itemInfoArea.setSize(width2, width1);
         stage.getActors().add(itemInfoArea);
         
-        //Help button
-        String helpButtonStr = "HELP";
-        Button helpButton = new TextButton(helpButtonStr, skin);
-        int helpButtonWidth = Width /2;
-        int helpButtonHeight = 50;
-        int helpButtonX = Width0;
-        int helpButtonY = 0;
-        helpButton.setPosition(helpButtonX, helpButtonY);  
-        helpButton.setWidth(helpButtonWidth);
-        helpButton.setHeight(helpButtonHeight);
+        
+        //Help button´
+        helpButton = new TextButton("HELP", skin);
+        helpButton.setPosition(Width0, 0);  
+        helpButton.setSize(Width/3, (itemInfoArea.getY() - spacing)/2);
+       
         stage.getActors().add(helpButton);
         
         //Settings button
-        String settingsStr = "SETTINGS";
-        Button settingsButton = new TextButton(settingsStr, skin);
-        int settingsButtonWidth = helpButtonWidth;
-        int settingsButtonHeight = helpButtonHeight;
-        int settingsButtonX = helpButtonX + helpButtonWidth;
-        int settingsButtonY = helpButtonY;
-        settingsButton.setPosition(settingsButtonX, settingsButtonY);  
-        settingsButton.setWidth(settingsButtonWidth);
-        settingsButton.setHeight(settingsButtonHeight);
+        settingsButton = new TextButton("SETTINGS", skin);
+        settingsButton.setPosition(Width0 + helpButton.getWidth(), helpButton.getY());  
+        settingsButton.setSize(helpButton.getWidth()*2, helpButton.getHeight());
         stage.getActors().add(settingsButton);
         
         //Pause button
-        String pauseStr = "PAUSE";
-        Button pauseButton = new TextButton(pauseStr, skin);
-        int pauseButtonWidth = Width;
-        int pauseButtonHeight = helpButtonHeight;
-        int pauseButtonX = Width0;
-        int pauseButtonY = helpButtonY + helpButtonHeight;
-        pauseButton.setWidth(pauseButtonWidth);
-        pauseButton.setHeight(pauseButtonHeight);
-        pauseButton.setPosition(pauseButtonX, pauseButtonY);
+        pauseButton = new TextButton("PAUSE", skin);
+        pauseButton.setPosition(x1, helpButton.getHeight());
+        pauseButton.setSize(width3, helpButton.getHeight());
         stage.getActors().add(pauseButton);      
 
         helpButtonfunctionality(stage, helpButton);
