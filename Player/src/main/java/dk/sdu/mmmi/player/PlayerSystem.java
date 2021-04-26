@@ -3,17 +3,24 @@ package dk.sdu.mmmi.player;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import static dk.sdu.mmmi.common.data.GameKeys.DOWN;
+import static dk.sdu.mmmi.common.data.GameKeys.ENTER;
 import static dk.sdu.mmmi.common.data.GameKeys.LEFT;
 import static dk.sdu.mmmi.common.data.GameKeys.RIGHT;
+import static dk.sdu.mmmi.common.data.GameKeys.SPACE;
 import static dk.sdu.mmmi.common.data.GameKeys.UP;
 import dk.sdu.mmmi.common.data.World;
+import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
 import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
+import dk.sdu.mmmi.common.services.IInteractService;
+import dk.sdu.mmmi.common.services.IItemService;
 import dk.sdu.mmmi.common.services.ICollisionChecker;
 
 public class PlayerSystem implements IEntityProcessingService {
+    private IItemService itemService;
+    private IInteractService interactService;
     private ICollisionChecker collisionChecker;
     @Override
     public void process(GameData gameData, World world) {
@@ -53,6 +60,21 @@ public class PlayerSystem implements IEntityProcessingService {
             movingPart.process(gameData, player);
             positionPart.process(gameData, player);
             lifePart.process(gameData, player);
+            InventoryPart inventoryPart = player.getPart(InventoryPart.class);
+
+            
+            if(gameData.getKeys().isDown(ENTER)){
+                interactService.interact(player, world);
+            }
+            
+            if (gameData.getKeys().isPressed(SPACE)) {
+                itemService.useItem(player, gameData);
+            }
+
+            movingPart.process(gameData, player);
+            positionPart.process(gameData, player);
+            lifePart.process(gameData, player);
+            inventoryPart.process(gameData, player);
 
             if (lifePart.getLife() <= 0) {
                 world.removeEntity(player);
@@ -84,6 +106,22 @@ public class PlayerSystem implements IEntityProcessingService {
 
         entity.setShapeX(shapex);
         entity.setShapeY(shapey);
+    }
+    
+    public void setItemService(IItemService itemService) {
+        this.itemService = itemService;
+    }
+    
+    public void removeItemService() {
+        this.itemService = null;
+    }
+
+    public void setInteractService(IInteractService interactService) {
+        this.interactService = interactService;
+    }
+    
+    public void removeInteractService() {
+        this.interactService = null;
     }
     
     public void addCollisionChecker(ICollisionChecker collisionChecker) {

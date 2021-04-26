@@ -56,7 +56,7 @@ public class EnemyPlugin implements IGamePluginService {
 
         Entity enemy = new Enemy();
 
-        enemy.add(new LifePart(100));
+        enemy.add(new LifePart(10));
         enemy.add(new MovingPart(1));
         enemy.add(new SightPart(200));
         enemy.add(new PositionPart(x, y));

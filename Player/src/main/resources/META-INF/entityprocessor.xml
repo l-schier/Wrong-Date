@@ -4,6 +4,15 @@
     <service>
         <provide interface="dk.sdu.mmmi.common.services.IEntityProcessingService"/>
     </service>
+    
+    <reference bind="setInteractService" cardinality="0..1"
+               interface="dk.sdu.mmmi.common.services.IInteractService"
+               name="IInteractService" policy="dynamic" unbind="removeInteractService"/>
+    
+    <reference bind="setItemService" cardinality="0..1"
+               interface="dk.sdu.mmmi.common.services.IItemService"
+               name="IItemService" policy="dynamic" unbind="removeItemService"/>
+    
     <reference bind="addCollisionChecker" cardinality="0..n"
                interface="dk.sdu.mmmi.common.services.ICollisionChecker"
                name="ICollisionChecker" policy="dynamic" unbind="removeCollisionChecker"/>

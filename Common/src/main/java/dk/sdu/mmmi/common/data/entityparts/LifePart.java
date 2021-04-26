@@ -19,6 +19,10 @@ public class LifePart implements EntityPart {
     public void setLife(int life) {
         this.life = life;
     }
+    
+    public void takeLife(int life) {
+        this.life -= life;
+    }
 
     public boolean isHit() {
         return isHit;
