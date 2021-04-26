@@ -18,14 +18,4 @@
                interface="dk.sdu.mmmi.common.services.IHelp"
                name="IHelp" policy="dynamic" unbind="removeHelp"/>
     
-    <reference bind="addGameSignal" cardinality="0..n"
-               interface="dk.sdu.mmmi.common.services.IGameSignal"
-               name="IGameSignal" policy="dynamic" unbind="removeGameSignal"/>
-</scr:component>
-
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="dk.sdu.mmmi.Menu">
-    <implementation class="dk.sdu.mmmi.Menu"/>
-    <service>
-        <provide interface="dk.sdu.mmmi.common.services.IGameSignal"/>
-    </service>
 </scr:component>

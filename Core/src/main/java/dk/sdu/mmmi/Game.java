@@ -15,7 +15,6 @@ import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.common.services.IGamePluginService;
-import dk.sdu.mmmi.common.services.IGameSignal;
 import dk.sdu.mmmi.common.services.IHelp;
 import dk.sdu.mmmi.common.services.IPostEntityProcessingService;
 import dk.sdu.mmmi.core.managers.GameInputProcessor;
@@ -41,7 +40,6 @@ public class Game implements ApplicationListener {
     private static final List<IGamePluginService> gamePluginList = new CopyOnWriteArrayList<>();
     private static List<IPostEntityProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
     private static final List<IHelp> helpList = new CopyOnWriteArrayList<>();
-    private static final List<IGameSignal> gameSignalList = new CopyOnWriteArrayList<>();
   
     
 
@@ -208,17 +206,6 @@ public class Game implements ApplicationListener {
         this.helpList.remove(plugin);
     }
     
-    public void addGameSignal(IGameSignal plugin) {
-        this.gameSignalList.add(plugin);
-        System.out.println("added Signal");
-    }
-
-    
-    public void removeGameSignal(IGameSignal plugin){
-        this.gameSignalList.remove(plugin);
-        System.out.println("Removed Signal");
-    }
-
     
     /**
      * Draws menu
