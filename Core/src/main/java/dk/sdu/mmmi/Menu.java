@@ -8,23 +8,22 @@ package dk.sdu.mmmi;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -47,6 +46,7 @@ public class Menu{
     private boolean pause, resume;
     private boolean pauseClicked, helpClicked,settingsClicked;
     Skin skin;
+    Stage stage;
     
     
     //Menu
@@ -65,7 +65,20 @@ public class Menu{
     Image iteminfoImage;
     String itemInfoStr = "";
     TextArea itemInfoArea;
-    Button helpButton, settingsButton, pauseButton;
+    TextButton helpButton, settingsButton, pauseButton;
+    
+    public Menu(int WidthWindow, int Width0, int Height, Skin skin, Stage stage){
+        this.WidthWindow = WidthWindow;
+        this.Width0 = Width0;
+        this.Height = Height;
+        Width = WidthWindow - Width0;
+        this.skin = skin;
+        this.stage = stage;
+        
+        draw();
+        helpButtonfunctionality();
+        pauseButtonFunctionality();
+    }
     
     
 
@@ -75,9 +88,10 @@ public class Menu{
         this.Width0 = Width0;
         this.Height = Height;
         Width = WidthWindow - Width0;
+        
     }
     
-    public void draw(Skin skin, Stage stage){
+    public void draw(){
         int x1 = Width0 + spacing;
         int width1 = 90;
         int x2 = x1 + width1 + spacing;
@@ -86,7 +100,6 @@ public class Menu{
         int width3 = Width - (2*spacing);
         
         backgorundImageStr = Gdx.files.getLocalStoragePath() + "PinkSquare.jpg";
-        this.skin = skin;
         //Menu Field
         backgroundImage = new Image(new Texture(backgorundImageStr));
         backgroundImage.setPosition(Width0, 0);
@@ -172,14 +185,16 @@ public class Menu{
         pauseButton.setSize(width3, helpButton.getHeight());
         stage.getActors().add(pauseButton);      
 
-        helpButtonfunctionality(stage, helpButton);
-        pauseButtonFunctionality((TextButton) pauseButton);
     }
     
-    private void helpButtonfunctionality(Stage stage, Button helpButton){
+    private void helpButtonfunctionality(){
+        System.out.println("help button functionality");
         helpButton.addListener( new ClickListener() {
+           
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                System.out.println(191);
                 if(!helpClicked){
                     help(stage);
                     helpClicked = true;
@@ -193,15 +208,17 @@ public class Menu{
                    }  
                     resume();
                     helpClicked = false;   
-                    helpButtonfunctionality(stage, helpButton);
+                    helpButtonfunctionality();
                 }
 
                
             }
         } );
+        
+        
     }
     
-    private void pauseButtonFunctionality(TextButton pauseButton){
+    private void pauseButtonFunctionality(){
         pauseButton.addListener( new ClickListener() {           
             public void clicked(InputEvent event, float x, float y) {
 
@@ -350,12 +367,14 @@ public class Menu{
     private void pause(){
         if(canPause()){
             pause = true;
+            System.out.println("Menu Pause");
         }
     }
     
     private void resume(){
         if(canResume()){
             resume = true;
+            System.out.println("Menu Resume");
         }
     }
    

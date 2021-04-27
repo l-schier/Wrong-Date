@@ -48,7 +48,7 @@ public class Game implements ApplicationListener {
     private Stage stage;
     private Skin skin;
     private final GameData gameData = new GameData();
-    private final Menu menu = new Menu();
+    private Menu menu;
     private static World world = new World();
     private static final List<IEntityProcessingService> entityProcessorList = new CopyOnWriteArrayList<>();
     private static final List<IGamePluginService> gamePluginList = new CopyOnWriteArrayList<>();
@@ -61,7 +61,6 @@ public class Game implements ApplicationListener {
         init();
         gameData.setDisplayWidth(gameWidth);
         gameData.setDisplayHeight(Height);
-        menu.setMenuData(Width, gameWidth, Height);
     }
     
     public void init() {
@@ -118,13 +117,11 @@ public class Game implements ApplicationListener {
         Gdx.input.setInputProcessor(multiplexer);
         multiplexer.addProcessor(new GameInputProcessor(gameData));
         multiplexer.addProcessor(stage);
-        
-        drawMenu();
-
-
-        Gdx.input.setInputProcessor(new GameInputProcessor(gameData));
+       
 
         batch = new SpriteBatch();
+        
+       menu = new Menu(Width, gameWidth,Height, skin, stage);
     }
 
     @Override
@@ -167,14 +164,12 @@ public class Game implements ApplicationListener {
         if (menu.getPause()){
             pause();
             menu.resetPause();
-            System.out.println("Pausing game");
         }
         
         //Cheking if resume
         if (menu.getResume()){
             resume();
             menu.resetResume();
-            System.out.println("resuming game");
         }
        
     }
@@ -254,6 +249,7 @@ public class Game implements ApplicationListener {
 
     @Override
     public void resume() {
+        System.out.println("Game Resume");
     }
 
     @Override
@@ -295,14 +291,7 @@ public class Game implements ApplicationListener {
     }
     
     
-    /**
-     * Draws menu
-     */
-    private void drawMenu(){
-        
-        menu.draw(skin, stage);
-        
-    }
+
 
 
 
