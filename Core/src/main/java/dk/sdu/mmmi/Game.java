@@ -42,6 +42,8 @@ public class Game implements ApplicationListener {
     private static int menuWidth = 300;
     private static int Width = gameWidth + menuWidth;
     private static int Height = 600;
+    
+    private static boolean isPaused;
 
     private static OrthographicCamera cam;
     private ShapeRenderer sr;
@@ -121,7 +123,7 @@ public class Game implements ApplicationListener {
 
         batch = new SpriteBatch();
         
-       menu = new Menu(Width, gameWidth,Height, skin, stage);
+        menu = new Menu(Width, gameWidth,Height, skin, stage);
     }
 
     @Override
@@ -142,15 +144,18 @@ public class Game implements ApplicationListener {
     }
 
     private void update() {
-        // Update
-        for (IEntityProcessingService entityProcessorService : entityProcessorList) {
-            entityProcessorService.process(gameData, world);
-        }
+        if(!isPaused){
+            // Update
+            for (IEntityProcessingService entityProcessorService : entityProcessorList) {
+                entityProcessorService.process(gameData, world);
+            }
 
-        // Post Update
-        for (IPostEntityProcessingService postEntityProcessorService : postEntityProcessorList) {
-            postEntityProcessorService.process(gameData, world);
+            // Post Update
+            for (IPostEntityProcessingService postEntityProcessorService : postEntityProcessorList) {
+                postEntityProcessorService.process(gameData, world);
+            }
         }
+        
         
         //Help files
         //I want to move this to Menu class outside of constant update
@@ -175,7 +180,6 @@ public class Game implements ApplicationListener {
     }
 
     private void draw() {
-//        drawMenu();
         
         for (Entity entity : world.getEntities()) {
             if (entity.getPart(RenderPart.class) != null && entity.getPart(PositionPart.class) != null) {
@@ -190,39 +194,40 @@ public class Game implements ApplicationListener {
                 } catch (GdxRuntimeException e) {
                     System.out.println("Image not found");
                 }
-                
+
                 continue;
-            }
-
-            sr.setColor(1, 1, 1, 1);
-
-            sr.begin(ShapeRenderer.ShapeType.Line);
-
-            float[] shapex = entity.getShapeX();
-            float[] shapey = entity.getShapeY();
-
-            for (int i = 0, j = shapex.length - 1;
-                    i < shapex.length;
-                    j = i++) {
-
-                sr.line(shapex[i], shapey[i], shapex[j], shapey[j]);
-            }
-
-            sr.end();
-            
-            if (entity.getPart(DoorPart.class) != null) {
-                sr.setColor(1,0,0,1);
-                
-                DoorPart doorPart = entity.getPart(DoorPart.class);
-                float[][] doors = doorPart.getDoors();
-                for (int i = 0; i < 4; i++) {
-                    sr.begin(ShapeRenderer.ShapeType.Line);
-                    sr.line(doors[i][0], doors[i][1], doors[i][2], doors[i][3]);
-                    sr.end();
-                }
-                
-            }
         }
+
+        sr.setColor(1, 1, 1, 1);
+
+        sr.begin(ShapeRenderer.ShapeType.Line);
+
+        float[] shapex = entity.getShapeX();
+        float[] shapey = entity.getShapeY();
+
+        for (int i = 0, j = shapex.length - 1;
+                i < shapex.length;
+                j = i++) {
+
+            sr.line(shapex[i], shapey[i], shapex[j], shapey[j]);
+        }
+
+        sr.end();
+            
+        if (entity.getPart(DoorPart.class) != null) {
+            sr.setColor(1,0,0,1);
+
+            DoorPart doorPart = entity.getPart(DoorPart.class);
+            float[][] doors = doorPart.getDoors();
+            for (int i = 0; i < 4; i++) {
+                sr.begin(ShapeRenderer.ShapeType.Line);
+                sr.line(doors[i][0], doors[i][1], doors[i][2], doors[i][3]);
+                sr.end();
+            }
+
+        }
+        
+    }
 
         float boxStartX = 100;
         float boxStopX = 200;
@@ -244,11 +249,13 @@ public class Game implements ApplicationListener {
 
     @Override
     public void pause() {
+        isPaused = true;
         System.out.println("Game pause");
     }
 
     @Override
     public void resume() {
+        isPaused = false;
         System.out.println("Game Resume");
     }
 
