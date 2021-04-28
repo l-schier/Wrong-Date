@@ -16,10 +16,8 @@ import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.DoorPart;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.common.services.IGamePluginService;
-import dk.sdu.mmmi.common.services.IHelp;
 import dk.sdu.mmmi.common.services.IPostEntityProcessingService;
 import dk.sdu.mmmi.core.managers.GameInputProcessor;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import com.badlogic.gdx.graphics.Texture;
@@ -55,7 +53,6 @@ public class Game implements ApplicationListener {
     private static final List<IEntityProcessingService> entityProcessorList = new CopyOnWriteArrayList<>();
     private static final List<IGamePluginService> gamePluginList = new CopyOnWriteArrayList<>();
     private static List<IPostEntityProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
-    private static final List<IHelp> helpList = new CopyOnWriteArrayList<>();
   
     private SpriteBatch batch;
 
@@ -118,53 +115,30 @@ public class Game implements ApplicationListener {
         InputMultiplexer multiplexer = new InputMultiplexer();
         Gdx.input.setInputProcessor(multiplexer);
         multiplexer.addProcessor(new GameInputProcessor(gameData));
-        multiplexer.addProcessor(stage);
-       
+        multiplexer.addProcessor(stage);  
 
         batch = new SpriteBatch();
         
-        menu = new Menu(Width, gameWidth,Height, skin, stage);
+        menu = new Menu(Width, gameWidth,Height, skin, stage, world);
     }
 
     @Override
     public void render() {
-        // clear screen to black
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        gameData.setDelta(Gdx.graphics.getDeltaTime());
-        update();
-        // https://www.codeandweb.com/texturepacker/tutorials/libgdx-physics
-        // https://stackoverflow.com/questions/6474634/how-do-i-access-a-file-inside-an-osgi-bundle
-        // https://stackoverflow.com/questions/6244993/no-access-to-bundle-resource-file-osgi
-        // URL file = this.getClass().getClassLoader().getResource("rocket.png");
-        draw();
-        gameData.getKeys().update();
+        if (!isPaused){
+            // clear screen to black
+            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            gameData.setDelta(Gdx.graphics.getDeltaTime());
+            update();
+            // https://www.codeandweb.com/texturepacker/tutorials/libgdx-physics
+            // https://stackoverflow.com/questions/6474634/how-do-i-access-a-file-inside-an-osgi-bundle
+            // https://stackoverflow.com/questions/6244993/no-access-to-bundle-resource-file-osgi
+            // URL file = this.getClass().getClassLoader().getResource("rocket.png");
+            draw();
+            gameData.getKeys().update();
+        }
         stage.draw();
         stage.act();
-    }
-
-    private void update() {
-        if(!isPaused){
-            // Update
-            for (IEntityProcessingService entityProcessorService : entityProcessorList) {
-                entityProcessorService.process(gameData, world);
-            }
-
-            // Post Update
-            for (IPostEntityProcessingService postEntityProcessorService : postEntityProcessorList) {
-                postEntityProcessorService.process(gameData, world);
-            }
-        }
-        
-        
-        //Help files
-        //I want to move this to Menu class outside of constant update
-        ArrayList helpFiles = new ArrayList();
-        for (IHelp help : helpList) {
-            helpFiles.add(help.getFile());
-        }
-        menu.setHelpFiles(helpFiles);
-        
         //cheking if pause
         if (menu.getPause()){
             pause();
@@ -176,7 +150,19 @@ public class Game implements ApplicationListener {
             resume();
             menu.resetResume();
         }
-       
+    }
+
+    private void update() {
+        
+        // Update
+        for (IEntityProcessingService entityProcessorService : entityProcessorList) {
+            entityProcessorService.process(gameData, world);
+        }
+
+        // Post Update
+        for (IPostEntityProcessingService postEntityProcessorService : postEntityProcessorList) {
+            postEntityProcessorService.process(gameData, world);
+        }
     }
 
     private void draw() {
@@ -250,13 +236,11 @@ public class Game implements ApplicationListener {
     @Override
     public void pause() {
         isPaused = true;
-        System.out.println("Game pause");
     }
 
     @Override
     public void resume() {
         isPaused = false;
-        System.out.println("Game Resume");
     }
 
     @Override
@@ -288,18 +272,6 @@ public class Game implements ApplicationListener {
         this.gamePluginList.remove(plugin);
         plugin.stop(gameData, world);
     }
-    
-    public void addHelp(IHelp plugin) {
-        this.helpList.add(plugin);
-    }
-
-    public void removeHelp(IHelp plugin) {
-        this.helpList.remove(plugin);
-    }
-    
-    
-
-
 
 
 }

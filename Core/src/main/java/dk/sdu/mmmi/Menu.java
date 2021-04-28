@@ -10,22 +10,23 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import dk.sdu.mmmi.common.data.Entity;
+import dk.sdu.mmmi.common.data.World;
+import dk.sdu.mmmi.common.data.entityparts.HelpPart;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
+import java.util.Scanner;;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,6 +35,7 @@ import java.util.logging.Logger;
  * @author tes_7
  */
 public class Menu{
+    
     
     
     private ArrayList<File> helpFiles;
@@ -47,6 +49,7 @@ public class Menu{
     private boolean pauseClicked, helpClicked,settingsClicked;
     Skin skin;
     Stage stage;
+    World world;
     
     
     //Menu
@@ -67,13 +70,14 @@ public class Menu{
     TextArea itemInfoArea;
     TextButton helpButton, settingsButton, pauseButton;
     
-    public Menu(int WidthWindow, int Width0, int Height, Skin skin, Stage stage){
+    public Menu(int WidthWindow, int Width0, int Height, Skin skin, Stage stage, World world){
         this.WidthWindow = WidthWindow;
         this.Width0 = Width0;
         this.Height = Height;
         Width = WidthWindow - Width0;
         this.skin = skin;
         this.stage = stage;
+        this.world = world;
         
         draw();
         helpButtonfunctionality();
@@ -127,7 +131,7 @@ public class Menu{
         stage.getActors().add(weapTextField);
         
         //Weapon Image
-        whiteSquare = Gdx.files.getLocalStoragePath() + "White-square.jpg";
+        whiteSquare = Gdx.files.getLocalStoragePath() + "squareFrame.png";
         weapImage = new Image(new Texture(Gdx.files.internal(whiteSquare)));
         weapImage.setPosition(x1, weapTextField.getY() - spacing - width1);
         weapImage.setSize(width1, width1);
@@ -188,13 +192,11 @@ public class Menu{
     }
     
     private void helpButtonfunctionality(){
-        System.out.println("help button functionality");
         helpButton.addListener( new ClickListener() {
            
             
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println(191);
                 if(!helpClicked){
                     help(stage);
                     helpClicked = true;
@@ -207,8 +209,7 @@ public class Menu{
                        }
                    }  
                     resume();
-                    helpClicked = false;   
-                    helpButtonfunctionality();
+                    helpClicked = false;  
                 }
 
                
@@ -242,6 +243,17 @@ public class Menu{
     public void help(Stage stage){
        
         pause(); 
+        
+
+        helpFiles = new ArrayList();
+        
+
+        for (Entity e : world.getEntities()) { 
+            if (e.getPart(HelpPart.class) != null){
+                HelpPart e1 = e.getPart(HelpPart.class);
+                helpFiles.add(e1.getFile());     
+            }   
+        }
 
         //Background
         Image helpBImage = new Image(new Texture(Gdx.files.internal(backgorundImageStr)));
@@ -254,7 +266,6 @@ public class Menu{
         
         for (File f : helpFiles){
             files.put(f.getName().replace(".txt", ""), f);
-            System.out.println(files.containsKey("help"));
         }
         
         //Array with all buttons
@@ -367,17 +378,17 @@ public class Menu{
     private void pause(){
         if(canPause()){
             pause = true;
-            System.out.println("Menu Pause");
         }
     }
     
     private void resume(){
+        
         if(canResume()){
             resume = true;
-            System.out.println("Menu Resume");
         }
     }
-   
+    
+
 
 
 
