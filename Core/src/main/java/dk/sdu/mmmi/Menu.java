@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.Array;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.HelpPart;
+import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
 import dk.sdu.mmmi.common.data.entityparts.PlayerPart;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,6 +29,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -90,7 +93,6 @@ public class Menu{
         for (Entity e : world.getEntities()) { 
             if (e.getPart(PlayerPart.class) != null){
                 player = e; 
-                System.out.println(player.getClass());
             }   
         }
     }
@@ -208,13 +210,17 @@ public class Menu{
                     helpClicked = true;
                 } else if (helpClicked){
                     
+                    if(pauseClicked){
+                        pauseButton.setText("PAUSE");
+                        pauseClicked = false;
+                    }
                     stage.getActors().removeAll(actors, false);
                     
                     resume();
                     helpClicked = false;  
+                    
                 }
-
-               
+    
             }
         } );
         
@@ -350,6 +356,14 @@ public class Menu{
     
     public void setHelpFiles(ArrayList<File> helpFiles){
         this.helpFiles = helpFiles;
+    }
+    
+    public void update(){
+        InventoryPart inventoryPart = player.getPart(InventoryPart.class);
+            if(inventoryPart.getWeapon() != null){
+                Entity weapon = inventoryPart.getWeapon();
+                
+            }
     }
     
     public boolean getPause(){
