@@ -14,7 +14,7 @@ import java.util.Collections;
 public class RandomEngine {
 
     private ICollisionChecker collisionChecker;
-    private final int randomStepsToTake = 20;
+    private final int randomStepsToTake = 50;
     private int randomcount = 0;
     private float randomPathX;
     private float randomPathY;
@@ -51,7 +51,8 @@ public class RandomEngine {
         float x = positionPart.getX() + randomPathX;
         float y = positionPart.getY() + randomPathY;
 
-        while (!this.collisionChecker.isPositionFree(world, me, x, y)) {
+        while (this.collisionChecker != null
+                && !this.collisionChecker.isPositionFree(world, me, x, y)) {
             setNewcourse(directions);
             x = positionPart.getX() + randomPathX;
             y = positionPart.getY() + randomPathY;
