@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.Array;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.HelpPart;
+import dk.sdu.mmmi.common.data.entityparts.PlayerPart;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class Menu{
     
     
     private ArrayList<File> helpFiles;
+    private Array<Actor> actors;
     
     private static  int WidthWindow;
     private static int Width0;
@@ -46,10 +48,12 @@ public class Menu{
     private static int Height;
     private static int spacing = 10;
     private boolean pause, resume;
-    private boolean pauseClicked, helpClicked,settingsClicked;
+    private boolean pauseClicked, helpClicked, settingsClicked;
     Skin skin;
     Stage stage;
     World world;
+    
+    Entity player;
     
     
     //Menu
@@ -82,10 +86,14 @@ public class Menu{
         draw();
         helpButtonfunctionality();
         pauseButtonFunctionality();
+        
+        for (Entity e : world.getEntities()) { 
+            if (e.getPart(PlayerPart.class) != null){
+                player = e; 
+                System.out.println(player.getClass());
+            }   
+        }
     }
-    
-    
-
     
     public void setMenuData(int WidthWindow, int Width0, int Height){
         this.WidthWindow = WidthWindow;
@@ -193,21 +201,15 @@ public class Menu{
     
     private void helpButtonfunctionality(){
         helpButton.addListener( new ClickListener() {
-           
-            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if(!helpClicked){
                     help(stage);
                     helpClicked = true;
-                } else{
-                   Array<Actor> a = stage.getActors();
-                   for (int i = 0; i < a.size; i++){
-                       if( a.get(i).getX() < Width0){
-                           stage.getActors().removeIndex(i);
-                           i -=1;
-                       }
-                   }  
+                } else if (helpClicked){
+                    
+                    stage.getActors().removeAll(actors, false);
+                    
                     resume();
                     helpClicked = false;  
                 }
@@ -237,12 +239,11 @@ public class Menu{
             }
         } );
     }
-    
-    
-        
+       
     public void help(Stage stage){
        
         pause(); 
+        actors = new Array<>();
         
 
         helpFiles = new ArrayList();
@@ -260,7 +261,7 @@ public class Menu{
         helpBImage.setPosition(0, 0);
         helpBImage.setWidth(Width0);
         helpBImage.setHeight(Height);
-        stage.getActors().add(helpBImage);
+        actors.add(helpBImage);
         //Hashmap with all help files
         HashMap<String, File> files = new HashMap<>();
         
@@ -289,7 +290,7 @@ public class Menu{
         textArea.setWidth(Width0);
         textArea.setHeight(Height - buttonHeight);
         textArea.setPosition(0, 0);
-        stage.getActors().add(textArea);
+        actors.add(textArea);
         
         if(buttons.size() < 1){
             String str = "Sorry, no help to get.\nYou are on your own";
@@ -302,7 +303,7 @@ public class Menu{
             b.setWidth(buttonWidth);
             b.setHeight(buttonHeight);
             b.setPosition(buttonX, buttonY);
-            stage.getActors().add(b);
+            actors.add(b);
             buttonX += buttonWidth;
             b.addListener( new ClickListener() {
             @Override
@@ -312,7 +313,10 @@ public class Menu{
         } );
         }
         }
-        
+    
+        for (Actor a : actors){
+            stage.getActors().add(a);
+        }
         
                 
     }
@@ -355,7 +359,6 @@ public class Menu{
     public void resetPause(){
         pause = false;
     }
-
     
     public boolean getResume(){
         return resume;
@@ -364,7 +367,6 @@ public class Menu{
     public void resetResume(){
         resume = false;
     }
-    
     
     private boolean canPause(){
         return !(helpClicked || pauseClicked || settingsClicked);
