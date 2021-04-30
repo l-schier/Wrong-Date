@@ -136,6 +136,7 @@ public class Game implements ApplicationListener {
             // URL file = this.getClass().getClassLoader().getResource("rocket.png");
             draw();
             gameData.getKeys().update();
+            menu.update();
         }
         stage.draw();
         stage.act();

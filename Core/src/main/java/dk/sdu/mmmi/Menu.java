@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.Array;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.HelpPart;
+import dk.sdu.mmmi.common.data.entityparts.InformationPart;
 import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
 import dk.sdu.mmmi.common.data.entityparts.PlayerPart;
 import java.io.File;
@@ -32,6 +33,17 @@ import java.util.Scanner;;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -56,7 +68,7 @@ public class Menu{
     Stage stage;
     World world;
     
-    Entity player;
+    Entity player, weapon;
     
     
     //Menu
@@ -76,6 +88,9 @@ public class Menu{
     String itemInfoStr = "";
     TextArea itemInfoArea;
     TextButton helpButton, settingsButton, pauseButton;
+    
+    File weaponDescFile;
+    Image weaponImage = null;
     
     public Menu(int WidthWindow, int Width0, int Height, Skin skin, Stage stage, World world){
         this.WidthWindow = WidthWindow;
@@ -199,6 +214,7 @@ public class Menu{
         pauseButton.setSize(width3, helpButton.getHeight());
         stage.getActors().add(pauseButton);      
 
+
     }
     
     private void helpButtonfunctionality(){
@@ -314,7 +330,7 @@ public class Menu{
             b.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-            textArea.setText(helpText(files.get((e.getKey()))));
+            textArea.setText(fileToText(files.get((e.getKey()))));
                        }
         } );
         }
@@ -327,7 +343,7 @@ public class Menu{
                 
     }
     
-    public String helpText(File f){
+    public String fileToText(File f){
         
         Scanner scanner;
         ArrayList<String> a = new ArrayList<String>();
@@ -361,9 +377,31 @@ public class Menu{
     public void update(){
         InventoryPart inventoryPart = player.getPart(InventoryPart.class);
             if(inventoryPart.getWeapon() != null){
-                Entity weapon = inventoryPart.getWeapon();
                 
-            }
+                if(weapon == null || !weapon.equals(inventoryPart.getWeapon())){
+                    weapon = inventoryPart.getWeapon();
+                    InformationPart informationPart = weapon.getPart(InformationPart.class);
+                    
+                    boolean first = false;
+                    if(weaponImage == null){first = true;}
+                    weaponImage = informationPart.getImage();
+                    System.out.println("379");
+                    weaponImage.setSize(weapImage.getImageWidth(), weapImage.getImageHeight());
+                    System.out.println("381");
+                    weaponImage.setPosition(weapImage.getX(), weapImage.getY());
+                    System.out.println("383");
+                    weapDescString = fileToText(informationPart.getDescription());
+                    if(first){
+                        stage.getActors().add(weaponImage);
+                        first = false;
+                    }
+                    
+                }
+
+            
+       
+        }
+              
     }
     
     public boolean getPause(){
