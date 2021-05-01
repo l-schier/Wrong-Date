@@ -32,13 +32,14 @@ public class WeaponPlugin implements IGamePluginService {
         int damage = 1;
         boolean interactable = true;
         weapon.setRadius(8);
-
+        
+        weapon.add(new InformationPart("testWeapon.png", "description.txt", weapon));
         weapon.add(new PositionPart(x, y));
         weapon.add(new DamagePart(damage));
         weapon.add(new InteractPart(interactable));
-        weapon.add(new LifePart(1)); //Required in order to not get a NullPointerException in Collider
-        weapon.add(new InformationPart("testWeapon.png","description.txt", weapon));
         
+        weapon.add(new LifePart(1)); //Required in order to not get a NullPointerException in Collider
+
         return weapon;
     }
 

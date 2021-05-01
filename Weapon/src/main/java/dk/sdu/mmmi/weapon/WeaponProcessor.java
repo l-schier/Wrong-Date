@@ -9,11 +9,16 @@ import dk.sdu.mmmi.common.data.entityparts.DamagePart;
 import dk.sdu.mmmi.common.data.entityparts.InformationPart;
 import dk.sdu.mmmi.common.data.entityparts.InteractPart;
 import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
+import dk.sdu.mmmi.common.data.entityparts.LifePart;
+import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.common.services.IInteractService;
 import dk.sdu.mmmi.common.services.IItemService;
 
+
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
 
 /**
  *
@@ -60,9 +65,16 @@ public class WeaponProcessor implements IEntityProcessingService, IItemService, 
     }
 
     public void useItem(Entity shooter, GameData gameData) {
+//        InventoryPart inventory = shooter.getPart(InventoryPart.class);
+//        DamagePart damage = inventory.getWeapon().getPart(DamagePart.class);
+//        damage.setWeaponUsed(true);
+
         InventoryPart inventory = shooter.getPart(InventoryPart.class);
-        DamagePart damage = inventory.getWeapon().getPart(DamagePart.class);
-        damage.setWeaponUsed(true);
+        Entity weapon = inventory.getWeapon();
+        if (weapon != null) {
+            DamagePart damage = weapon.getPart(DamagePart.class);
+            damage.setWeaponUsed(true);
+        }
         
     }
 

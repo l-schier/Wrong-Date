@@ -76,16 +76,13 @@ public class Menu{
     Image backgroundImage;
     String proPicURL;
     Image proPicImage;
-    String proNameStr = "";
     TextField proNameTextField;
     TextField weapTextField;
     String whiteSquare;
     Image weapImage;
-    String weapDescString;
     TextArea weapDescArea;
     TextField invTextField;
     Image iteminfoImage;
-    String itemInfoStr = "";
     TextArea itemInfoArea;
     TextButton helpButton, settingsButton, pauseButton;
     
@@ -143,8 +140,7 @@ public class Menu{
         stage.getActors().add(proPicImage);
         
         //Profile Name TextField 
-        proNameStr = "Test Name";
-        proNameTextField = new TextField(proNameStr, skin);
+        proNameTextField = new TextField("Test Name", skin);
         proNameTextField.setPosition(x2, proPicImage.getY() + width1 - height2);
         proNameTextField.setSize(width2 , height2);
         stage.getActors().add(proNameTextField);
@@ -163,8 +159,7 @@ public class Menu{
         stage.getActors().add(weapImage);
         
         //Weapon description TextArea
-        weapDescString = "Weapon";
-        weapDescArea = new TextArea(weapDescString, skin);
+        weapDescArea = new TextArea("", skin);
         weapDescArea.setPosition(x2, weapImage.getY());
         weapDescArea.setSize(width2, width1);
         stage.getActors().add(weapDescArea);
@@ -188,8 +183,7 @@ public class Menu{
         stage.getActors().add(iteminfoImage);
         
         //Item Information TextArea
-        itemInfoStr = "Item information";
-        itemInfoArea = new TextArea(itemInfoStr, skin);
+        itemInfoArea = new TextArea("", skin);
         itemInfoArea.setPosition(x2, iteminfoImage.getY());
         itemInfoArea.setSize(width2, width1);
         stage.getActors().add(itemInfoArea);
@@ -330,6 +324,7 @@ public class Menu{
             b.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                System.out.println(fileToText(files.get((e.getKey()))));
             textArea.setText(fileToText(files.get((e.getKey()))));
                        }
         } );
@@ -357,7 +352,6 @@ public class Menu{
                 for(String s : ar){
                     a.add(s);
                 }
-   
             }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
@@ -385,12 +379,9 @@ public class Menu{
                     boolean first = false;
                     if(weaponImage == null){first = true;}
                     weaponImage = informationPart.getImage();
-                    System.out.println("379");
                     weaponImage.setSize(weapImage.getImageWidth(), weapImage.getImageHeight());
-                    System.out.println("381");
                     weaponImage.setPosition(weapImage.getX(), weapImage.getY());
-                    System.out.println("383");
-                    weapDescString = fileToText(informationPart.getDescription());
+                    weapDescArea.setText(fileToText(informationPart.getDescription()));   
                     if(first){
                         stage.getActors().add(weaponImage);
                         first = false;

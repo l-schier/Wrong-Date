@@ -17,6 +17,8 @@ import java.nio.file.StandardCopyOption;
 /**
  *
  * @author tes_7
+ * 
+ * make a line break for line break
  */
 public class HelpPart implements EntityPart {
     

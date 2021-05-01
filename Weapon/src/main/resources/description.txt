@@ -1,1 +1,2 @@
-I am Weapon\nHow do i look?
+I am Weapon
+How do i look?
