@@ -75,14 +75,23 @@ public class Collider implements IPostEntityProcessingService, ICollisionChecker
                     WallPart wall = e.getPart(WallPart.class);
                     PositionPart pos = me.getPart(PositionPart.class);
                     float[][] doors = doorPart.getDoors();
-                    for (int i = 0; i < 4; i++ ) {
+                    /*for (int i = 0; i < 4; i++ ) {
                         if (doors[i][0] <= x && x <= doors[i][2] && doors[i][1] <= y && y <= doors[i][3]) {
                             return true;
                         }
-                    }
+                    }*/
                     if (pos.getX() >= wall.getStartX() && pos.getX() <= wall.getEndX() && pos.getY() >= wall.getStartY() && pos.getY() <= wall.getEndY()) {
-                        if (wall.getStartX() >= x || x >= wall.getEndX() || wall.getStartY() >= y || y >= wall.getEndY()) {    
-                            return false;
+                        boolean wallBool = wall.getStartX() >= x || x >= wall.getEndX() || wall.getStartY() >= y || y >= wall.getEndY();
+                        boolean doorBool = false;
+                        for (int i = 0; i < 4; i++) {
+                            doorBool = doorBool || doors[i][0] <= x && x <= doors[i][2] && doors[i][1] <= y && y <= doors[i][3];
+                        }
+                        if (wallBool) {
+                            if (doorBool) {
+                                return true;
+                            } else {
+                               return false;
+                            }
                         }
                     }
                 }

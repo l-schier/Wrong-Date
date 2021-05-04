@@ -185,7 +185,7 @@ public class Game implements ApplicationListener {
                 
                 DoorPart doorPart = entity.getPart(DoorPart.class);
                 float[][] doors = doorPart.getDoors();
-                for (int i = 0; i < 4; i++) {
+                for (int i = 0; i <= 3; i++) {
                     sr.begin(ShapeRenderer.ShapeType.Line);
                     sr.line(doors[i][0], doors[i][1], doors[i][2], doors[i][3]);
                     sr.end();
