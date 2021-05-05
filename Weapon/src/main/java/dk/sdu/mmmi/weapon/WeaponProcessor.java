@@ -34,7 +34,6 @@ public class WeaponProcessor implements IEntityProcessingService, IItemService, 
         }
     }
 
-    
     public void setShape(Entity entity) {
         float[] shapex = entity.getShapeX();
         float[] shapey = entity.getShapeY();
@@ -48,10 +47,10 @@ public class WeaponProcessor implements IEntityProcessingService, IItemService, 
 
         shapex[1] = (float) (x);
         shapey[1] = (float) (y);
-        
+
         shapex[2] = (float) (x);
         shapey[2] = (float) (y);
-        
+
         shapex[3] = (float) (x);
         shapey[3] = (float) (y);
 
@@ -61,9 +60,11 @@ public class WeaponProcessor implements IEntityProcessingService, IItemService, 
 
     public void useItem(Entity shooter, GameData gameData) {
         InventoryPart inventory = shooter.getPart(InventoryPart.class);
-        DamagePart damage = inventory.getWeapon().getPart(DamagePart.class);
-        damage.setWeaponUsed(true);
-        
+        Entity weapon = inventory.getWeapon();
+        if (weapon != null) {
+            DamagePart damage = weapon.getPart(DamagePart.class);
+            damage.setWeaponUsed(true);
+        }
     }
 
     @Override
@@ -78,9 +79,9 @@ public class WeaponProcessor implements IEntityProcessingService, IItemService, 
 
     @Override
     public void interact(Entity user, World world) {
-        for(Entity weapon : world.getEntities(Weapon.class)){
+        for (Entity weapon : world.getEntities(Weapon.class)) {
             InteractPart interact = weapon.getPart(InteractPart.class);
-            if(user.circleCollision(weapon) && interact.isInteractable()){
+            if (user.circleCollision(weapon) && interact.isInteractable()) {
                 InventoryPart inventory = user.getPart(InventoryPart.class);
                 inventory.addItem(weapon);
                 interact.setInteractable(false);
