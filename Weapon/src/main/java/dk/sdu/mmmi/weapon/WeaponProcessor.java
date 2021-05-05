@@ -1,9 +1,12 @@
 package dk.sdu.mmmi.weapon;
 
+
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.DamagePart;
+import dk.sdu.mmmi.common.data.entityparts.InformationPart;
 import dk.sdu.mmmi.common.data.entityparts.InteractPart;
 import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
@@ -13,7 +16,7 @@ import dk.sdu.mmmi.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.common.services.IInteractService;
 import dk.sdu.mmmi.common.services.IItemService;
 
-import java.awt.Image;
+
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
@@ -22,6 +25,7 @@ import static java.lang.Math.sin;
  * @author Jacob
  */
 public class WeaponProcessor implements IEntityProcessingService, IItemService, IInteractService {
+    
 
     @Override
     public void process(GameData gameData, World world) {
@@ -29,6 +33,7 @@ public class WeaponProcessor implements IEntityProcessingService, IItemService, 
 
             PositionPart positionPart = weapon.getPart(PositionPart.class);
             DamagePart damagePart = weapon.getPart(DamagePart.class);
+           
 
             setShape(weapon);
         }
@@ -59,12 +64,17 @@ public class WeaponProcessor implements IEntityProcessingService, IItemService, 
     }
 
     public void useItem(Entity shooter, GameData gameData) {
+//        InventoryPart inventory = shooter.getPart(InventoryPart.class);
+//        DamagePart damage = inventory.getWeapon().getPart(DamagePart.class);
+//        damage.setWeaponUsed(true);
+
         InventoryPart inventory = shooter.getPart(InventoryPart.class);
         Entity weapon = inventory.getWeapon();
         if (weapon != null) {
             DamagePart damage = weapon.getPart(DamagePart.class);
             damage.setWeaponUsed(true);
         }
+
     }
 
     @Override
@@ -88,5 +98,23 @@ public class WeaponProcessor implements IEntityProcessingService, IItemService, 
             }
         }
     }
+
+    @Override
+    public Image getImage(World world) {
+        InformationPart imagePart;
+        
+        for (Entity weapon : world.getEntities(Weapon.class)) {
+            
+            imagePart = weapon.getPart(InformationPart.class);
+            return imagePart.getImage();
+       
+        }
+        
+        return null;
+
+
+    }
+
+  
 
 }

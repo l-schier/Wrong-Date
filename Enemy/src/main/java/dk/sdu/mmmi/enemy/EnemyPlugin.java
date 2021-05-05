@@ -4,6 +4,7 @@ import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
+import dk.sdu.mmmi.common.data.entityparts.HelpPart;
 import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.RenderPart;
@@ -41,6 +42,7 @@ public class EnemyPlugin implements IGamePluginService {
         enemy.add(new SightPart(200));
         enemy.add(new PositionPart(x, y));
         enemy.add(new RenderPart(this.spriteFile, enemy));
+        enemy.add(new HelpPart("Enemy.txt", enemy));
 
         enemy.setRadius(8);
 
