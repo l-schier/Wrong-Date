@@ -35,12 +35,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Game implements ApplicationListener {
-    
+
     private static int gameWidth = 800;
     private static int menuWidth = 300;
     private static int Width = gameWidth + menuWidth;
     private static int Height = 600;
-    
+
     private static boolean isPaused;
 
     private static OrthographicCamera cam;
@@ -53,7 +53,7 @@ public class Game implements ApplicationListener {
     private static final List<IEntityProcessingService> entityProcessorList = new CopyOnWriteArrayList<>();
     private static final List<IGamePluginService> gamePluginList = new CopyOnWriteArrayList<>();
     private static List<IPostEntityProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
-  
+
     private SpriteBatch batch;
 
     public Game() {
@@ -61,7 +61,7 @@ public class Game implements ApplicationListener {
         gameData.setDisplayWidth(gameWidth);
         gameData.setDisplayHeight(Height);
     }
-    
+
     public void init() {
         LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
         cfg.title = "Wrong-Date";
@@ -71,26 +71,25 @@ public class Game implements ApplicationListener {
         cfg.resizable = false;
 
         new LwjglApplication(this, cfg);
-        
+
         //Use "dir /b > filenames.txt" to crearte file and remove redundant files within
         renderFile("filenames.txt");
-        
-        try{
+
+        try {
             File fileNames = new File(Gdx.files.getLocalStoragePath() + "filenames.txt");
             Scanner sc = new Scanner(fileNames);
-            
-            while (sc.hasNextLine()){
+
+            while (sc.hasNextLine()) {
                 renderFile(sc.nextLine());
             }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        
+
     }
-    
-    private void renderFile(String fileName){   
-        
+
+    private void renderFile(String fileName) {
+
         InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(fileName);
         File temp = new File(fileName);
 
@@ -98,8 +97,8 @@ public class Game implements ApplicationListener {
         try {
             Files.copy(inputStream, temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
-        }    
-        
+        }
+
     }
 
     @Override
@@ -108,23 +107,23 @@ public class Game implements ApplicationListener {
         cam.translate(gameData.getDisplayWidth() / 2, gameData.getDisplayHeight() / 2);
         cam.update();
 
-        sr = new ShapeRenderer();        
+        sr = new ShapeRenderer();
         stage = new Stage();
         skin = new Skin(Gdx.files.internal(Gdx.files.getLocalStoragePath() + "comic-ui.json"));
         //Allows multiple inputprocessor
         InputMultiplexer multiplexer = new InputMultiplexer();
         Gdx.input.setInputProcessor(multiplexer);
         multiplexer.addProcessor(new GameInputProcessor(gameData));
-        multiplexer.addProcessor(stage);  
+        multiplexer.addProcessor(stage);
 
         batch = new SpriteBatch();
-        
-        menu = new Menu(Width, gameWidth,Height, skin, stage, world);
+
+        menu = new Menu(Width, gameWidth, Height, skin, stage, world);
     }
 
     @Override
     public void render() {
-        if (!isPaused){
+        if (!isPaused) {
             // clear screen to black
             Gdx.gl.glClearColor(0, 0, 0, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -141,20 +140,20 @@ public class Game implements ApplicationListener {
         stage.draw();
         stage.act();
         //cheking if pause
-        if (menu.getPause()){
+        if (menu.getPause()) {
             pause();
             menu.resetPause();
         }
-        
+
         //Cheking if resume
-        if (menu.getResume()){
+        if (menu.getResume()) {
             resume();
             menu.resetResume();
         }
     }
 
     private void update() {
-        
+
         // Update
         for (IEntityProcessingService entityProcessorService : entityProcessorList) {
             entityProcessorService.process(gameData, world);
@@ -167,7 +166,7 @@ public class Game implements ApplicationListener {
     }
 
     private void draw() {
-        
+
         for (Entity entity : world.getEntities()) {
             if (entity.getPart(RenderPart.class) != null && entity.getPart(PositionPart.class) != null) {
                 PositionPart pos = entity.getPart(PositionPart.class);
@@ -175,48 +174,47 @@ public class Game implements ApplicationListener {
                 try {
                     Texture img = new Texture(Gdx.files.getLocalStoragePath() + render.getSpritePath());
 
-                batch.begin();
-                batch.draw(img, pos.getX() - 16, pos.getY() - 16);
-                batch.end();
+                    batch.begin();
+                    batch.draw(img, pos.getX() - 16, pos.getY() - 16);
+                    batch.end();
                 } catch (GdxRuntimeException e) {
                     System.out.println("Image not found");
                 }
 
                 continue;
-        }
+            }
 
-        sr.setColor(1, 1, 1, 1);
+            sr.setColor(1, 1, 1, 1);
 
-        sr.begin(ShapeRenderer.ShapeType.Line);
+            sr.begin(ShapeRenderer.ShapeType.Line);
 
-        float[] shapex = entity.getShapeX();
-        float[] shapey = entity.getShapeY();
+            float[] shapex = entity.getShapeX();
+            float[] shapey = entity.getShapeY();
 
-        for (int i = 0, j = shapex.length - 1;
-                i < shapex.length;
-                j = i++) {
+            for (int i = 0, j = shapex.length - 1;
+                    i < shapex.length;
+                    j = i++) {
 
-            sr.line(shapex[i], shapey[i], shapex[j], shapey[j]);
-        }
+                sr.line(shapex[i], shapey[i], shapex[j], shapey[j]);
+            }
 
-        sr.end();
-            
+            sr.end();
 
-        if (entity.getPart(DoorPart.class) != null) {
-            sr.setColor(1,0,0,1);
+            if (entity.getPart(DoorPart.class) != null) {
+                sr.setColor(1, 0, 0, 1);
 
-            DoorPart doorPart = entity.getPart(DoorPart.class);
-            float[][] doors = doorPart.getDoors();
-            for (int i = 0; i < 4; i++) {
-                sr.begin(ShapeRenderer.ShapeType.Line);
-                sr.line(doors[i][0], doors[i][1], doors[i][2], doors[i][3]);
-                sr.end();
+                DoorPart doorPart = entity.getPart(DoorPart.class);
+                float[][] doors = doorPart.getDoors();
+                for (int i = 0; i < 4; i++) {
+                    sr.begin(ShapeRenderer.ShapeType.Line);
+                    sr.line(doors[i][0], doors[i][1], doors[i][2], doors[i][3]);
+                    sr.end();
+
+                }
 
             }
 
         }
-        
-    }
 
         float boxStartX = 100;
         float boxStopX = 200;
@@ -275,6 +273,5 @@ public class Game implements ApplicationListener {
         this.gamePluginList.remove(plugin);
         plugin.stop(gameData, world);
     }
-
 
 }
