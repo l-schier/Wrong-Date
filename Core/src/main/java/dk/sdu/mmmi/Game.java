@@ -41,18 +41,20 @@ public class Game implements ApplicationListener {
     private static int Width = gameWidth + menuWidth;
     private static int Height = 600;
 
-    private static boolean isPaused;
-
     private static OrthographicCamera cam;
     private ShapeRenderer sr;
     private Stage stage;
     private Skin skin;
-    private final GameData gameData = new GameData();
     private Menu menu;
+
+    private static boolean isPaused;
+
+    private final GameData gameData = new GameData();
     private static World world = new World();
-    private static final List<IEntityProcessingService> entityProcessorList = new CopyOnWriteArrayList<>();
+
     private static final List<IGamePluginService> gamePluginList = new CopyOnWriteArrayList<>();
-    private static List<IPostEntityProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
+    private static final List<IEntityProcessingService> entityProcessorList = new CopyOnWriteArrayList<>();
+    private static final List<IPostEntityProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
 
     private SpriteBatch batch;
 
@@ -73,14 +75,14 @@ public class Game implements ApplicationListener {
         new LwjglApplication(this, cfg);
 
         //Use "dir /b > filenames.txt" to crearte file and remove redundant files within
-        renderFile("filenames.txt");
+        copyFile("filenames.txt");
 
         try {
             File fileNames = new File(Gdx.files.getLocalStoragePath() + "filenames.txt");
             Scanner sc = new Scanner(fileNames);
 
             while (sc.hasNextLine()) {
-                renderFile(sc.nextLine());
+                copyFile(sc.nextLine());
             }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
@@ -88,8 +90,7 @@ public class Game implements ApplicationListener {
 
     }
 
-    private void renderFile(String fileName) {
-
+    private void copyFile(String fileName) {
         InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(fileName);
         File temp = new File(fileName);
 
@@ -98,7 +99,6 @@ public class Game implements ApplicationListener {
             Files.copy(inputStream, temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
         }
-
     }
 
     @Override
@@ -110,15 +110,14 @@ public class Game implements ApplicationListener {
         sr = new ShapeRenderer();
         stage = new Stage();
         skin = new Skin(Gdx.files.internal(Gdx.files.getLocalStoragePath() + "comic-ui.json"));
+        batch = new SpriteBatch();
+        menu = new Menu(Width, gameWidth, Height, skin, stage, world);
+        
         //Allows multiple inputprocessor
         InputMultiplexer multiplexer = new InputMultiplexer();
         Gdx.input.setInputProcessor(multiplexer);
         multiplexer.addProcessor(new GameInputProcessor(gameData));
         multiplexer.addProcessor(stage);
-
-        batch = new SpriteBatch();
-
-        menu = new Menu(Width, gameWidth, Height, skin, stage, world);
     }
 
     @Override
@@ -129,10 +128,6 @@ public class Game implements ApplicationListener {
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
             gameData.setDelta(Gdx.graphics.getDeltaTime());
             update();
-            // https://www.codeandweb.com/texturepacker/tutorials/libgdx-physics
-            // https://stackoverflow.com/questions/6474634/how-do-i-access-a-file-inside-an-osgi-bundle
-            // https://stackoverflow.com/questions/6244993/no-access-to-bundle-resource-file-osgi
-            // URL file = this.getClass().getClassLoader().getResource("rocket.png");
             draw();
             gameData.getKeys().update();
             menu.update();
@@ -153,7 +148,6 @@ public class Game implements ApplicationListener {
     }
 
     private void update() {
-
         // Update
         for (IEntityProcessingService entityProcessorService : entityProcessorList) {
             entityProcessorService.process(gameData, world);
@@ -166,11 +160,15 @@ public class Game implements ApplicationListener {
     }
 
     private void draw() {
-
         for (Entity entity : world.getEntities()) {
             if (entity.getPart(RenderPart.class) != null && entity.getPart(PositionPart.class) != null) {
                 PositionPart pos = entity.getPart(PositionPart.class);
                 RenderPart render = entity.getPart(RenderPart.class);
+
+                if (!render.isVisible()) {
+                    continue;
+                }
+
                 try {
                     Texture img = new Texture(Gdx.files.getLocalStoragePath() + render.getSpritePath());
 
@@ -209,11 +207,8 @@ public class Game implements ApplicationListener {
                     sr.begin(ShapeRenderer.ShapeType.Line);
                     sr.line(doors[i][0], doors[i][1], doors[i][2], doors[i][3]);
                     sr.end();
-
                 }
-
             }
-
         }
 
         float boxStartX = 100;
@@ -273,5 +268,4 @@ public class Game implements ApplicationListener {
         this.gamePluginList.remove(plugin);
         plugin.stop(gameData, world);
     }
-
 }

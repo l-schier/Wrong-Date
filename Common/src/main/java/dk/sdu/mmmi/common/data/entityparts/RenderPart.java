@@ -18,14 +18,17 @@ import java.nio.file.StandardCopyOption;
  * @author sofie
  */
 public class RenderPart implements EntityPart {
-    private String spriteFile; 
-    private Object component; 
-    
-    public RenderPart(String spriteFile, Object component){
-        this.component = component; 
+
+    private String spriteFile;
+    private Object component;
+    private Boolean visible;
+
+    public RenderPart(String spriteFile, Object component) {
+        this.component = component;
         this.spriteFile = getSprite(spriteFile);
+        this.visible = true;
     }
-    
+
     private String getSprite(String spriteFile) {
         // Get module sprites
         InputStream inputStream = this.component.getClass().getClassLoader().getResourceAsStream(spriteFile);
@@ -42,15 +45,23 @@ public class RenderPart implements EntityPart {
 
         return null;
     }
-    
-    public void setSprite(String newfile){
+
+    public void setSprite(String newfile) {
         this.spriteFile = getSprite(newfile);
     }
-    
-    public String getSpritePath(){
-        return this.spriteFile; 
+
+    public String getSpritePath() {
+        return this.spriteFile;
     }
-    
+
+    public Boolean isVisible() {
+        return this.visible;
+    }
+
+    public void setVisibility(Boolean visible) {
+        this.visible = visible;
+    }
+
     @Override
     public void process(GameData gameData, Entity entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

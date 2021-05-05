@@ -5,7 +5,6 @@ import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.InteractPart;
 import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
-import dk.sdu.mmmi.common.data.entityparts.KeyPart;
 import dk.sdu.mmmi.common.data.entityparts.RenderPart;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.common.services.IInteractService;
@@ -24,13 +23,7 @@ public class KeyProcessor implements IEntityProcessingService, IItemService, IIn
     }
 
     public void useItem(Entity player, GameData gameData) {
-        InventoryPart inventory = player.getPart(InventoryPart.class);
-        for (Entity item : inventory.getInventory()) {
-            KeyPart key = item.getPart(KeyPart.class);
-            if (key != null) {
-                key.use();
-            }
-        }
+        
     }
 
     @Override
@@ -48,11 +41,12 @@ public class KeyProcessor implements IEntityProcessingService, IItemService, IIn
     public void interact(Entity user, World world) {
         for (Entity key : world.getEntities(Key.class)) {
             InteractPart interact = key.getPart(InteractPart.class);
+            RenderPart render = key.getPart(RenderPart.class);
             if (user.circleCollision(key) && interact.isInteractable()) {
                 InventoryPart inventory = user.getPart(InventoryPart.class);
                 inventory.addItem(key);
                 interact.setInteractable(false);
-                key.remove(RenderPart.class);
+                render.setVisibility(false);
             }
         }
     }

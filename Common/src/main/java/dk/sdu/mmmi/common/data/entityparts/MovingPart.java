@@ -17,11 +17,11 @@ public class MovingPart implements EntityPart {
         this.speed = speed;
         this.expiration = 0;
     }
-    
+
     public int getSpeed() {
         return speed;
     }
- 
+
     public void setLeft(boolean left) {
         this.left = left;
     }
@@ -45,32 +45,28 @@ public class MovingPart implements EntityPart {
     private void reduceExpiration(float delta) {
         this.expiration -= delta;
     }
-    
+
     @Override
     public void process(GameData gameData, Entity entity) {
-        
+
         if (expiration > 0) {
             reduceExpiration(gameData.getDelta());
             return;
         }
-        
+
         PositionPart positionPart = entity.getPart(PositionPart.class);
         float x = positionPart.getX();
         float y = positionPart.getY();
 
         if (right) {
             x += speed;
-        }
-
-        if (left) {
+        } else if (left) {
             x -= speed;
         }
 
         if (up) {
             y += speed;
-        }
-
-        if (down) {
+        } else if (down) {
             y -= speed;
         }
 
@@ -80,7 +76,7 @@ public class MovingPart implements EntityPart {
         } else if (x < 0) {
             x = gameData.getDisplayWidth();
         }
-        
+
         if (y > gameData.getDisplayHeight()) {
             y = 0;
         } else if (y < 0) {
