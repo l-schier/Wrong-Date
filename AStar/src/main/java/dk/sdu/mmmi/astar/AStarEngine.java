@@ -16,6 +16,7 @@ public class AStarEngine {
 
     private ICollisionChecker collisionChecker;
     private final int weight = 5;
+    private PositionPart lastSeen;
 
     public AStarEngine(ICollisionChecker collisionChecker) {
         this.collisionChecker = collisionChecker;
@@ -35,8 +36,25 @@ public class AStarEngine {
         float sightLimit = sightPart.getSightLimit();
 
         Node initialNode = new Node(initialState);
-        fringe.put(initialNode.key(), initialNode);
+        // cant see target
+        if (h(initialNode, goalState) > sightLimit) {
+            // go from memory
+            if (this.lastSeen != null) {
+                goalState = this.lastSeen;
+                // target is gone
+                if (initialNode.isState(this.lastSeen)) {
+                    this.lastSeen = null;
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        } else { // can see target
+            // remember its position
+            this.lastSeen = new PositionPart(goalState.getX(), goalState.getY());
+        }
 
+        fringe.put(initialNode.key(), initialNode);
         while (!fringe.isEmpty()) {
 
             Node node = getCheapestNode(fringe);
@@ -45,10 +63,6 @@ public class AStarEngine {
 
             if (node.isState(goalState)) {
                 return node.nextMove();
-            }
-
-            if (node.depth == sightLimit) {
-                break;
             }
 
             HashMap<String, Node> children = expandNode(world, me, node, goalState, fringe, visited);
@@ -126,7 +140,9 @@ public class AStarEngine {
             ArrayList<PositionPart> children,
             float x,
             float y) {
-        if (this.collisionChecker.isPositionFree(world, me, x, y)) {
+        if (this.collisionChecker == null) {
+            children.add(new PositionPart(x, y));
+        } else if (this.collisionChecker.isPositionFree(world, me, x, y)) {
             children.add(new PositionPart(x, y));
         }
     }

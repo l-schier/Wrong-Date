@@ -9,23 +9,24 @@ import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.DoorPart;
+import dk.sdu.mmmi.common.data.entityparts.KeyPart;
 
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.WallPart;
 import dk.sdu.mmmi.common.services.IGamePluginService;
-import java.util.ArrayList;
 
 /**
  *
  * @author lasse
  */
-public class RoomPlugin implements IGamePluginService{
+public class RoomPlugin implements IGamePluginService {
 
     @Override
     public void start(GameData gd, World world) {
         Entity room = createRoom(gd);
         world.addEntity(room);
     }
+
     private Entity createRoom(GameData gameData) {
         float x = gameData.getDisplayWidth() / 2;
         float y = gameData.getDisplayHeight() / 2;
@@ -34,7 +35,7 @@ public class RoomPlugin implements IGamePluginService{
         float endX = gameData.getDisplayWidth();
         float endY = gameData.getDisplayHeight();
         float[][] doors = new float[4][4];
-        
+
         doors[0][0] = (endX - startX)/2 - 15;
         doors[0][1] = startY;
         doors[0][2] = (endX - startX)/2 + 15;
@@ -55,22 +56,22 @@ public class RoomPlugin implements IGamePluginService{
         doors[3][1] = (endY - startY)/2 - 15;
         doors[3][2] = startX;
         doors[3][3] = (endY - startY)/2 + 15;
-        
+
         Entity room = new Room();
 
         room.add(new PositionPart(x, y));
         room.add(new WallPart(startX, startY, endX, endY));
-        room.add(new DoorPart(doors));
-        
+        room.add(new DoorPart(doors, KeyPart.KeyColor.Silver));
+
         room.setRadius(0);
 
         return room;
     }
+
     @Override
     public void stop(GameData gd, World world) {
         for (Entity room : world.getEntities(Room.class)) {
             world.removeEntity(room);
         }
     }
-    
 }

@@ -10,9 +10,7 @@ import dk.sdu.mmmi.common.data.entityparts.RenderPart;
 import dk.sdu.mmmi.common.data.entityparts.SightPart;
 import dk.sdu.mmmi.common.services.IGamePluginService;
 import java.io.File;
-import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 
 /**
  *
@@ -28,27 +26,8 @@ public class EnemyPlugin implements IGamePluginService {
 
     @Override
     public void start(GameData gameData, World world) {
-//        String sprite = getSprite();
-
         Entity enemy = createEnemy(gameData);
         world.addEntity(enemy);
-    }
-
-    private String getSprite() {
-        // Get module sprites
-        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(spriteFile);
-        File temp = new File(spriteFile);
-
-        // Copy module sprites to runner folder
-        try {
-            // Reconsider replacing existing
-            // Or giving unique name to file during copy
-            Files.copy(inputStream, temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            return spriteFile;
-        } catch (Exception e) {
-        }
-
-        return null;
     }
 
     private Entity createEnemy(GameData gameData) {
@@ -64,7 +43,6 @@ public class EnemyPlugin implements IGamePluginService {
         enemy.add(new RenderPart(this.spriteFile, enemy));
 
         enemy.setRadius(8);
-//        enemy.setSpriteFile(this.spriteFile);
 
         return enemy;
     }
