@@ -201,6 +201,7 @@ public class Game implements ApplicationListener {
 
         sr.end();
             
+
         if (entity.getPart(DoorPart.class) != null) {
             sr.setColor(1,0,0,1);
 
@@ -210,6 +211,7 @@ public class Game implements ApplicationListener {
                 sr.begin(ShapeRenderer.ShapeType.Line);
                 sr.line(doors[i][0], doors[i][1], doors[i][2], doors[i][3]);
                 sr.end();
+
             }
 
         }

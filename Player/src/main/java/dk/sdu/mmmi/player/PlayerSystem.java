@@ -17,11 +17,15 @@ import dk.sdu.mmmi.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.common.services.IInteractService;
 import dk.sdu.mmmi.common.services.IItemService;
 import dk.sdu.mmmi.common.services.ICollisionChecker;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PlayerSystem implements IEntityProcessingService {
-    private IItemService itemService;
-    private IInteractService interactService;
+
+    private static final List<IItemService> itemServices = new CopyOnWriteArrayList<>();
+    private static final List<IInteractService> interactServices = new CopyOnWriteArrayList<>();
     private ICollisionChecker collisionChecker;
+
     @Override
     public void process(GameData gameData, World world) {
 
@@ -44,7 +48,7 @@ public class PlayerSystem implements IEntityProcessingService {
             } else if (gameData.getKeys().isDown(DOWN)) {
                 newY -= speed;
             }
-            
+
             if (collisionChecker.isPositionFree(world, player, newX, newY)) {
                 movingPart.setRight(gameData.getKeys().isDown(RIGHT));
                 movingPart.setLeft(gameData.getKeys().isDown(LEFT));
@@ -56,19 +60,22 @@ public class PlayerSystem implements IEntityProcessingService {
                 movingPart.setUp(false);
                 movingPart.setDown(false);
             }
-            
+
             movingPart.process(gameData, player);
             positionPart.process(gameData, player);
             lifePart.process(gameData, player);
             InventoryPart inventoryPart = player.getPart(InventoryPart.class);
 
-            
-            if(gameData.getKeys().isDown(ENTER)){
-                interactService.interact(player, world);
+            if (gameData.getKeys().isDown(ENTER)) {
+                for (IInteractService interactService : interactServices) {
+                    interactService.interact(player, world);
+                }
             }
-            
+
             if (gameData.getKeys().isPressed(SPACE)) {
-                itemService.useItem(player, gameData);
+                for (IItemService itemService : itemServices) {
+                    itemService.useItem(player, gameData);
+                }
             }
 
             movingPart.process(gameData, player);
@@ -107,27 +114,27 @@ public class PlayerSystem implements IEntityProcessingService {
         entity.setShapeX(shapex);
         entity.setShapeY(shapey);
     }
-    
+
     public void setItemService(IItemService itemService) {
-        this.itemService = itemService;
+        this.itemServices.add(itemService);
     }
-    
-    public void removeItemService() {
-        this.itemService = null;
+
+    public void removeItemService(IItemService itemService) {
+        this.itemServices.remove(itemService);
     }
 
     public void setInteractService(IInteractService interactService) {
-        this.interactService = interactService;
+        this.interactServices.add(interactService);
     }
-    
-    public void removeInteractService() {
-        this.interactService = null;
+
+    public void removeInteractService(IInteractService interactService) {
+        this.interactServices.remove(interactService);
     }
-    
+
     public void addCollisionChecker(ICollisionChecker collisionChecker) {
         this.collisionChecker = collisionChecker;
     }
-    
+
     public void removeCollisionChecker(ICollisionChecker collisionChecker) {
         this.collisionChecker = null;
     }
