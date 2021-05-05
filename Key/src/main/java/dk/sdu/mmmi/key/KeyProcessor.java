@@ -1,5 +1,6 @@
 package dk.sdu.mmmi.key;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
@@ -11,7 +12,8 @@ import dk.sdu.mmmi.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.common.services.IInteractService;
 import dk.sdu.mmmi.common.services.IItemService;
 
-import java.awt.Image;
+
+
 
 /**
  *
@@ -39,6 +41,7 @@ public class KeyProcessor implements IEntityProcessingService, IItemService, IIn
         return "Key";
     }
 
+    
     @Override
     public Image getSprite() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -56,4 +59,6 @@ public class KeyProcessor implements IEntityProcessingService, IItemService, IIn
             }
         }
     }
+
+
 }
