@@ -1,24 +1,16 @@
 package dk.sdu.mmmi.weapon;
 
-
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.DamagePart;
-import dk.sdu.mmmi.common.data.entityparts.InformationPart;
 import dk.sdu.mmmi.common.data.entityparts.InteractPart;
 import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
-import dk.sdu.mmmi.common.data.entityparts.LifePart;
-import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.common.services.IInteractService;
 import dk.sdu.mmmi.common.services.IItemService;
-
-
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
+import java.awt.Image;
 
 /**
  *
@@ -26,15 +18,11 @@ import static java.lang.Math.sin;
  */
 public class WeaponProcessor implements IEntityProcessingService, IItemService, IInteractService {
     
-
     @Override
     public void process(GameData gameData, World world) {
         for (Entity weapon : world.getEntities(Weapon.class)) {
-
             PositionPart positionPart = weapon.getPart(PositionPart.class);
             DamagePart damagePart = weapon.getPart(DamagePart.class);
-           
-
             setShape(weapon);
         }
     }
@@ -74,7 +62,6 @@ public class WeaponProcessor implements IEntityProcessingService, IItemService, 
             DamagePart damage = weapon.getPart(DamagePart.class);
             damage.setWeaponUsed(true);
         }
-
     }
 
     @Override
@@ -98,23 +85,4 @@ public class WeaponProcessor implements IEntityProcessingService, IItemService, 
             }
         }
     }
-
-    @Override
-    public Image getImage(World world) {
-        InformationPart imagePart;
-        
-        for (Entity weapon : world.getEntities(Weapon.class)) {
-            
-            imagePart = weapon.getPart(InformationPart.class);
-            return imagePart.getImage();
-       
-        }
-        
-        return null;
-
-
-    }
-
-  
-
 }
