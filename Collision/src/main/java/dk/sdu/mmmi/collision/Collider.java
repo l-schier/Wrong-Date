@@ -5,6 +5,7 @@ import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.DamagePart;
 import dk.sdu.mmmi.common.data.entityparts.DoorPart;
+import dk.sdu.mmmi.common.data.entityparts.EnemyPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.common.data.entityparts.WallPart;
@@ -69,11 +70,11 @@ public class Collider implements IPostEntityProcessingService, ICollisionChecker
 
     @Override
     public boolean isPositionFree(World world, Entity me, float x, float y) {
-        /*InventoryPart inventory = me.getPart(InventoryPart.class);
+        InventoryPart inventory = me.getPart(InventoryPart.class);
         ArrayList<KeyPart> keys = new ArrayList<>();
         if (inventory != null) {
             keys = inventory.getKeyParts();
-        }*/
+        }
 
         for (Entity e : world.getEntities()) {
             if (e == me) {
@@ -106,8 +107,22 @@ public class Collider implements IPostEntityProcessingService, ICollisionChecker
                         }
                     }
 
+                    boolean hasKey = false;
+                    EnemyPart enemy = me.getPart(EnemyPart.class);
+                    // enemy has a master key
+                    if (enemy != null) {
+                        hasKey = true;
+                    } else {
+                        // do we have a key matching the lock color?
+                        for (KeyPart key : keys) {
+                            if (key.getColor() == doorPart.getLockColor()) {
+                                hasKey = true;
+                            }
+                        }
+                    }
+
                     if (wallBool) {
-                        if (doorBool) {
+                        if (doorBool && hasKey) {
                             return true;
                         } else {
                             return false;
