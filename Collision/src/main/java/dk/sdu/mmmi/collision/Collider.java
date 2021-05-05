@@ -86,20 +86,24 @@ public class Collider implements IPostEntityProcessingService, ICollisionChecker
             if (wall != null || doorPart != null) {
 
                 float[][] doors = doorPart.getDoors();
+                PositionPart pos = me.getPart(PositionPart.class);
 
-                // x:y is inside the box of walls
-                if (wall.getStartX() <= x && x <= wall.getEndX()
-                        && wall.getStartY() <= y && y <= wall.getEndY()) {
+                // entity is inside the box of walls!
+                if (wall.getStartX() <= pos.getX() && pos.getX() <= wall.getEndX()
+                        && wall.getStartY() <= pos.getY() && pos.getY() <= wall.getEndY()) {
 
                     // is x:y on the outside of the wall?
-                    boolean wallBool = wall.getStartX() >= x || x >= wall.getEndX()
-                            || wall.getStartY() >= y || y >= wall.getEndY();
+                    boolean wallBool = x <= wall.getStartX() || wall.getEndX() <= x
+                            || y <= wall.getStartY() || wall.getEndY() <= y;
                     boolean doorBool = false;
 
-                    for (int i = 0; i < 4; i++) {
-                        // did x:y get outside through a door?
-                        doorBool = doorBool || doors[i][0] <= x && x <= doors[i][2]
-                                && doors[i][1] <= y && y <= doors[i][3];
+                    // if so, did x:y get outside through a door?
+                    for (float[] door : doors) {
+                        if (door[0] == door[2]) { // x == x, so it is a left or right door
+                            doorBool = doorBool || door[1] <= y && y <= door[3];
+                        } else if (door[1] == door[3]) { // y == y, so it is a top or bottom door
+                            doorBool = doorBool || door[0] <= x && x <= door[2];
+                        }
                     }
 
                     if (wallBool) {
