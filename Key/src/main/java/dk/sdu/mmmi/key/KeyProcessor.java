@@ -48,11 +48,12 @@ public class KeyProcessor implements IEntityProcessingService, IItemService, IIn
     public void interact(Entity user, World world) {
         for (Entity key : world.getEntities(Key.class)) {
             InteractPart interact = key.getPart(InteractPart.class);
+            RenderPart render = key.getPart(RenderPart.class);
             if (user.circleCollision(key) && interact.isInteractable()) {
                 InventoryPart inventory = user.getPart(InventoryPart.class);
                 inventory.addItem(key);
                 interact.setInteractable(false);
-                key.remove(RenderPart.class);
+                render.setVisibility(false);
             }
         }
     }
