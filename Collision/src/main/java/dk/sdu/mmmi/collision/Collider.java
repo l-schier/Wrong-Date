@@ -9,8 +9,10 @@ import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.common.data.entityparts.WallPart;
 import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
+import dk.sdu.mmmi.common.data.entityparts.KeyPart;
 import dk.sdu.mmmi.common.services.ICollisionChecker;
 import dk.sdu.mmmi.common.services.IPostEntityProcessingService;
+import java.util.ArrayList;
 
 /**
  *
@@ -26,14 +28,14 @@ public class Collider implements IPostEntityProcessingService, ICollisionChecker
                 if (e1.getID().equals(e2.getID())) {
                     continue;
                 }
-                if (e2.getPart(InventoryPart.class) != null){
+                if (e2.getPart(InventoryPart.class) != null) {
                     InventoryPart inventoryPart = e2.getPart(InventoryPart.class);
-                    if(inventoryPart.getWeapon() != null && inventoryPart.getWeapon().equals(e1)){
+                    if (inventoryPart.getWeapon() != null && inventoryPart.getWeapon().equals(e1)) {
                         continue;
                     }
                 }
 
-                if(e1.getPart(DamagePart.class) != null && e2.getPart(LifePart.class) != null){
+                if (e1.getPart(DamagePart.class) != null && e2.getPart(LifePart.class) != null) {
                     DamagePart e1d = e1.getPart(DamagePart.class);
                     LifePart e2l = e2.getPart(LifePart.class);
                     if (circleCollision(e1, e2) && e1d.isWeaponUsed()) {
@@ -67,36 +69,49 @@ public class Collider implements IPostEntityProcessingService, ICollisionChecker
 
     @Override
     public boolean isPositionFree(World world, Entity me, float x, float y) {
+        /*InventoryPart inventory = me.getPart(InventoryPart.class);
+        ArrayList<KeyPart> keys = new ArrayList<>();
+        if (inventory != null) {
+            keys = inventory.getKeyParts();
+        }*/
 
         for (Entity e : world.getEntities()) {
-            if (e != me) {
-                if (e.getPart(WallPart.class) != null || e.getPart(DoorPart.class) != null) {
-                    DoorPart doorPart = e.getPart(DoorPart.class);
-                    WallPart wall = e.getPart(WallPart.class);
-                    PositionPart pos = me.getPart(PositionPart.class);
-                    float[][] doors = doorPart.getDoors();
-                    /*for (int i = 0; i < 4; i++ ) {
-                        if (doors[i][0] <= x && x <= doors[i][2] && doors[i][1] <= y && y <= doors[i][3]) {
+            if (e == me) {
+                continue;
+            }
+
+            DoorPart doorPart = e.getPart(DoorPart.class);
+            WallPart wall = e.getPart(WallPart.class);
+
+            if (wall != null || doorPart != null) {
+
+                float[][] doors = doorPart.getDoors();
+
+                // x:y is inside the box of walls
+                if (wall.getStartX() <= x && x <= wall.getEndX()
+                        && wall.getStartY() <= y && y <= wall.getEndY()) {
+
+                    // is x:y on the outside of the wall?
+                    boolean wallBool = wall.getStartX() >= x || x >= wall.getEndX()
+                            || wall.getStartY() >= y || y >= wall.getEndY();
+                    boolean doorBool = false;
+
+                    for (int i = 0; i < 4; i++) {
+                        // did x:y get outside through a door?
+                        doorBool = doorBool || doors[i][0] <= x && x <= doors[i][2]
+                                && doors[i][1] <= y && y <= doors[i][3];
+                    }
+
+                    if (wallBool) {
+                        if (doorBool) {
                             return true;
-                        }
-                    }*/
-                    if (pos.getX() >= wall.getStartX() && pos.getX() <= wall.getEndX() && pos.getY() >= wall.getStartY() && pos.getY() <= wall.getEndY()) {
-                        boolean wallBool = wall.getStartX() >= x || x >= wall.getEndX() || wall.getStartY() >= y || y >= wall.getEndY();
-                        boolean doorBool = false;
-                        for (int i = 0; i < 4; i++) {
-                            doorBool = doorBool || doors[i][0] <= x && x <= doors[i][2] && doors[i][1] <= y && y <= doors[i][3];
-                        }
-                        if (wallBool) {
-                            if (doorBool) {
-                                return true;
-                            } else {
-                               return false;
-                            }
+                        } else {
+                            return false;
                         }
                     }
                 }
-                // Rest of collison
             }
+            // Rest of collison
         }
 
         float deadZoneStartX = 100;
