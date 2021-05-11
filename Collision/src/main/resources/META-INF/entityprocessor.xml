@@ -2,7 +2,7 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="dk.sdu.mmmi.collision">
     <implementation class="dk.sdu.mmmi.collision.Collider"/>
     <service>
-        <provide interface="dk.sdu.mmmi.common.services.IPostEntityProcessingService"/>
+        <provide interface="dk.sdu.mmmi.common.services.IEntityPostProcessingService"/>
         <provide interface="dk.sdu.mmmi.common.services.ICollisionChecker"/>
     </service>
 </scr:component>
