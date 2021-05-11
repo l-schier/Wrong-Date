@@ -12,6 +12,24 @@ public class GameData {
     private int displayHeight;
     private final GameKeys keys = new GameKeys();
     private List<Event> events = new CopyOnWriteArrayList<>();
+    private int camX;
+    private int camY;
+
+    public int getCamX() {
+        return camX;
+    }
+
+    public void setCamX(int x) {
+        camX = x;
+    }
+
+    public int getCamY() {
+        return camY;
+    }
+
+    public void setCamY(int y) {
+        camY = y;
+    }
 
     public void addEvent(Event e) {
         events.add(e);

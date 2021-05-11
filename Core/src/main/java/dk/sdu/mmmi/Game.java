@@ -29,7 +29,7 @@ import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.RenderPart;
 
 public class Game implements ApplicationListener {
-    
+
     private static int gameWidth = 800;
     private static int menuWidth = 300;
     private static int Width = gameWidth + menuWidth;
@@ -46,7 +46,7 @@ public class Game implements ApplicationListener {
     private static final List<IGamePluginService> gamePluginList = new CopyOnWriteArrayList<>();
     private static List<IPostEntityProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
     private static final List<IHelp> helpList = new CopyOnWriteArrayList<>();
-  
+
     private SpriteBatch batch;
 
     public Game() {
@@ -55,7 +55,7 @@ public class Game implements ApplicationListener {
         gameData.setDisplayHeight(Height);
         menu.setMenuData(Width, gameWidth, Height);
     }
-    
+
     public void init() {
         LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
         cfg.title = "Wrong-Date";
@@ -65,17 +65,18 @@ public class Game implements ApplicationListener {
         cfg.resizable = false;
 
         new LwjglApplication(this, cfg);
-        
-        
+
     }
 
     @Override
     public void create() {
+        gameData.setCamX(gameData.getDisplayWidth() / 2);
+        gameData.setCamY(gameData.getDisplayHeight() / 2);
         cam = new OrthographicCamera(gameData.getDisplayWidth(), gameData.getDisplayHeight());
-        cam.translate(gameData.getDisplayWidth() / 2, gameData.getDisplayHeight() / 2);
+        cam.translate(gameData.getCamX(), gameData.getCamY());
         cam.update();
 
-        sr = new ShapeRenderer();        
+        sr = new ShapeRenderer();
         stage = new Stage();
         skin = new Skin(Gdx.files.internal(Gdx.files.getLocalStoragePath() + "uiskin.json"));
         //Allows multiple inputprocessor
@@ -83,9 +84,8 @@ public class Game implements ApplicationListener {
         Gdx.input.setInputProcessor(multiplexer);
         multiplexer.addProcessor(new GameInputProcessor(gameData));
         multiplexer.addProcessor(stage);
-        
-        drawMenu();
 
+        drawMenu();
 
         Gdx.input.setInputProcessor(new GameInputProcessor(gameData));
 
@@ -99,6 +99,8 @@ public class Game implements ApplicationListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         gameData.setDelta(Gdx.graphics.getDeltaTime());
         update();
+        cam.translate(gameData.getCamX(), gameData.getCamY());
+        cam.update();
         // https://www.codeandweb.com/texturepacker/tutorials/libgdx-physics
         // https://stackoverflow.com/questions/6474634/how-do-i-access-a-file-inside-an-osgi-bundle
         // https://stackoverflow.com/questions/6244993/no-access-to-bundle-resource-file-osgi
@@ -119,7 +121,7 @@ public class Game implements ApplicationListener {
         for (IPostEntityProcessingService postEntityProcessorService : postEntityProcessorList) {
             postEntityProcessorService.process(gameData, world);
         }
-        
+
         //Help files
         //I want to move this to Menu class outside of constant update
         ArrayList helpFiles = new ArrayList();
@@ -127,26 +129,26 @@ public class Game implements ApplicationListener {
             helpFiles.add(help.getFile());
         }
         menu.setHelpFiles(helpFiles);
-        
+
         //cheking if pause
-        if (menu.getPause()){
+        if (menu.getPause()) {
             pause();
             menu.resetPause();
             System.out.println("Pausing game");
         }
-        
+
         //Cheking if resume
-        if (menu.getResume()){
+        if (menu.getResume()) {
             resume();
             menu.resetResume();
             System.out.println("resuming game");
         }
-       
+
     }
 
     private void draw() {
 //        drawMenu();
-        
+
         for (Entity entity : world.getEntities()) {
             if (entity.getPart(RenderPart.class) != null && entity.getPart(PositionPart.class) != null) {
                 PositionPart pos = entity.getPart(PositionPart.class);
@@ -154,13 +156,13 @@ public class Game implements ApplicationListener {
                 try {
                     Texture img = new Texture(Gdx.files.getLocalStoragePath() + render.getSpritePath());
 
-                batch.begin();
-                batch.draw(img, pos.getX() - 16, pos.getY() - 16);
-                batch.end();
+                    batch.begin();
+                    batch.draw(img, pos.getX() - 16, pos.getY() - 16);
+                    batch.end();
                 } catch (GdxRuntimeException e) {
                     System.out.println("Image not found");
                 }
-                
+
                 continue;
             }
 
@@ -179,10 +181,10 @@ public class Game implements ApplicationListener {
             }
 
             sr.end();
-            
+
             if (entity.getPart(DoorPart.class) != null) {
-                sr.setColor(1,0,0,1);
-                
+                sr.setColor(1, 0, 0, 1);
+
                 DoorPart doorPart = entity.getPart(DoorPart.class);
                 float[][] doors = doorPart.getDoors();
                 for (int i = 0; i <= 3; i++) {
@@ -190,7 +192,7 @@ public class Game implements ApplicationListener {
                     sr.line(doors[i][0], doors[i][1], doors[i][2], doors[i][3]);
                     sr.end();
                 }
-                
+
             }
         }
 
@@ -250,7 +252,7 @@ public class Game implements ApplicationListener {
         this.gamePluginList.remove(plugin);
         plugin.stop(gameData, world);
     }
-    
+
     public void addHelp(IHelp plugin) {
         this.helpList.add(plugin);
     }
@@ -258,17 +260,14 @@ public class Game implements ApplicationListener {
     public void removeHelp(IHelp plugin) {
         this.helpList.remove(plugin);
     }
-    
-    
+
     /**
      * Draws menu
      */
-    private void drawMenu(){
-        
+    private void drawMenu() {
+
         menu.draw(skin, stage);
-        
+
     }
-
-
 
 }
