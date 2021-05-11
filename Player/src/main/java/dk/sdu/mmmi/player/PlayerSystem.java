@@ -75,6 +75,27 @@ public class PlayerSystem implements IEntityProcessingService {
                 }
             }
 
+            int camX = gameData.getCamX();
+            int camY = gameData.getCamY();
+            float plaX = positionPart.getX();
+            float plaY = positionPart.getY();
+            int w = gameData.getDisplayWidth();
+            int h = gameData.getDisplayHeight();
+            if (plaX > camX + (w)) {
+                camX += w;
+            }
+            if (plaX < camX - (w)) {
+                camX -= w;
+            }
+            if (plaY > camY + (h)) {
+                camY += h;
+            }
+            if (plaY < camY - (h)) {
+                camY -= h;
+            }
+            //gameData.setCamX(camX);
+            //gameData.setCamY(camY);
+
             movingPart.process(gameData, player);
             positionPart.process(gameData, player);
             inventoryPart.process(gameData, player);
