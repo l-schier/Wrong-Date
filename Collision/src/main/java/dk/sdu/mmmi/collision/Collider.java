@@ -12,14 +12,14 @@ import dk.sdu.mmmi.common.data.entityparts.WallPart;
 import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
 import dk.sdu.mmmi.common.data.entityparts.KeyPart;
 import dk.sdu.mmmi.common.services.ICollisionChecker;
-import dk.sdu.mmmi.common.services.IPostEntityProcessingService;
 import java.util.ArrayList;
+import dk.sdu.mmmi.common.services.IEntityPostProcessingService;
 
 /**
  *
  * @author Anton
  */
-public class Collider implements IPostEntityProcessingService, ICollisionChecker {
+public class Collider implements IEntityPostProcessingService, ICollisionChecker {
 
     @Override
     public void process(GameData gameData, World world) {
@@ -84,7 +84,7 @@ public class Collider implements IPostEntityProcessingService, ICollisionChecker
             DoorPart doorPart = e.getPart(DoorPart.class);
             WallPart wall = e.getPart(WallPart.class);
 
-            if (wall != null || doorPart != null) {
+            if (wall != null && doorPart != null) {
 
                 float[][] doors = doorPart.getDoors();
                 PositionPart pos = me.getPart(PositionPart.class);
@@ -122,11 +122,7 @@ public class Collider implements IPostEntityProcessingService, ICollisionChecker
                     }
 
                     if (wallBool) {
-                        if (doorBool && hasKey) {
-                            return true;
-                        } else {
-                            return false;
-                        }
+                        return doorBool && hasKey;
                     }
                 }
             }

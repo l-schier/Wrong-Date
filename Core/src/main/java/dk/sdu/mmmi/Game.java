@@ -16,33 +16,39 @@ import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.DoorPart;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.common.services.IGamePluginService;
-import dk.sdu.mmmi.common.services.IPostEntityProcessingService;
 import dk.sdu.mmmi.core.managers.GameInputProcessor;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.RenderPart;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import dk.sdu.mmmi.common.services.IEntityPostProcessingService;
 
 public class Game implements ApplicationListener {
 
-    private static int gameWidth = 800;
-    private static int menuWidth = 300;
-    private static int Width = gameWidth + menuWidth;
-    private static int Height = 600;
+    private final int gameWidth = 800;
+    private final int menuWidth = 300;
+    private final int Width = gameWidth + menuWidth;
+    private final int Height = 600;
 
-    private static OrthographicCamera cam;
     private ShapeRenderer sr;
+    private OrthographicCamera cam;
+    private Viewport vp;
     private Stage stage;
     private Skin skin;
     private Menu menu;
@@ -50,11 +56,11 @@ public class Game implements ApplicationListener {
     private static boolean isPaused;
 
     private final GameData gameData = new GameData();
-    private static World world = new World();
+    private final World world = new World();
 
-    private static final List<IGamePluginService> gamePluginList = new CopyOnWriteArrayList<>();
-    private static final List<IEntityProcessingService> entityProcessorList = new CopyOnWriteArrayList<>();
-    private static final List<IPostEntityProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
+    private final List<IGamePluginService> gamePluginList = new CopyOnWriteArrayList<>();
+    private final List<IEntityProcessingService> entityProcessorList = new CopyOnWriteArrayList<>();
+    private final List<IEntityPostProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
 
     private SpriteBatch batch;
 
@@ -64,12 +70,12 @@ public class Game implements ApplicationListener {
         gameData.setDisplayHeight(Height);
     }
 
-    public void init() {
+    private void init() {
         LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
         cfg.title = "Wrong-Date";
         cfg.width = Width;
         cfg.height = Height;
-        cfg.useGL30 = false;
+        //cfg.useGL30 = false;
         cfg.resizable = false;
 
         new LwjglApplication(this, cfg);
@@ -98,22 +104,26 @@ public class Game implements ApplicationListener {
         // copy module sprites to runner folder
         try {
             Files.copy(inputStream, temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        } catch (Exception e) {
+        } catch (IOException e) {
         }
     }
 
     @Override
     public void create() {
+        gameData.setCamX(gameData.getDisplayWidth() / 2 + menuWidth);
+        gameData.setCamY(gameData.getDisplayHeight() / 2);
         cam = new OrthographicCamera(gameData.getDisplayWidth(), gameData.getDisplayHeight());
-        cam.translate(gameData.getDisplayWidth() / 2, gameData.getDisplayHeight() / 2);
-        cam.update();
+        vp = new ScreenViewport(cam);
+        vp.apply();
+        cam.translate(gameData.getCamX(), gameData.getCamY(), 0);
 
         sr = new ShapeRenderer();
-        stage = new Stage();
+        stage = new Stage(new ScreenViewport()); // new StretchViewport(gameData.getDisplayWidth(), gameData.getDisplayHeight())
+        stage.getViewport().apply();
         skin = new Skin(Gdx.files.internal(Gdx.files.getLocalStoragePath() + "comic-ui.json"));
         batch = new SpriteBatch();
         menu = new Menu(Width, gameWidth, Height, skin, stage, world);
-        
+
         //Allows multiple inputprocessor
         InputMultiplexer multiplexer = new InputMultiplexer();
         Gdx.input.setInputProcessor(multiplexer);
@@ -124,7 +134,7 @@ public class Game implements ApplicationListener {
     @Override
     public void render() {
         if (!isPaused) {
-            // clear screen to black
+            vp.getCamera().update();
             Gdx.gl.glClearColor(0, 0, 0, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
             gameData.setDelta(Gdx.graphics.getDeltaTime());
@@ -155,7 +165,7 @@ public class Game implements ApplicationListener {
         }
 
         // Post Update
-        for (IPostEntityProcessingService postEntityProcessorService : postEntityProcessorList) {
+        for (IEntityPostProcessingService postEntityProcessorService : postEntityProcessorList) {
             postEntityProcessorService.process(gameData, world);
         }
     }
@@ -173,6 +183,7 @@ public class Game implements ApplicationListener {
                 try {
                     Texture img = new Texture(Gdx.files.getLocalStoragePath() + render.getSpritePath());
 
+                    batch.setProjectionMatrix(vp.getCamera().combined);
                     batch.begin();
                     batch.draw(img, pos.getX() - 16, pos.getY() - 16);
                     batch.end();
@@ -185,6 +196,7 @@ public class Game implements ApplicationListener {
 
             sr.setColor(1, 1, 1, 1);
 
+            sr.setProjectionMatrix(vp.getCamera().combined);
             sr.begin(ShapeRenderer.ShapeType.Line);
 
             float[] shapex = entity.getShapeX();
@@ -205,10 +217,12 @@ public class Game implements ApplicationListener {
                 DoorPart doorPart = entity.getPart(DoorPart.class);
                 float[][] doors = doorPart.getDoors();
                 for (int i = 0; i < 4; i++) {
+                    sr.setProjectionMatrix(vp.getCamera().combined);
                     sr.begin(ShapeRenderer.ShapeType.Line);
                     sr.line(doors[i][0], doors[i][1], doors[i][2], doors[i][3]);
                     sr.end();
                 }
+
             }
         }
 
@@ -218,6 +232,7 @@ public class Game implements ApplicationListener {
         float boxStopY = 200;
 
         sr.setColor(1, 0, 0, 1);
+        sr.setProjectionMatrix(vp.getCamera().combined);
         sr.begin(ShapeRenderer.ShapeType.Line);
         sr.line(boxStartX, boxStartY, boxStartX, boxStopY);
         sr.line(boxStartX, boxStopY, boxStopX, boxStopY);
@@ -228,6 +243,8 @@ public class Game implements ApplicationListener {
 
     @Override
     public void resize(int width, int height) {
+        vp.update(width + menuWidth, height);
+        stage.getViewport().update(width + menuWidth, height);
     }
 
     @Override
@@ -252,11 +269,11 @@ public class Game implements ApplicationListener {
         this.entityProcessorList.remove(eps);
     }
 
-    public void addPostEntityProcessingService(IPostEntityProcessingService eps) {
+    public void addPostEntityProcessingService(IEntityPostProcessingService eps) {
         this.postEntityProcessorList.add(eps);
     }
 
-    public void removePostEntityProcessingService(IPostEntityProcessingService eps) {
+    public void removePostEntityProcessingService(IEntityPostProcessingService eps) {
         this.postEntityProcessorList.remove(eps);
     }
 

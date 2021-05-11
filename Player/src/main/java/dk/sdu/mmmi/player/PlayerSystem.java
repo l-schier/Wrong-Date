@@ -51,7 +51,12 @@ public class PlayerSystem implements IEntityProcessingService {
                 newY -= speed;
             }
 
-            if (collisionChecker.isPositionFree(world, player, newX, newY)) {
+            if (this.collisionChecker == null) {
+                movingPart.setRight(gameData.getKeys().isDown(RIGHT));
+                movingPart.setLeft(gameData.getKeys().isDown(LEFT));
+                movingPart.setUp(gameData.getKeys().isDown(UP));
+                movingPart.setDown(gameData.getKeys().isDown(DOWN));
+            } else if (collisionChecker.isPositionFree(world, player, newX, newY)) {
                 movingPart.setRight(gameData.getKeys().isDown(RIGHT));
                 movingPart.setLeft(gameData.getKeys().isDown(LEFT));
                 movingPart.setUp(gameData.getKeys().isDown(UP));
@@ -74,6 +79,27 @@ public class PlayerSystem implements IEntityProcessingService {
                     itemService.useItem(player, gameData);
                 }
             }
+
+            int camX = gameData.getCamX();
+            int camY = gameData.getCamY();
+            float plaX = positionPart.getX();
+            float plaY = positionPart.getY();
+            int w = gameData.getDisplayWidth();
+            int h = gameData.getDisplayHeight();
+            if (plaX > camX + (w)) {
+                camX += w;
+            }
+            if (plaX < camX - (w)) {
+                camX -= w;
+            }
+            if (plaY > camY + (h)) {
+                camY += h;
+            }
+            if (plaY < camY - (h)) {
+                camY -= h;
+            }
+            //gameData.setCamX(camX);
+            //gameData.setCamY(camY);
 
             movingPart.process(gameData, player);
             positionPart.process(gameData, player);
