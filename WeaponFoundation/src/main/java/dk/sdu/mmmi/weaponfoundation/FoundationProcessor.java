@@ -55,12 +55,13 @@ public class FoundationProcessor implements IEntityProcessingService, IInteractS
 
     @Override
     public void interact(Entity user, World world) {
+        InventoryPart inventory = user.getPart(InventoryPart.class);
+        Entity currentWeapon = inventory.getCurrentWeapon();
         for (Entity foundation : world.getEntities(Foundation.class)) {
             InteractPart interact = foundation.getPart(InteractPart.class);
-            if (user.circleCollision(foundation) && interact.isInteractable()) {
-                InventoryPart inventory = user.getPart(InventoryPart.class);
+            if (user.circleCollision(foundation) && interact.isInteractable() && foundation != currentWeapon) {
                 inventory.addItem(foundation);
-                interact.setInteractable(false);
+                System.out.println("Added foundation");
             }
         }
     }

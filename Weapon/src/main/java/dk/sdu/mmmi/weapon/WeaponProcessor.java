@@ -51,12 +51,13 @@ public class WeaponProcessor implements IEntityProcessingService, IInteractServi
 
     @Override
     public void interact(Entity user, World world) {
+        InventoryPart inventory = user.getPart(InventoryPart.class);
+        Entity currentWeapon = inventory.getCurrentWeapon();
         for (Entity weapon : world.getEntities(Weapon.class)) {
             InteractPart interact = weapon.getPart(InteractPart.class);
-            if (user.circleCollision(weapon) && interact.isInteractable()) {
-                InventoryPart inventory = user.getPart(InventoryPart.class);
+            if (user.circleCollision(weapon) && interact.isInteractable() && weapon != currentWeapon) {
                 inventory.addItem(weapon);
-                interact.setInteractable(false);
+                System.out.println("Added weapon");
             }
         }
     }

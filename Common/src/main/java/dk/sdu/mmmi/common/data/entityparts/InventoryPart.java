@@ -12,6 +12,7 @@ public class InventoryPart implements EntityPart {
 
     private ArrayList<Entity> inventory;
     private Entity weapon;
+    private Entity currentWeapon;
 
     public InventoryPart() {
         inventory = new ArrayList<Entity>();
@@ -28,6 +29,8 @@ public class InventoryPart implements EntityPart {
             PositionPart pos = item.getPart(PositionPart.class);
             pos.setPosition(playerPos.getX(), playerPos.getY());
         }
+        
+        currentWeapon = weapon;
     }
 
     public ArrayList<Entity> getInventory() {
@@ -55,6 +58,10 @@ public class InventoryPart implements EntityPart {
 
     public Entity getWeapon() {
         return weapon;
+    }
+
+    public Entity getCurrentWeapon() {
+        return currentWeapon;
     }
 
 }

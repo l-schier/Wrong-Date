@@ -68,7 +68,7 @@ public class PlayerSystem implements IEntityProcessingService {
                 movingPart.setDown(false);
             }
 
-            if (gameData.getKeys().isDown(ENTER)) {
+            if (gameData.getKeys().isPressed(ENTER)) {
                 for (IInteractService interactService : interactServices) {
                     interactService.interact(player, world);
                 }
