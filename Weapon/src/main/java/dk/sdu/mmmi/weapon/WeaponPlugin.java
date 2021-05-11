@@ -5,7 +5,6 @@ import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.DamagePart;
 import dk.sdu.mmmi.common.data.entityparts.InteractPart;
-import dk.sdu.mmmi.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.InformationPart;
 import dk.sdu.mmmi.common.services.IGamePluginService;
@@ -38,8 +37,6 @@ public class WeaponPlugin implements IGamePluginService {
         weapon.add(new DamagePart(damage));
         weapon.add(new InteractPart(interactable));
         
-        weapon.add(new LifePart(1)); //Required in order to not get a NullPointerException in Collider
-
         return weapon;
     }
 
