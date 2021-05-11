@@ -46,7 +46,7 @@ public class InventoryPart implements EntityPart {
     }
 
     public void addItem(Entity item) {
-        if (item.getPart(DamagePart.class) != null) {
+        if (item.getPart(DamagePart.class) != null || item.getPart(StunPart.class) != null || item.getPart(BlindPart.class) != null) {
             weapon = item;
         } else {
             inventory.add(item);

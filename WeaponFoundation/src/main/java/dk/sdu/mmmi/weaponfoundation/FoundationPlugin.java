@@ -8,7 +8,7 @@ package dk.sdu.mmmi.weaponfoundation;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
-import dk.sdu.mmmi.common.data.entityparts.DamagePart;
+import dk.sdu.mmmi.common.data.entityparts.BlindPart;
 import dk.sdu.mmmi.common.data.entityparts.InteractPart;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
@@ -33,17 +33,15 @@ public class FoundationPlugin implements IGamePluginService {
 
         float x = (float)random.nextInt(gameData.getDisplayWidth());
         float y = (float)random.nextInt(gameData.getDisplayHeight());
-        int damage = 1;
+        float duration = 100;
         boolean interactable = true;
         foundation.setRadius(8);
 
-        foundation.add(new InformationPart("testFoundation.png", "description.txt", foundation));
+        foundation.add(new InformationPart("testWeapon.png", "description.txt", foundation));
         foundation.add(new PositionPart(x, y));
-        foundation.add(new DamagePart(damage));
+        foundation.add(new BlindPart(duration));
         foundation.add(new InteractPart(interactable));
-
-        foundation.add(new LifePart(1)); //Required in order to not get a NullPointerException in Collider
-
+        
         return foundation;
     }
 

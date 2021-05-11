@@ -14,8 +14,6 @@ import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.common.services.IInteractService;
-import dk.sdu.mmmi.common.services.IItemService;
-import java.awt.Image;
 
 /**
  *
@@ -27,7 +25,6 @@ public class FoundationProcessor implements IEntityProcessingService, IInteractS
     public void process(GameData gameData, World world) {
         for (Entity foundation : world.getEntities(Foundation.class)) {
             PositionPart positionPart = foundation.getPart(PositionPart.class);
-            DamagePart damagePart = foundation.getPart(DamagePart.class);
             setShape(foundation);
         }
     }
@@ -40,8 +37,8 @@ public class FoundationProcessor implements IEntityProcessingService, IInteractS
         float y = positionPart.getY();
         float radians = 3.1415f / 2;
 
-        shapex[0] = (float) (x + Math.cos(radians) * 8);
-        shapey[0] = (float) (y + Math.sin(radians) * 8);
+        shapex[0] = (float) (x + Math.cos(radians) * 16);
+        shapey[0] = (float) (y + Math.sin(radians) * 16);
 
         shapex[1] = (float) (x);
         shapey[1] = (float) (y);

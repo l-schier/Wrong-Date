@@ -70,8 +70,9 @@ public class PlayerSystem implements IEntityProcessingService {
             }
 
             if (gameData.getKeys().isPressed(SPACE)) {
-                for (IItemService itemService : itemServices) {
-                    itemService.useItem(player, gameData);
+                if(inventoryPart.getWeapon() != null){
+                    IItemService weapon = (IItemService) inventoryPart.getWeapon();
+                    weapon.useItem(player, gameData);
                 }
             }
 

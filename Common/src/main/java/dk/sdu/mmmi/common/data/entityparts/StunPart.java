@@ -27,7 +27,7 @@ public class StunPart implements EntityPart {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public boolean isIsStunning() {
+    public boolean isStunning() {
         return isStunning;
     }
 

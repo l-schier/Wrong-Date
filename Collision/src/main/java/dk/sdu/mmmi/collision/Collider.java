@@ -3,6 +3,7 @@ package dk.sdu.mmmi.collision;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
+import dk.sdu.mmmi.common.data.entityparts.BlindPart;
 import dk.sdu.mmmi.common.data.entityparts.DamagePart;
 import dk.sdu.mmmi.common.data.entityparts.DoorPart;
 import dk.sdu.mmmi.common.data.entityparts.EnemyPart;
@@ -11,6 +12,9 @@ import dk.sdu.mmmi.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.common.data.entityparts.WallPart;
 import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
 import dk.sdu.mmmi.common.data.entityparts.KeyPart;
+import dk.sdu.mmmi.common.data.entityparts.MovingPart;
+import dk.sdu.mmmi.common.data.entityparts.SightPart;
+import dk.sdu.mmmi.common.data.entityparts.StunPart;
 import dk.sdu.mmmi.common.services.ICollisionChecker;
 import dk.sdu.mmmi.common.services.IPostEntityProcessingService;
 import java.util.ArrayList;
@@ -42,6 +46,26 @@ public class Collider implements IPostEntityProcessingService, ICollisionChecker
                     if (circleCollision(e1, e2) && e1d.isWeaponUsed()) {
                         e2l.takeLife(e1d.getDamage());
                         e1d.setWeaponUsed(false);
+                    }
+                }
+                
+                if (e1.getPart(BlindPart.class) != null && e2.getPart(SightPart.class) != null) {
+                    BlindPart e1b = e1.getPart(BlindPart.class);
+                    SightPart e2s = e2.getPart(SightPart.class);
+                    if (circleCollision(e1, e2) && e1b.isBlinding()) {
+                        e2s.blindFor(e1b.getBlindDuration());
+                        System.out.println("Hej du er blind");
+                        System.out.println(e1b.getBlindDuration());
+                        e1b.setIsBlinding(false);
+                    }
+                }
+                
+                if (e1.getPart(StunPart.class) != null && e2.getPart(MovingPart.class) != null) {
+                    StunPart e1s = e1.getPart(StunPart.class);
+                    MovingPart e2m = e2.getPart(MovingPart.class);
+                    if (circleCollision(e1, e2) && e1s.isStunning()) {
+                        e2m.stunFor(e1s.getStunDuration());
+                        e1s.setIsStunning(false);
                     }
                 }
             }

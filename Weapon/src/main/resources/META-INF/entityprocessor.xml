@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="dk.sdu.mmmi.weapon">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="dk.sdu.mmmi.weapon.processor">
     <implementation class="dk.sdu.mmmi.weapon.WeaponProcessor"/>
     <service>
         <provide interface="dk.sdu.mmmi.common.services.IEntityProcessingService"/>

@@ -9,8 +9,6 @@ import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.common.services.IInteractService;
-import dk.sdu.mmmi.common.services.IItemService;
-import java.awt.Image;
 
 /**
  *
