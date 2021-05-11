@@ -24,7 +24,7 @@ public class Foundation extends Entity implements IItemService {
 
     @Override
     public String getDescription() {
-        return "Stun weapon";
+        return "Blind weapon";
     }
 
     @Override
