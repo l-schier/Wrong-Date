@@ -1,3 +1,3 @@
-Bundle-SymbolicName: Weapon
+Bundle-SymbolicName: WeaponNails
 Bundle-ActivationPolicy: lazy
 Service-Component: META-INF/entityprocessor.xml, META-INF/gameplugin.xml, META-INF/entity.xml

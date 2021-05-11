@@ -27,7 +27,6 @@ public class Collider implements IEntityPostProcessingService, ICollisionChecker
 
     @Override
     public void process(GameData gameData, World world) {
-
         for (Entity e1 : world.getEntities()) {
             for (Entity e2 : world.getEntities()) {
                 if (e1.getID().equals(e2.getID())) {
@@ -45,8 +44,8 @@ public class Collider implements IEntityPostProcessingService, ICollisionChecker
                     LifePart e2l = e2.getPart(LifePart.class);
                     if (circleCollision(e1, e2) && e1d.isWeaponUsed()) {
                         e2l.takeLife(e1d.getDamage());
-                        e1d.setWeaponUsed(false);
                     }
+                    e1d.setWeaponUsed(false);
                 }
                 
                 if (e1.getPart(BlindPart.class) != null && e2.getPart(SightPart.class) != null) {
@@ -54,10 +53,8 @@ public class Collider implements IEntityPostProcessingService, ICollisionChecker
                     SightPart e2s = e2.getPart(SightPart.class);
                     if (circleCollision(e1, e2) && e1b.isBlinding()) {
                         e2s.blindFor(e1b.getBlindDuration());
-                        System.out.println("Hej du er blind");
-                        System.out.println(e1b.getBlindDuration());
-                        e1b.setIsBlinding(false);
                     }
+                    e1b.setIsBlinding(false);
                 }
                 
                 if (e1.getPart(StunPart.class) != null && e2.getPart(MovingPart.class) != null) {
@@ -65,8 +62,8 @@ public class Collider implements IEntityPostProcessingService, ICollisionChecker
                     MovingPart e2m = e2.getPart(MovingPart.class);
                     if (circleCollision(e1, e2) && e1s.isStunning()) {
                         e2m.stunFor(e1s.getStunDuration());
-                        e1s.setIsStunning(false);
                     }
+                    e1s.setIsStunning(false);
                 }
             }
         }

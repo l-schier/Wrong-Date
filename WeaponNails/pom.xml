@@ -9,15 +9,15 @@
     </parent>
 
     <groupId>dk.sdu.mmmi</groupId>
-    <artifactId>Weapon</artifactId>
+    <artifactId>Nails</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
-    <name>Weapon</name>
+    <name>WeaponNails</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <bundle.symbolicName>dk.sdu.mmmi.weapon</bundle.symbolicName>
+        <bundle.symbolicName>dk.sdu.mmmi.nails</bundle.symbolicName>
         <bundle.namespace>dk.sdu.mmmi</bundle.namespace>
     </properties>
 

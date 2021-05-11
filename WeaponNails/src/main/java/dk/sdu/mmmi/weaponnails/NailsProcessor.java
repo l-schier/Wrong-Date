@@ -1,4 +1,4 @@
-package dk.sdu.mmmi.weapon;
+package dk.sdu.mmmi.weaponnails;
 
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
@@ -14,14 +14,12 @@ import dk.sdu.mmmi.common.services.IInteractService;
  *
  * @author Jacob
  */
-public class WeaponProcessor implements IEntityProcessingService, IInteractService {
+public class NailsProcessor implements IEntityProcessingService, IInteractService {
     
     @Override
     public void process(GameData gameData, World world) {
-        for (Entity weapon : world.getEntities(Weapon.class)) {
-            PositionPart positionPart = weapon.getPart(PositionPart.class);
-            DamagePart damagePart = weapon.getPart(DamagePart.class);
-            setShape(weapon);
+        for (Entity nails : world.getEntities(Nails.class)) {
+            setShape(nails);
         }
     }
 
@@ -53,11 +51,11 @@ public class WeaponProcessor implements IEntityProcessingService, IInteractServi
     public void interact(Entity user, World world) {
         InventoryPart inventory = user.getPart(InventoryPart.class);
         Entity currentWeapon = inventory.getCurrentWeapon();
-        for (Entity weapon : world.getEntities(Weapon.class)) {
-            InteractPart interact = weapon.getPart(InteractPart.class);
-            if (user.circleCollision(weapon) && interact.isInteractable() && weapon != currentWeapon) {
-                inventory.addItem(weapon);
-                System.out.println("Added weapon");
+        for (Entity nails : world.getEntities(Nails.class)) {
+            InteractPart interact = nails.getPart(InteractPart.class);
+            if (user.circleCollision(nails) && interact.isInteractable() && nails != currentWeapon) {
+                inventory.addItem(nails);
+                System.out.println("Added nails");
             }
         }
     }
