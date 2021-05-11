@@ -9,7 +9,7 @@ import java.awt.Image;
  * @author Jacob
  */
 public interface IItemService {
-    void useItem(Entity shooter, GameData gameData);
+    void useItem(Entity me, GameData gameData);
     String getDescription();
     Image getSprite();
 }
