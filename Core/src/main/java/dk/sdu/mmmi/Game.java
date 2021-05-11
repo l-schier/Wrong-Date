@@ -60,7 +60,7 @@ public class Game implements ApplicationListener {
 
     private final List<IGamePluginService> gamePluginList = new CopyOnWriteArrayList<>();
     private final List<IEntityProcessingService> entityProcessorList = new CopyOnWriteArrayList<>();
-    private final List<IPostEntityProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
+    private final List<IEntityPostProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
 
     private SpriteBatch batch;
 
