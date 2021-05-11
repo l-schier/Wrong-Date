@@ -3,8 +3,8 @@
     <implementation class="dk.sdu.mmmi.Game"/>
 
     <reference bind="addPostEntityProcessingService" cardinality="0..n"
-               interface="dk.sdu.mmmi.common.services.IPostEntityProcessingService"
-               name="IPostEntityProcessingService" policy="dynamic" unbind="removePostEntityProcessingService"/>
+               interface="dk.sdu.mmmi.common.services.IEntityPostProcessingService"
+               name="IEntityPostProcessingService" policy="dynamic" unbind="removePostEntityProcessingService"/>
 
     <reference bind="addEntityProcessingService" cardinality="0..n"
                interface="dk.sdu.mmmi.common.services.IEntityProcessingService"
