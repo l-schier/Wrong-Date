@@ -6,30 +6,23 @@ import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.DamagePart;
 import dk.sdu.mmmi.common.data.entityparts.InteractPart;
 import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
-import dk.sdu.mmmi.common.data.entityparts.LifePart;
-import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.common.services.IInteractService;
 import dk.sdu.mmmi.common.services.IItemService;
-
 import java.awt.Image;
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
 
 /**
  *
  * @author Jacob
  */
 public class WeaponProcessor implements IEntityProcessingService, IItemService, IInteractService {
-
+    
     @Override
     public void process(GameData gameData, World world) {
         for (Entity weapon : world.getEntities(Weapon.class)) {
-
             PositionPart positionPart = weapon.getPart(PositionPart.class);
             DamagePart damagePart = weapon.getPart(DamagePart.class);
-
             setShape(weapon);
         }
     }
@@ -59,6 +52,10 @@ public class WeaponProcessor implements IEntityProcessingService, IItemService, 
     }
 
     public void useItem(Entity shooter, GameData gameData) {
+//        InventoryPart inventory = shooter.getPart(InventoryPart.class);
+//        DamagePart damage = inventory.getWeapon().getPart(DamagePart.class);
+//        damage.setWeaponUsed(true);
+
         InventoryPart inventory = shooter.getPart(InventoryPart.class);
         Entity weapon = inventory.getWeapon();
         if (weapon != null) {
@@ -88,5 +85,4 @@ public class WeaponProcessor implements IEntityProcessingService, IItemService, 
             }
         }
     }
-
 }

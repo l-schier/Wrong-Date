@@ -5,12 +5,15 @@ import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.DamagePart;
 import dk.sdu.mmmi.common.data.entityparts.DoorPart;
+import dk.sdu.mmmi.common.data.entityparts.EnemyPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.common.data.entityparts.WallPart;
 import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
+import dk.sdu.mmmi.common.data.entityparts.KeyPart;
 import dk.sdu.mmmi.common.services.ICollisionChecker;
 import dk.sdu.mmmi.common.services.IPostEntityProcessingService;
+import java.util.ArrayList;
 
 /**
  *
@@ -26,14 +29,14 @@ public class Collider implements IPostEntityProcessingService, ICollisionChecker
                 if (e1.getID().equals(e2.getID())) {
                     continue;
                 }
-                if (e2.getPart(InventoryPart.class) != null){
+                if (e2.getPart(InventoryPart.class) != null) {
                     InventoryPart inventoryPart = e2.getPart(InventoryPart.class);
-                    if(inventoryPart.getWeapon() != null && inventoryPart.getWeapon().equals(e1)){
+                    if (inventoryPart.getWeapon() != null && inventoryPart.getWeapon().equals(e1)) {
                         continue;
                     }
                 }
 
-                if(e1.getPart(DamagePart.class) != null && e2.getPart(LifePart.class) != null){
+                if (e1.getPart(DamagePart.class) != null && e2.getPart(LifePart.class) != null) {
                     DamagePart e1d = e1.getPart(DamagePart.class);
                     LifePart e2l = e2.getPart(LifePart.class);
                     if (circleCollision(e1, e2) && e1d.isWeaponUsed()) {
@@ -67,36 +70,67 @@ public class Collider implements IPostEntityProcessingService, ICollisionChecker
 
     @Override
     public boolean isPositionFree(World world, Entity me, float x, float y) {
+        InventoryPart inventory = me.getPart(InventoryPart.class);
+        ArrayList<KeyPart> keys = new ArrayList<>();
+        if (inventory != null) {
+            keys = inventory.getKeyParts();
+        }
 
         for (Entity e : world.getEntities()) {
-            if (e != me) {
-                if (e.getPart(WallPart.class) != null || e.getPart(DoorPart.class) != null) {
-                    DoorPart doorPart = e.getPart(DoorPart.class);
-                    WallPart wall = e.getPart(WallPart.class);
-                    PositionPart pos = me.getPart(PositionPart.class);
-                    float[][] doors = doorPart.getDoors();
-                    /*for (int i = 0; i < 4; i++ ) {
-                        if (doors[i][0] <= x && x <= doors[i][2] && doors[i][1] <= y && y <= doors[i][3]) {
-                            return true;
+            if (e == me) {
+                continue;
+            }
+
+            DoorPart doorPart = e.getPart(DoorPart.class);
+            WallPart wall = e.getPart(WallPart.class);
+
+            if (wall != null || doorPart != null) {
+
+                float[][] doors = doorPart.getDoors();
+                PositionPart pos = me.getPart(PositionPart.class);
+
+                // entity is inside the box of walls!
+                if (wall.getStartX() <= pos.getX() && pos.getX() <= wall.getEndX()
+                        && wall.getStartY() <= pos.getY() && pos.getY() <= wall.getEndY()) {
+
+                    // is x:y on the outside of the wall?
+                    boolean wallBool = x <= wall.getStartX() || wall.getEndX() <= x
+                            || y <= wall.getStartY() || wall.getEndY() <= y;
+                    boolean doorBool = false;
+
+                    // if so, did x:y get outside through a door?
+                    for (float[] door : doors) {
+                        if (door[0] == door[2]) { // x == x, so it is a left or right door
+                            doorBool = doorBool || door[1] <= y && y <= door[3];
+                        } else if (door[1] == door[3]) { // y == y, so it is a top or bottom door
+                            doorBool = doorBool || door[0] <= x && x <= door[2];
                         }
-                    }*/
-                    if (pos.getX() >= wall.getStartX() && pos.getX() <= wall.getEndX() && pos.getY() >= wall.getStartY() && pos.getY() <= wall.getEndY()) {
-                        boolean wallBool = wall.getStartX() >= x || x >= wall.getEndX() || wall.getStartY() >= y || y >= wall.getEndY();
-                        boolean doorBool = false;
-                        for (int i = 0; i < 4; i++) {
-                            doorBool = doorBool || doors[i][0] <= x && x <= doors[i][2] && doors[i][1] <= y && y <= doors[i][3];
-                        }
-                        if (wallBool) {
-                            if (doorBool) {
-                                return true;
-                            } else {
-                               return false;
+                    }
+
+                    boolean hasKey = false;
+                    EnemyPart enemy = me.getPart(EnemyPart.class);
+                    // enemy has a master key
+                    if (enemy != null) {
+                        hasKey = true;
+                    } else {
+                        // do we have a key matching the lock color?
+                        for (KeyPart key : keys) {
+                            if (key.getColor() == doorPart.getLockColor()) {
+                                hasKey = true;
                             }
                         }
                     }
+
+                    if (wallBool) {
+                        if (doorBool && hasKey) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
                 }
-                // Rest of collison
             }
+            // Rest of collison
         }
 
         float deadZoneStartX = 100;
