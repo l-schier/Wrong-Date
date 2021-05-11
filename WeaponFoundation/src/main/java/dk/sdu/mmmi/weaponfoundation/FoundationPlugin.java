@@ -33,7 +33,7 @@ public class FoundationPlugin implements IGamePluginService {
 
         float x = (float)random.nextInt(gameData.getDisplayWidth());
         float y = (float)random.nextInt(gameData.getDisplayHeight());
-        float duration = 100;
+        float duration = 10;
         boolean interactable = true;
         foundation.setRadius(8);
 
