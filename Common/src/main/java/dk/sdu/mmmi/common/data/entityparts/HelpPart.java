@@ -5,6 +5,7 @@
  */
 package dk.sdu.mmmi.common.data.entityparts;
 
+import com.badlogic.gdx.Gdx;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import java.io.File;
@@ -15,21 +16,21 @@ import java.nio.file.StandardCopyOption;
 
 /**
  *
- * @author sofie
+ * @author tes_7
+ * 
+ * make a line break for line break
  */
-public class RenderPart implements EntityPart {
-
-    private String spriteFile;
-    private Object component;
-    private Boolean visible;
-
-    public RenderPart(String spriteFile, Object component) {
-        this.component = component;
-        this.spriteFile = getSprite(spriteFile);
-        this.visible = true;
+public class HelpPart implements EntityPart {
+    
+    private String helpFile; 
+    private Object component; 
+    
+    public HelpPart(String helpFile, Object component){
+        this.component = component; 
+        this.helpFile = getFile(helpFile);
     }
-
-    private String getSprite(String spriteFile) {
+    
+    private String getFile(String spriteFile) {
         // Get module sprites
         InputStream inputStream = this.component.getClass().getClassLoader().getResourceAsStream(spriteFile);
         File temp = new File(spriteFile);
@@ -45,25 +46,14 @@ public class RenderPart implements EntityPart {
 
         return null;
     }
-
-    public void setSprite(String newfile) {
-        this.spriteFile = getSprite(newfile);
-    }
-
-    public String getSpritePath() {
-        return this.spriteFile;
-    }
-
-    public Boolean isVisible() {
-        return this.visible;
-    }
-
-    public void setVisibility(Boolean visible) {
-        this.visible = visible;
+    
+    public File getFile(){
+        return new File(Gdx.files.getLocalStoragePath() + helpFile);
     }
 
     @Override
     public void process(GameData gameData, Entity entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
 }

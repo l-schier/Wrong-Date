@@ -10,28 +10,13 @@ import dk.sdu.mmmi.common.data.GameData;
 
 /**
  *
- * @author lasse
+ * @author tes_7
  */
-public class DoorPart implements EntityPart {
-
-    private float[][] doors;
-    private KeyPart.KeyColor lockColor;
-
-    public DoorPart(float[][] doors, KeyPart.KeyColor lockColor) {
-        this.doors = doors;
-        this.lockColor = lockColor;
-    }
+public class PlayerPart implements EntityPart{
 
     @Override
     public void process(GameData gameData, Entity entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    public float[][] getDoors() {
-        return doors;
-    }
-
-    public KeyPart.KeyColor getLockColor() {
-        return lockColor;
-    }
+    
 }

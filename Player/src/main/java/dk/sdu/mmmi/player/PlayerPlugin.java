@@ -8,6 +8,7 @@ import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
+import dk.sdu.mmmi.common.data.entityparts.PlayerPart;
 import dk.sdu.mmmi.common.services.IGamePluginService;
 
 public class PlayerPlugin implements IGamePluginService {
@@ -34,6 +35,7 @@ public class PlayerPlugin implements IGamePluginService {
         player.add(new PositionPart(x, y));
         player.add(new InteractPart());
         player.add(new InventoryPart());
+        player.add(new PlayerPart());
 
         player.setRadius(8);
 
