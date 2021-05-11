@@ -39,9 +39,11 @@ public class Menu {
     private ArrayList<File> helpFiles;
     private Array<Actor> actors;
 
+    private static int Width0 = -150;
     private static int WidthWindow;
-    private static int Width0;
-    private static int Width;
+    private static int WidthStart;
+    private static int WidthMenu;
+    private static int WidthGame;
     private static int Height;
     private static int spacing = 10;
     private boolean pause, resume;
@@ -70,11 +72,12 @@ public class Menu {
     File weaponDescFile;
     Image weaponImage = null;
 
-    public Menu(int WidthWindow, int Width0, int Height, Skin skin, Stage stage, World world) {
-        this.WidthWindow = WidthWindow;
-        this.Width0 = Width0;
+    public Menu(int WidthWindow, int gameWidth, int Height, Skin skin, Stage stage, World world) {
+        this.WidthWindow = Width0 + WidthWindow;
+        this.WidthStart = Width0 + gameWidth;
+        this.WidthGame = gameWidth;
         this.Height = Height;
-        Width = WidthWindow - Width0;
+        WidthMenu = WidthWindow - gameWidth;
         this.skin = skin;
         this.stage = stage;
         this.world = world;
@@ -91,26 +94,20 @@ public class Menu {
         }
     }
 
-    public void setMenuData(int WidthWindow, int Width0, int Height) {
-        this.WidthWindow = WidthWindow;
-        this.Width0 = Width0;
-        this.Height = Height;
-        Width = WidthWindow - Width0;
-    }
 
     public void draw() {
-        int x1 = Width0 + spacing;
+        int x1 = WidthStart + spacing;
         int width1 = 90;
         int x2 = x1 + width1 + spacing;
         int width2 = WidthWindow - x2 - spacing;
         int height2 = 40;
-        int width3 = Width - (2 * spacing);
+        int width3 = WidthMenu - (2 * spacing);
 
         backgorundImageStr = Gdx.files.getLocalStoragePath() + "PinkSquare.jpg";
         //Menu Field
         backgroundImage = new Image(new Texture(backgorundImageStr));
-        backgroundImage.setPosition(Width0, 0);
-        backgroundImage.setSize(Width, Height);
+        backgroundImage.setPosition(WidthStart, 0);
+        backgroundImage.setSize(WidthMenu, Height);
         stage.getActors().add(backgroundImage);
 
         //Profile Picture
@@ -171,14 +168,14 @@ public class Menu {
 
         //Help button?
         helpButton = new TextButton("HELP", skin);
-        helpButton.setPosition(Width0, 0);
-        helpButton.setSize(Width / 3, (itemInfoArea.getY() - spacing) / 2);
+        helpButton.setPosition(WidthStart, 0);
+        helpButton.setSize(WidthMenu / 3, (itemInfoArea.getY() - spacing) / 2);
 
         stage.getActors().add(helpButton);
 
         //Settings button
         settingsButton = new TextButton("SETTINGS", skin);
-        settingsButton.setPosition(Width0 + helpButton.getWidth(), helpButton.getY());
+        settingsButton.setPosition(WidthStart + helpButton.getWidth(), helpButton.getY());
         settingsButton.setSize(helpButton.getWidth() * 2, helpButton.getHeight());
         stage.getActors().add(settingsButton);
 
@@ -260,8 +257,8 @@ public class Menu {
 
         //Background
         Image helpBImage = new Image(new Texture(Gdx.files.internal(backgorundImageStr)));
-        helpBImage.setPosition(0, 0);
-        helpBImage.setWidth(Width0);
+        helpBImage.setPosition(Width0, 0);
+        helpBImage.setWidth(WidthGame);
         helpBImage.setHeight(Height);
         actors.add(helpBImage);
         //Hashmap with all help files
@@ -281,21 +278,21 @@ public class Menu {
         int buttonWidth;
 
         int buttonHeight = 50;
-        int buttonX = 0;
+        int buttonX = Width0;
         int buttonY = Height - buttonHeight;
 
         //Text Area
         TextArea textArea = new TextArea("", skin);
-        textArea.setWidth(Width0);
+        textArea.setWidth(WidthGame);
         textArea.setHeight(Height - buttonHeight);
-        textArea.setPosition(0, 0);
+        textArea.setPosition(Width0, 0);
         actors.add(textArea);
 
         if (buttons.size() < 1) {
             String str = "Sorry, no help to get.\nYou are on your own";
             textArea.setText(str);
         } else {
-            buttonWidth = Width0 / buttons.size();
+            buttonWidth = WidthGame / buttons.size();
 
             for (Map.Entry<String, TextButton> e : buttons.entrySet()) {
                 TextButton b = e.getValue();
@@ -307,8 +304,7 @@ public class Menu {
                 b.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        System.out.println(fileToText(files.get((e.getKey()))));
-                        textArea.setText(fileToText(files.get((e.getKey()))));
+                    textArea.setText(fileToText(files.get((e.getKey()))));
                     }
                 });
             }
