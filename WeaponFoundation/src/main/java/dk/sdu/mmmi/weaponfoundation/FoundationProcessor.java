@@ -21,7 +21,7 @@ import java.awt.Image;
  *
  * @author Kaan
  */
-public class FoundationProcessor implements IEntityProcessingService, IItemService, IInteractService {
+public class FoundationProcessor implements IEntityProcessingService, IInteractService {
     
     @Override
     public void process(GameData gameData, World world) {
@@ -54,25 +54,6 @@ public class FoundationProcessor implements IEntityProcessingService, IItemServi
 
         entity.setShapeX(shapex);
         entity.setShapeY(shapey);
-    }
-
-    public void useItem(Entity shooter, GameData gameData) {
-        InventoryPart inventory = shooter.getPart(InventoryPart.class);
-        Entity foundation = inventory.getWeapon();
-        if (foundation != null) {
-            DamagePart damage = foundation.getPart(DamagePart.class);
-            damage.setWeaponUsed(true);
-        }
-    }
-
-    @Override
-    public String getDescription() {
-        return "Stun weapon";
-    }
-
-    @Override
-    public Image getSprite() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

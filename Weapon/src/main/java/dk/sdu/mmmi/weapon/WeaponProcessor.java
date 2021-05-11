@@ -16,7 +16,7 @@ import java.awt.Image;
  *
  * @author Jacob
  */
-public class WeaponProcessor implements IEntityProcessingService, IItemService, IInteractService {
+public class WeaponProcessor implements IEntityProcessingService, IInteractService {
     
     @Override
     public void process(GameData gameData, World world) {
@@ -49,25 +49,6 @@ public class WeaponProcessor implements IEntityProcessingService, IItemService, 
 
         entity.setShapeX(shapex);
         entity.setShapeY(shapey);
-    }
-
-    public void useItem(Entity shooter, GameData gameData) {
-        InventoryPart inventory = shooter.getPart(InventoryPart.class);
-        Entity weapon = inventory.getWeapon();
-        if (weapon != null) {
-            DamagePart damage = weapon.getPart(DamagePart.class);
-            damage.setWeaponUsed(true);
-        }
-    }
-
-    @Override
-    public String getDescription() {
-        return "Melee weapon";
-    }
-
-    @Override
-    public Image getSprite() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
