@@ -16,7 +16,6 @@ import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.DoorPart;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.common.services.IGamePluginService;
-import dk.sdu.mmmi.common.services.IPostEntityProcessingService;
 import dk.sdu.mmmi.core.managers.GameInputProcessor;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -38,6 +37,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import dk.sdu.mmmi.common.services.IEntityPostProcessingService;
 
 public class Game implements ApplicationListener {
 
@@ -164,7 +164,7 @@ public class Game implements ApplicationListener {
         }
 
         // Post Update
-        for (IPostEntityProcessingService postEntityProcessorService : postEntityProcessorList) {
+        for (IEntityPostProcessingService postEntityProcessorService : postEntityProcessorList) {
             postEntityProcessorService.process(gameData, world);
         }
     }
@@ -268,11 +268,11 @@ public class Game implements ApplicationListener {
         this.entityProcessorList.remove(eps);
     }
 
-    public void addPostEntityProcessingService(IPostEntityProcessingService eps) {
+    public void addPostEntityProcessingService(IEntityPostProcessingService eps) {
         this.postEntityProcessorList.add(eps);
     }
 
-    public void removePostEntityProcessingService(IPostEntityProcessingService eps) {
+    public void removePostEntityProcessingService(IEntityPostProcessingService eps) {
         this.postEntityProcessorList.remove(eps);
     }
 

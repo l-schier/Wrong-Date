@@ -51,7 +51,12 @@ public class PlayerSystem implements IEntityProcessingService {
                 newY -= speed;
             }
 
-            if (collisionChecker.isPositionFree(world, player, newX, newY)) {
+            if (this.collisionChecker == null) {
+                movingPart.setRight(gameData.getKeys().isDown(RIGHT));
+                movingPart.setLeft(gameData.getKeys().isDown(LEFT));
+                movingPart.setUp(gameData.getKeys().isDown(UP));
+                movingPart.setDown(gameData.getKeys().isDown(DOWN));
+            } else if (collisionChecker.isPositionFree(world, player, newX, newY)) {
                 movingPart.setRight(gameData.getKeys().isDown(RIGHT));
                 movingPart.setLeft(gameData.getKeys().isDown(LEFT));
                 movingPart.setUp(gameData.getKeys().isDown(UP));

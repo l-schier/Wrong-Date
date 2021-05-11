@@ -12,14 +12,14 @@ import dk.sdu.mmmi.common.data.entityparts.WallPart;
 import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
 import dk.sdu.mmmi.common.data.entityparts.KeyPart;
 import dk.sdu.mmmi.common.services.ICollisionChecker;
-import dk.sdu.mmmi.common.services.IPostEntityProcessingService;
 import java.util.ArrayList;
+import dk.sdu.mmmi.common.services.IEntityPostProcessingService;
 
 /**
  *
  * @author Anton
  */
-public class Collider implements IPostEntityProcessingService, ICollisionChecker {
+public class Collider implements IEntityPostProcessingService, ICollisionChecker {
 
     @Override
     public void process(GameData gameData, World world) {
