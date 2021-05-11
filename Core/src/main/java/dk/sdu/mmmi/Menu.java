@@ -26,6 +26,9 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  *
@@ -79,6 +82,7 @@ public class Menu {
         draw();
         helpButtonfunctionality();
         pauseButtonFunctionality();
+        settingsButtonFunctionality();
 
         for (Entity e : world.getEntities()) {
             if (e.getPart(PlayerPart.class) != null) {
@@ -221,6 +225,25 @@ public class Menu {
                 }
             }
         });
+    }
+    
+    private void settingsButtonFunctionality(){
+        //https://stackoverflow.com/questions/36017774/how-can-i-execute-osgi-command-in-code
+        //https://stackoverflow.com/questions/6527306/best-technique-for-getting-the-osgi-bundle-context
+        settingsButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                Settings();
+              
+            }
+        });
+    }
+    
+    private void Settings(){
+        BundleContext context = FrameworkUtil.getBundle(Entity.class).getBundleContext();
+               
+        for (Bundle b : context.getBundles()){
+            System.out.println(b.getSymbolicName());
+        }
     }
 
     public void help(Stage stage) {
