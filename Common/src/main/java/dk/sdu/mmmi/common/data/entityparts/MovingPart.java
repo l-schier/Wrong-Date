@@ -70,19 +70,18 @@ public class MovingPart implements EntityPart {
             y -= speed;
         }
 
-        // set position
-        if (x > gameData.getDisplayWidth()) {
-            x = 0;
-        } else if (x < 0) {
-            x = gameData.getDisplayWidth();
-        }
-
-        if (y > gameData.getDisplayHeight()) {
-            y = 0;
-        } else if (y < 0) {
-            y = gameData.getDisplayHeight();
-        }
-
+//        // set position
+//        if (x > gameData.getDisplayWidth()) {
+//            x = 0;
+//        } else if (x < 0) {
+//            x = gameData.getDisplayWidth();
+//        }
+//
+//        if (y > gameData.getDisplayHeight()) {
+//            y = 0;
+//        } else if (y < 0) {
+//            y = gameData.getDisplayHeight();
+//        }
         positionPart.setX(x);
         positionPart.setY(y);
     }
