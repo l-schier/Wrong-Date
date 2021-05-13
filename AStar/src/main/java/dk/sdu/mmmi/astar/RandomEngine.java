@@ -23,6 +23,10 @@ public class RandomEngine {
         this.collisionChecker = collisionChecker;
     }
 
+    public void setCollisionEngine(ICollisionChecker collisionChecker) {
+        this.collisionChecker = collisionChecker;
+    }
+
     public PositionPart randomMove(World world, Entity me) {
         PositionPart positionPart = me.getPart(PositionPart.class);
         ArrayList<PositionPart> directions = new ArrayList<PositionPart>();
