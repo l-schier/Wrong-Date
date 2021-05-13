@@ -24,8 +24,11 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+<<<<<<< HEAD
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+=======
+>>>>>>> b83d8d2cae4fd7867cd74f8fa9a423138bd75474
 import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.RenderPart;
@@ -196,7 +199,10 @@ public class Game implements ApplicationListener {
                     
                     
 
+<<<<<<< HEAD
                     batch.setProjectionMatrix(vp.getCamera().combined);
+=======
+>>>>>>> b83d8d2cae4fd7867cd74f8fa9a423138bd75474
                     batch.begin();
                     batch.draw(img, pos.getX() - 16, pos.getY() - 16);
                     batch.end();
