@@ -22,6 +22,10 @@ public class AStarEngine {
         this.collisionChecker = collisionChecker;
     }
 
+    public void setCollisionEngine(ICollisionChecker collisionChecker) {
+        this.collisionChecker = collisionChecker;
+    }
+
     public PositionPart search(
             World world,
             Entity me,

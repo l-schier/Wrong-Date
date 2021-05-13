@@ -14,17 +14,17 @@ import dk.sdu.mmmi.common.services.IPathfinder;
  */
 public class AStarPathfinder implements IPathfinder {
 
-    private AStarEngine aStar;
-    private RandomEngine random;
+    private AStarEngine aStar = new AStarEngine(null);
+    private RandomEngine random = new RandomEngine(null);
 
     public void addCollisionChecker(ICollisionChecker collisionChecker) {
-        this.aStar = new AStarEngine(collisionChecker);
-        this.random = new RandomEngine(collisionChecker);
+        this.aStar.setCollisionEngine(collisionChecker);
+        this.random.setCollisionEngine(collisionChecker);
     }
 
     public void removeCollisionChecker(ICollisionChecker collisionChecker) {
-        this.aStar = null;
-        this.random = null;
+        this.aStar.setCollisionEngine(null);
+        this.random.setCollisionEngine(null);
     }
 
     @Override
