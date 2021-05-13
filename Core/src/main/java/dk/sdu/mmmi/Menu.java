@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
@@ -28,6 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkUtil;
 
 /**
@@ -37,7 +39,9 @@ import org.osgi.framework.FrameworkUtil;
 public class Menu {
 
     private ArrayList<File> helpFiles;
-    private Array<Actor> actors;
+    private Array<Actor> helpActors, settingsActors = null;
+    private HashMap<String, CheckBox> components = null;
+    private HashMap<String, Bundle> bundles = null;
 
     private static int Width0 = -150;
     private static int WidthWindow;
@@ -191,18 +195,11 @@ public class Menu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (!helpClicked) {
-                    help(stage);
-                    helpClicked = true;
+                    help();
                 } else if (helpClicked) {
 
-                    if (pauseClicked) {
-                        pauseButton.setText("PAUSE");
-                        pauseClicked = false;
-                    }
-                    stage.getActors().removeAll(actors, false);
-
-                    resume();
-                    helpClicked = false;
+                    removeHelp();
+                    
                 }
             }
         });
@@ -225,27 +222,134 @@ public class Menu {
     }
     
     private void settingsButtonFunctionality(){
-        //https://stackoverflow.com/questions/36017774/how-can-i-execute-osgi-command-in-code
         //https://stackoverflow.com/questions/6527306/best-technique-for-getting-the-osgi-bundle-context
         settingsButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                Settings();
+                if (!settingsClicked){
+                    Settings();
+                    
+                } else {
+                    removeSettings();
+                }
+                
               
             }
         });
     }
     
     private void Settings(){
+        pause();
+        
         BundleContext context = FrameworkUtil.getBundle(Entity.class).getBundleContext();
-               
-        for (Bundle b : context.getBundles()){
-            System.out.println(b.getSymbolicName());
+        
+        if(bundles == null ){
+            bundles = new HashMap<>();
+            for ( Bundle b: context.getBundles()){
+                String name = b.getSymbolicName();
+                if(name.contains(".") || name.equals("Core")){       
+                }else{
+                    bundles.put(name, b);
+                }
+            }
         }
+        
+        if(helpClicked){
+            removeHelp();
+        }
+        
+        int x = Width0 + spacing, checkHeight = 60, y = Height - spacing - checkHeight, buttonHeight = 50;
+                
+        if (settingsActors == null){
+            settingsActors = new Array<>();
+            
+            
+            Image setBImage = new Image(new Texture(Gdx.files.internal(backgorundImageStr)));
+            setBImage.setPosition(Width0, 0);
+            setBImage.setWidth(WidthGame);
+            setBImage.setHeight(Height);
+            settingsActors.add(setBImage);
+        }
+        
+        if(components == null){
+            components = new HashMap<>();
+            for(Map.Entry<String, Bundle> e: bundles.entrySet()){
+                components.put(e.getKey(),new CheckBox(e.getKey(), skin));
+            }
+        }
+        
+        
+        for (Map.Entry<String, CheckBox> e : components.entrySet()){
+            CheckBox check = e.getValue();
+            check.setHeight(checkHeight);
+            check.setPosition(x, y);
+            y -= (spacing + checkHeight);
+            
+            if (y <= buttonHeight){
+                y = Height - checkHeight - spacing;
+                x = WidthGame/2 + Width0 + spacing;
+            }
+            
+            settingsActors.add(check);
+            
+        }
+        
+        for(Map.Entry<String, Bundle> e: bundles.entrySet()){
+            components.get(e.getKey()).setChecked(e.getValue().getState() == 32);     
+        }
+        
+        
+        TextButton save = new TextButton("SAVE", skin);
+        save.setHeight(buttonHeight);
+        save.setWidth(WidthGame);
+        save.setPosition(Width0, 0);
+        settingsActors.add(save);
+        
+        save.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                for(Map.Entry<String, CheckBox> e: components.entrySet()){
+                    CheckBox check = e.getValue();
+                    String name = e.getKey();
+                    Bundle b = bundles.get(name);
+                    if(check.isChecked() && !(b.getState() == 32) ){
+                        
+                        try {
+                            b.start();
+                        } catch (BundleException ex) {
+                            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        
+                    } else if( !check.isChecked() && b.getState() == 32){
+                        try {
+                            b.stop();
+                        } catch (BundleException ex) {
+                            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            }
+        });
+        
+        stage.getActors().addAll(settingsActors);
+        
+
+       settingsClicked = true;
+    }
+    
+    public void removeSettings(){
+        stage.getActors().removeAll(settingsActors, false);
+        
+        resume();
+        settingsClicked = false;
     }
 
-    public void help(Stage stage) {
+    public void help() {
         pause();
-        actors = new Array<>();
+        
+        if(settingsClicked){
+            removeSettings();
+        }
+        
+        helpActors = new Array<>();
         helpFiles = new ArrayList();
 
         for (Entity e : world.getEntities()) {
@@ -260,7 +364,7 @@ public class Menu {
         helpBImage.setPosition(Width0, 0);
         helpBImage.setWidth(WidthGame);
         helpBImage.setHeight(Height);
-        actors.add(helpBImage);
+        helpActors.add(helpBImage);
         //Hashmap with all help files
         HashMap<String, File> files = new HashMap<>();
 
@@ -286,7 +390,7 @@ public class Menu {
         textArea.setWidth(WidthGame);
         textArea.setHeight(Height - buttonHeight);
         textArea.setPosition(Width0, 0);
-        actors.add(textArea);
+        helpActors.add(textArea);
 
         if (buttons.size() < 1) {
             String str = "Sorry, no help to get.\nYou are on your own";
@@ -299,7 +403,7 @@ public class Menu {
                 b.setWidth(buttonWidth);
                 b.setHeight(buttonHeight);
                 b.setPosition(buttonX, buttonY);
-                actors.add(b);
+                helpActors.add(b);
                 buttonX += buttonWidth;
                 b.addListener(new ClickListener() {
                     @Override
@@ -310,9 +414,22 @@ public class Menu {
             }
         }
 
-        for (Actor a : actors) {
+        for (Actor a : helpActors) {
             stage.getActors().add(a);
         }
+        
+        helpClicked = true;
+    }
+    
+    public void removeHelp(){
+        if (pauseClicked) {
+            pauseButton.setText("PAUSE");
+            pauseClicked = false;
+        }
+        stage.getActors().removeAll(helpActors, false);
+
+        resume();
+        helpClicked = false;
     }
 
     public String fileToText(File f) {
