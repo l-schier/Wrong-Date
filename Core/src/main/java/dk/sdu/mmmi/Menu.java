@@ -16,9 +16,10 @@ import com.badlogic.gdx.utils.Array;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.HelpPart;
-import dk.sdu.mmmi.common.data.entityparts.InformationPart;
+import dk.sdu.mmmi.common.data.entityparts.DescriptionPart;
 import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
 import dk.sdu.mmmi.common.data.entityparts.PlayerPart;
+import dk.sdu.mmmi.common.data.entityparts.RenderPart;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -464,20 +465,22 @@ public class Menu {
 
     public void update() {
         InventoryPart inventoryPart = player.getPart(InventoryPart.class);
+
         if (inventoryPart.getWeapon() != null) {
 
             if (weapon == null || !weapon.equals(inventoryPart.getWeapon())) {
                 weapon = inventoryPart.getWeapon();
-                InformationPart informationPart = weapon.getPart(InformationPart.class);
+                DescriptionPart descriptionPart = weapon.getPart(DescriptionPart.class);
+                RenderPart renderPart = weapon.getPart(RenderPart.class);
 
                 boolean first = false;
                 if (weaponImage == null) {
                     first = true;
                 }
-                weaponImage = informationPart.getImage();
+                weaponImage = new Image(new Texture(renderPart.getSpritePath()));
                 weaponImage.setSize(weapImage.getImageWidth(), weapImage.getImageHeight());
                 weaponImage.setPosition(weapImage.getX(), weapImage.getY());
-                weapDescArea.setText(fileToText(informationPart.getDescription()));
+                weapDescArea.setText(fileToText(descriptionPart.getDescription()));
                 if (first) {
                     stage.getActors().add(weaponImage);
                     first = false;
