@@ -10,11 +10,20 @@ public class GameData {
     private float delta;
     private int displayWidth;
     private int displayHeight;
+    private int menuWidth;
     private final GameKeys keys = new GameKeys();
     private List<Event> events = new CopyOnWriteArrayList<>();
     private int camX;
     private int camY;
+    
+    public int getMenuWidth() {
+        return menuWidth;
+    }
 
+    public void setMenuWidth(int x) {
+        menuWidth = x;
+    }
+    
     public int getCamX() {
         return camX;
     }
