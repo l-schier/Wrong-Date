@@ -24,11 +24,8 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-<<<<<<< HEAD
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-=======
->>>>>>> b83d8d2cae4fd7867cd74f8fa9a423138bd75474
 import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.RenderPart;
@@ -67,9 +64,9 @@ public class Game implements ApplicationListener {
     private final List<IEntityPostProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
 
     private SpriteBatch batch;
-    private Texture img; 
-    private TextureRegion[] animationFrames; 
-    private Animation animation; 
+    private Texture img;
+    private TextureRegion[] animationFrames;
+    private Animation animation;
 
     public Game() {
         init();
@@ -100,7 +97,6 @@ public class Game implements ApplicationListener {
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
 
     }
 
@@ -189,24 +185,18 @@ public class Game implements ApplicationListener {
 
                 try {
                     Texture img = new Texture(Gdx.files.getLocalStoragePath() + render.getSpritePath());
-                    
-                    if(entity.getPart(MovingPart.class) != null){
+
+                    if (entity.getPart(MovingPart.class) != null) {
                         TextureRegion[][] tmpFrames = TextureRegion.split(img, gameWidth, Height);
                         animationFrames = new TextureRegion[4];
-                        
-                        
-                    }
-                    
-                    
 
-<<<<<<< HEAD
+                    }
+
                     batch.setProjectionMatrix(vp.getCamera().combined);
-=======
->>>>>>> b83d8d2cae4fd7867cd74f8fa9a423138bd75474
                     batch.begin();
                     batch.draw(img, pos.getX() - 16, pos.getY() - 16);
                     batch.end();
-                    
+
                 } catch (GdxRuntimeException e) {
                     System.out.println("Image not found");
                 }
