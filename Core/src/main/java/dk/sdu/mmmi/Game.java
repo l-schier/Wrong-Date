@@ -51,7 +51,7 @@ public class Game implements ApplicationListener {
     private Skin skin;
     private Menu menu;
 
-    private static boolean isPaused;
+    private boolean isPaused;
 
     private final GameData gameData = new GameData();
     private final World world = new World();
@@ -66,6 +66,7 @@ public class Game implements ApplicationListener {
         init();
         gameData.setDisplayWidth(gameWidth);
         gameData.setDisplayHeight(Height);
+        gameData.setMenuWidth(menuWidth);
     }
 
     private void init() {
@@ -132,6 +133,7 @@ public class Game implements ApplicationListener {
     @Override
     public void render() {
         if (!isPaused) {
+            vp.getCamera().position.set((float) gameData.getCamX(),(float) gameData.getCamY(), 0);
             vp.getCamera().update();
             Gdx.gl.glClearColor(0, 0, 0, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
