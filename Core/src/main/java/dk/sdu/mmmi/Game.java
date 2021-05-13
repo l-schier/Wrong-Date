@@ -20,10 +20,13 @@ import dk.sdu.mmmi.core.managers.GameInputProcessor;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.RenderPart;
 import java.io.File;
@@ -61,6 +64,9 @@ public class Game implements ApplicationListener {
     private final List<IEntityPostProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
 
     private SpriteBatch batch;
+    private Texture img; 
+    private TextureRegion[] animationFrames; 
+    private Animation animation; 
 
     public Game() {
         init();
@@ -180,11 +186,21 @@ public class Game implements ApplicationListener {
 
                 try {
                     Texture img = new Texture(Gdx.files.getLocalStoragePath() + render.getSpritePath());
+                    
+                    if(entity.getPart(MovingPart.class) != null){
+                        TextureRegion[][] tmpFrames = TextureRegion.split(img, gameWidth, Height);
+                        animationFrames = new TextureRegion[4];
+                        
+                        
+                    }
+                    
+                    
 
                     batch.setProjectionMatrix(vp.getCamera().combined);
                     batch.begin();
                     batch.draw(img, pos.getX() - 16, pos.getY() - 16);
                     batch.end();
+                    
                 } catch (GdxRuntimeException e) {
                     System.out.println("Image not found");
                 }
