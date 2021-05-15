@@ -45,7 +45,6 @@ public class Collider implements IEntityPostProcessingService, ICollisionChecker
                     if (circleCollision(e1, e2) && e1d.isWeaponUsed()) {
                         e2l.takeLife(e1d.getDamage());
                     }
-                    e1d.setWeaponUsed(false);
                 }
                 
                 if (e1.getPart(BlindPart.class) != null && e2.getPart(SightPart.class) != null) {
@@ -54,7 +53,6 @@ public class Collider implements IEntityPostProcessingService, ICollisionChecker
                     if (circleCollision(e1, e2) && e1b.isBlinding()) {
                         e2s.blindFor(e1b.getBlindDuration());
                     }
-                    e1b.setIsBlinding(false);
                 }
                 
                 if (e1.getPart(StunPart.class) != null && e2.getPart(MovingPart.class) != null) {
@@ -63,8 +61,21 @@ public class Collider implements IEntityPostProcessingService, ICollisionChecker
                     if (circleCollision(e1, e2) && e1s.isStunning()) {
                         e2m.stunFor(e1s.getStunDuration());
                     }
-                    e1s.setIsStunning(false);
                 }
+            }
+            
+            // Disable all WeaponParts
+            if (e1.getPart(DamagePart.class) != null) {
+                DamagePart e1d = e1.getPart(DamagePart.class);
+                e1d.setWeaponUsed(false);
+            }
+            if (e1.getPart(BlindPart.class) != null) {
+                BlindPart e1b = e1.getPart(BlindPart.class);
+                e1b.setIsBlinding(false);
+            }
+            if (e1.getPart(StunPart.class) != null) {
+                StunPart e1s = e1.getPart(StunPart.class);
+                e1s.setIsStunning(false);
             }
         }
     }
