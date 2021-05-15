@@ -29,10 +29,8 @@ public class AStarPathfinder implements IPathfinder {
 
     @Override
     public PositionPart findNextPosition(Entity me, GameData gameData, World world) {
-
-        PositionPart currentPos = me.getPart(PositionPart.class);
-        PositionPart nextPos = currentPos;
-
+        PositionPart nextPos = null;
+        
         Entity target = getTarget(me, world);
         if (target != null) {
             PositionPart targetPos = target.getPart(PositionPart.class);
