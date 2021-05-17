@@ -197,15 +197,26 @@ public class Game implements ApplicationListener {
                         Animation leftWalk = getAnimationFromTextureRange(9);
                         Animation rightWalk = getAnimationFromTextureRange(13);
                         
+                        MovingPart entityMovingPart = entity.getPart(MovingPart.class);
                         
                         elapsedTime += Gdx.graphics.getDeltaTime(); 
 
                         batch.setProjectionMatrix(vp.getCamera().combined);
                         batch.begin();
-                        MovingPart entityMovingPart = entity.getPart(MovingPart.class);
                         
+                        if(entityMovingPart.isLeft()){
+                            batch.draw((TextureRegion) leftWalk.getKeyFrame(elapsedTime, true), pos.getX() - 16, pos.getY() - 16);
+                        }else if(entityMovingPart.isRight()){
+                            batch.draw((TextureRegion) rightWalk.getKeyFrame(elapsedTime, true), pos.getX() - 16, pos.getY() - 16);
+                        }else if(entityMovingPart.isUp()){
+                            batch.draw((TextureRegion) backWalk.getKeyFrame(elapsedTime, true), pos.getX() - 16, pos.getY() - 16);
+                        }else if(entityMovingPart.isDown()){
+                            batch.draw((TextureRegion) frontWalk.getKeyFrame(elapsedTime, true), pos.getX() - 16, pos.getY() - 16);
+                        }else{
+                            TextureRegion stand = new TextureRegion(textureSheet, 4*textureWidth, 0, textureWidth, textureWidth);
+                            batch.draw(stand, pos.getX() - 16, pos.getY() - 16);
+                        }
                         
-                        batch.draw((TextureRegion) backWalk.getKeyFrame(elapsedTime, true), pos.getX() - 16, pos.getY() - 16);
                         batch.end();
 
                     } catch (GdxRuntimeException e) {

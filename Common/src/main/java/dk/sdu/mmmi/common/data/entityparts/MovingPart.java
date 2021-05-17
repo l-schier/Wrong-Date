@@ -9,34 +9,6 @@ import dk.sdu.mmmi.common.data.GameData;
  */
 public class MovingPart implements EntityPart {
 
-    /**
-     * @return the left
-     */
-    public boolean isLeft() {
-        return left;
-    }
-
-    /**
-     * @return the right
-     */
-    public boolean isRight() {
-        return right;
-    }
-
-    /**
-     * @return the up
-     */
-    public boolean isUp() {
-        return up;
-    }
-
-    /**
-     * @return the down
-     */
-    public boolean isDown() {
-        return down;
-    }
-
     private boolean left, right, up, down;
     private final int speed;
     private float expiration;
@@ -100,5 +72,33 @@ public class MovingPart implements EntityPart {
 
         positionPart.setX(x);
         positionPart.setY(y);
+    }
+    
+        /**
+     * @return the left
+     */
+    public boolean isLeft() {
+        return left;
+    }
+
+    /**
+     * @return the right
+     */
+    public boolean isRight() {
+        return right;
+    }
+
+    /**
+     * @return the up
+     */
+    public boolean isUp() {
+        return up;
+    }
+
+    /**
+     * @return the down
+     */
+    public boolean isDown() {
+        return down;
     }
 }
