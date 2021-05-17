@@ -22,8 +22,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PlayerSystem implements IEntityProcessingService {
 
-    private static final List<IItemService> itemServices = new CopyOnWriteArrayList<>();
-    private static final List<IInteractService> interactServices = new CopyOnWriteArrayList<>();
+    private final List<IItemService> itemServices = new CopyOnWriteArrayList<>();
+    private final List<IInteractService> interactServices = new CopyOnWriteArrayList<>();
     private ICollisionChecker collisionChecker;
 
     @Override
@@ -86,20 +86,23 @@ public class PlayerSystem implements IEntityProcessingService {
             float plaY = positionPart.getY();
             int w = gameData.getDisplayWidth();
             int h = gameData.getDisplayHeight();
-            if (plaX > camX + (w)) {
+            int mw = gameData.getMenuWidth();
+
+            if (plaX > camX - mw + (w / 2)) {
                 camX += w;
             }
-            if (plaX < camX - (w)) {
+            if (plaX < camX - mw - (w / 2)) {
                 camX -= w;
             }
-            if (plaY > camY + (h)) {
+            if (plaY > camY + (h / 2)) {
                 camY += h;
             }
-            if (plaY < camY - (h)) {
+            if (plaY < camY - (h / 2)) {
                 camY -= h;
             }
-            //gameData.setCamX(camX);
-            //gameData.setCamY(camY);
+
+            gameData.setCamX(camX);
+            gameData.setCamY(camY);
 
             movingPart.process(gameData, player);
             positionPart.process(gameData, player);
