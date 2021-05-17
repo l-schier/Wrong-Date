@@ -3,7 +3,7 @@ package dk.sdu.mmmi.astar;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
-import dk.sdu.mmmi.common.data.entityparts.LifePart;
+import dk.sdu.mmmi.common.data.entityparts.PlayerPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.services.ICollisionChecker;
 import dk.sdu.mmmi.common.services.IPathfinder;
@@ -29,10 +29,8 @@ public class AStarPathfinder implements IPathfinder {
 
     @Override
     public PositionPart findNextPosition(Entity me, GameData gameData, World world) {
-
-        PositionPart currentPos = me.getPart(PositionPart.class);
-        PositionPart nextPos = currentPos;
-
+        PositionPart nextPos = null;
+        
         Entity target = getTarget(me, world);
         if (target != null) {
             PositionPart targetPos = target.getPart(PositionPart.class);
@@ -51,9 +49,9 @@ public class AStarPathfinder implements IPathfinder {
     private Entity getTarget(Entity me, World world) {
         // find all entities
         for (Entity entity : world.getEntities()) {
-            // player entities have lifeParts
-            LifePart lifePart = entity.getPart(LifePart.class);
-            if (entity != me && lifePart != null) {
+            // player entities have playerParts
+            PlayerPart playerPart = entity.getPart(PlayerPart.class);
+            if (entity != me && playerPart != null) {
                 return entity;
             }
         }
