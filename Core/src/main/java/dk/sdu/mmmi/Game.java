@@ -26,6 +26,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.RenderPart;
+import dk.sdu.mmmi.common.data.entityparts.WallPart;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -169,6 +170,20 @@ public class Game implements ApplicationListener {
     }
 
     private void draw() {
+
+        float fromX = gameData.getCamX() - (gameData.getDisplayWidth() / 2 + menuWidth);
+        float toX = fromX + gameData.getDisplayWidth();
+        float fromY = gameData.getCamY() - (gameData.getDisplayHeight() / 2);
+        float toY = fromY + gameData.getDisplayHeight();
+
+        Texture bg = new Texture("D:\\Git\\floor.png");
+        bg.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+
+        batch.setProjectionMatrix(vp.getCamera().combined);
+        batch.begin();
+        batch.draw(bg, fromX, fromY, 0, 0, (int) toX, (int) toY);
+        batch.end();
+
         for (Entity entity : world.getEntities()) {
             if (entity.getPart(RenderPart.class) != null && entity.getPart(PositionPart.class) != null) {
                 PositionPart pos = entity.getPart(PositionPart.class);
@@ -190,6 +205,24 @@ public class Game implements ApplicationListener {
                 }
 
                 continue;
+            }
+
+            if (entity.getPart(WallPart.class) != null && entity.getPart(PositionPart.class) != null) {
+                WallPart wall = entity.getPart(WallPart.class);
+
+                Texture w = new Texture("D:\\Git\\wall.png");
+                w.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+
+                batch.setProjectionMatrix(vp.getCamera().combined);
+                batch.begin();
+
+                batch.draw(w, wall.getStartX()-32, wall.getStartY()-32, 0, 0, w.getWidth(), (int) wall.getEndY());
+                batch.draw(w, wall.getStartX(), wall.getStartY()-32, 0, 0, (int) wall.getEndX()+32, w.getHeight());
+
+                batch.draw(w, wall.getStartX()-32, wall.getEndY(), 0, 0, (int) wall.getEndX(), w.getHeight());
+                batch.draw(w, wall.getEndX(), wall.getStartY(), 0, 0, w.getWidth(), (int) wall.getEndY()+32);
+
+                batch.end();
             }
 
             sr.setColor(1, 1, 1, 1);

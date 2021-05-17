@@ -30,10 +30,10 @@ public class RoomPlugin implements IGamePluginService {
     private Entity createRoom(GameData gameData) {
         float x = gameData.getDisplayWidth() / 2;
         float y = gameData.getDisplayHeight() / 2;
-        float startX = 2;
-        float startY = 2;
-        float endX = gameData.getDisplayWidth();
-        float endY = gameData.getDisplayHeight();
+        float startX = 32;
+        float startY = 32;
+        float endX = gameData.getDisplayWidth() - 32;
+        float endY = gameData.getDisplayHeight() - 32;
         float[][] doors = new float[4][4];
 
         doors[0][0] = (endX - startX)/2 - 15;
