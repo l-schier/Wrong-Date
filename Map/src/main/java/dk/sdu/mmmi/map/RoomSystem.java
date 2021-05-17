@@ -32,7 +32,6 @@ public class RoomSystem implements IEntityProcessingService{
         float y0 = wallpart.getStartY();
         float x1 = wallpart.getEndX();
         float y1 = wallpart.getEndY();
-        float radians = 3.1415f / 2;
 
         shapex[0] = (float) (x0);
         shapey[0] = (float) (y0);
