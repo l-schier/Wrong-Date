@@ -100,9 +100,9 @@ public class Collider implements IEntityPostProcessingService, ICollisionChecker
 
                     // if so, did x:y get outside through a door?
                     for (float[] door : doors) {
-                        if (door[0] == door[2]) { // x == x, so it is a left or right door
+                        if (door[0] == door[2]) { // left or right door
                             doorBool = doorBool || door[1] <= y && y <= door[3];
-                        } else if (door[1] == door[3]) { // y == y, so it is a top or bottom door
+                        } else if (door[1] == door[3]) { // top or bottom door
                             doorBool = doorBool || door[0] <= x && x <= door[2];
                         }
                     }

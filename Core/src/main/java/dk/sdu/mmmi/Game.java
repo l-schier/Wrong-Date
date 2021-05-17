@@ -92,7 +92,6 @@ public class Game implements ApplicationListener {
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
 
     }
 
@@ -184,6 +183,44 @@ public class Game implements ApplicationListener {
         batch.end();
     }
 
+    private void drawWallsAndDoors(Entity entity) {
+        WallPart wall = entity.getPart(WallPart.class);
+        DoorPart doors = entity.getPart(DoorPart.class);
+        RenderPart render = entity.getPart(RenderPart.class);
+
+        try {
+            Texture d = new Texture(Gdx.files.getLocalStoragePath() + doors.getSpritePath());
+            Texture w = new Texture(Gdx.files.getLocalStoragePath() + render.getSpritePath());
+            w.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+
+            batch.setProjectionMatrix(vp.getCamera().combined);
+            batch.begin();
+            batch.draw(w, wall.getStartX() - 32, wall.getStartY() - 32, 0, 0, w.getWidth(), (int) wall.getEndY());
+            batch.draw(w, wall.getStartX(), wall.getStartY() - 32, 0, 0, (int) wall.getEndX() + 32, w.getHeight());
+            batch.draw(w, wall.getStartX() - 32, wall.getEndY(), 0, 0, (int) wall.getEndX(), w.getHeight());
+            batch.draw(w, wall.getEndX(), wall.getStartY(), 0, 0, w.getWidth(), (int) wall.getEndY() + 32);
+
+            for (float[] door : doors.getDoors()) {
+                float x = door[0];
+                float y = door[1];
+
+                if (door[0] == wall.getStartX()) { // left door
+                    batch.draw(d, x - 32, y, 0, 0, d.getWidth(), d.getHeight());
+                } else if (door[0] == wall.getEndX()) { // right door                        
+                    batch.draw(d, x, y, 0, 0, d.getWidth(), d.getHeight());
+                } else if (door[1] == wall.getStartY()) { // bottom door
+                    batch.draw(d, x, y - 32, 0, 0, d.getWidth(), d.getHeight());
+                } else if (door[1] == wall.getEndY()) { // top door
+                    batch.draw(d, x, y, 0, 0, d.getWidth(), d.getHeight());
+                }
+            }
+
+            batch.end();
+        } catch (GdxRuntimeException e) {
+            System.out.println("Image not found");
+        }
+    }
+
     private void draw() {
 
         // background
@@ -192,46 +229,11 @@ public class Game implements ApplicationListener {
         // entities
         for (Entity entity : world.getEntities()) {
 
-            // walls
+            // walls and doors
             if (entity.getPart(WallPart.class) != null
                     && entity.getPart(DoorPart.class) != null
                     && entity.getPart(RenderPart.class) != null) {
-                WallPart wall = entity.getPart(WallPart.class);
-                DoorPart doors = entity.getPart(DoorPart.class);
-                RenderPart render = entity.getPart(RenderPart.class);
-
-                try {
-                    Texture d = new Texture(Gdx.files.getLocalStoragePath() + doors.getSpritePath());
-                    Texture w = new Texture(Gdx.files.getLocalStoragePath() + render.getSpritePath());
-                    w.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-
-                    batch.setProjectionMatrix(vp.getCamera().combined);
-                    batch.begin();
-                    batch.draw(w, wall.getStartX() - 32, wall.getStartY() - 32, 0, 0, w.getWidth(), (int) wall.getEndY());
-                    batch.draw(w, wall.getStartX(), wall.getStartY() - 32, 0, 0, (int) wall.getEndX() + 32, w.getHeight());
-                    batch.draw(w, wall.getStartX() - 32, wall.getEndY(), 0, 0, (int) wall.getEndX(), w.getHeight());
-                    batch.draw(w, wall.getEndX(), wall.getStartY(), 0, 0, w.getWidth(), (int) wall.getEndY() + 32);
-
-                    for (float[] door : doors.getDoors()) {
-                        float x = door[0];
-                        float y = door[1];
-
-                        if (door[0] == wall.getStartX()) { // left door
-                            batch.draw(d, x - 32, y, 0, 0, d.getWidth(), d.getHeight());
-                        } else if (door[0] == wall.getEndX()) { // right door                        
-                            batch.draw(d, x, y, 0, 0, d.getWidth(), d.getHeight());
-                        } else if (door[1] == wall.getStartY()) { // bottom door
-                            batch.draw(d, x, y - 32, 0, 0, d.getWidth(), d.getHeight());
-                        } else if (door[1] == wall.getEndY()) { // top door
-                            batch.draw(d, x, y, 0, 0, d.getWidth(), d.getHeight());
-                        }
-                    }
-
-                    batch.end();
-                } catch (GdxRuntimeException e) {
-                    System.out.println("Image not found");
-                }
-
+                drawWallsAndDoors(entity);
                 continue;
             }
 
