@@ -29,6 +29,26 @@ public class RandomEngine {
 
     public PositionPart randomMove(World world, Entity me) {
         PositionPart positionPart = me.getPart(PositionPart.class);
+
+        if (randomcount == 0) {
+            setNewcourse();
+        }
+
+        float x = positionPart.getX() + randomPathX;
+        float y = positionPart.getY() + randomPathY;
+
+        while (this.collisionChecker != null
+                && !this.collisionChecker.isPositionFree(world, me, x, y)) {
+            setNewcourse();
+            x = positionPart.getX() + randomPathX;
+            y = positionPart.getY() + randomPathY;
+        }
+        randomcount -= 1;
+
+        return new PositionPart(x, y);
+    }
+
+    private void setNewcourse() {
         ArrayList<PositionPart> directions = new ArrayList<PositionPart>();
 
         // go north
@@ -47,29 +67,7 @@ public class RandomEngine {
         directions.add(new PositionPart(0 + 1, 0 - 1));
         // go south west
         directions.add(new PositionPart(0 - 1, 0 - 1));
-
-        if (randomcount == 0) {
-            setNewcourse(directions);
-        }
-
-        float x = positionPart.getX() + randomPathX;
-        float y = positionPart.getY() + randomPathY;
-
-        while (this.collisionChecker != null
-                && !this.collisionChecker.isPositionFree(world, me, x, y)) {
-            setNewcourse(directions);
-            x = positionPart.getX() + randomPathX;
-            y = positionPart.getY() + randomPathY;
-        }
-
-        positionPart.setX(x);
-        positionPart.setY(y);
-        randomcount -= 1;
-
-        return positionPart;
-    }
-
-    private void setNewcourse(ArrayList<PositionPart> directions) {
+        
         Collections.shuffle(directions);
         randomPathX = directions.get(0).getX();
         randomPathY = directions.get(0).getY();
