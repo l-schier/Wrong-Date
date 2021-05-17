@@ -169,22 +169,53 @@ public class Game implements ApplicationListener {
         }
     }
 
-    private void draw() {
-
+    private void drawBackground() {
         float fromX = gameData.getCamX() - (gameData.getDisplayWidth() / 2 + menuWidth);
         float toX = fromX + gameData.getDisplayWidth();
         float fromY = gameData.getCamY() - (gameData.getDisplayHeight() / 2);
         float toY = fromY + gameData.getDisplayHeight();
 
-        Texture bg = new Texture("D:\\Git\\floor.png");
-        bg.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        Texture img = new Texture(Gdx.files.getLocalStoragePath() + "floor.png");
+        img.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
         batch.setProjectionMatrix(vp.getCamera().combined);
         batch.begin();
-        batch.draw(bg, fromX, fromY, 0, 0, (int) toX, (int) toY);
+        batch.draw(img, fromX, fromY, 0, 0, (int) toX, (int) toY);
         batch.end();
+    }
 
+    private void draw() {
+
+        // background
+        drawBackground();
+
+        // entities
         for (Entity entity : world.getEntities()) {
+            
+            // walls
+            if (entity.getPart(WallPart.class) != null && entity.getPart(RenderPart.class) != null) {
+                WallPart wall = entity.getPart(WallPart.class);
+                RenderPart render = entity.getPart(RenderPart.class);
+
+                try {
+                    Texture w = new Texture(Gdx.files.getLocalStoragePath() + render.getSpritePath());
+                    w.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+
+                    batch.setProjectionMatrix(vp.getCamera().combined);
+                    batch.begin();
+                    batch.draw(w, wall.getStartX() - 32, wall.getStartY() - 32, 0, 0, w.getWidth(), (int) wall.getEndY());
+                    batch.draw(w, wall.getStartX(), wall.getStartY() - 32, 0, 0, (int) wall.getEndX() + 32, w.getHeight());
+                    batch.draw(w, wall.getStartX() - 32, wall.getEndY(), 0, 0, (int) wall.getEndX(), w.getHeight());
+                    batch.draw(w, wall.getEndX(), wall.getStartY(), 0, 0, w.getWidth(), (int) wall.getEndY() + 32);
+                    batch.end();
+                } catch (GdxRuntimeException e) {
+                    System.out.println("Image not found");
+                }
+
+                continue;
+            }
+            
+            // anything else
             if (entity.getPart(RenderPart.class) != null && entity.getPart(PositionPart.class) != null) {
                 PositionPart pos = entity.getPart(PositionPart.class);
                 RenderPart render = entity.getPart(RenderPart.class);
@@ -207,24 +238,7 @@ public class Game implements ApplicationListener {
                 continue;
             }
 
-            if (entity.getPart(WallPart.class) != null && entity.getPart(PositionPart.class) != null) {
-                WallPart wall = entity.getPart(WallPart.class);
-
-                Texture w = new Texture("D:\\Git\\wall.png");
-                w.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-
-                batch.setProjectionMatrix(vp.getCamera().combined);
-                batch.begin();
-
-                batch.draw(w, wall.getStartX()-32, wall.getStartY()-32, 0, 0, w.getWidth(), (int) wall.getEndY());
-                batch.draw(w, wall.getStartX(), wall.getStartY()-32, 0, 0, (int) wall.getEndX()+32, w.getHeight());
-
-                batch.draw(w, wall.getStartX()-32, wall.getEndY(), 0, 0, (int) wall.getEndX(), w.getHeight());
-                batch.draw(w, wall.getEndX(), wall.getStartY(), 0, 0, w.getWidth(), (int) wall.getEndY()+32);
-
-                batch.end();
-            }
-
+            // shape render (vector) fallback
             sr.setColor(1, 1, 1, 1);
 
             sr.setProjectionMatrix(vp.getCamera().combined);
@@ -257,6 +271,7 @@ public class Game implements ApplicationListener {
             }
         }
 
+        // hardcoded obstacle
         float boxStartX = 100;
         float boxStopX = 200;
         float boxStartY = 100;

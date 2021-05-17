@@ -12,6 +12,7 @@ import dk.sdu.mmmi.common.data.entityparts.DoorPart;
 import dk.sdu.mmmi.common.data.entityparts.KeyPart;
 
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
+import dk.sdu.mmmi.common.data.entityparts.RenderPart;
 import dk.sdu.mmmi.common.data.entityparts.WallPart;
 import dk.sdu.mmmi.common.services.IGamePluginService;
 
@@ -21,6 +22,8 @@ import dk.sdu.mmmi.common.services.IGamePluginService;
  */
 public class RoomPlugin implements IGamePluginService {
 
+    private final String spriteFile = "wall.png";
+    
     @Override
     public void start(GameData gd, World world) {
         Entity room = createRoom(gd);
@@ -62,6 +65,7 @@ public class RoomPlugin implements IGamePluginService {
         room.add(new PositionPart(x, y));
         room.add(new WallPart(startX, startY, endX, endY));
         room.add(new DoorPart(doors, KeyPart.KeyColor.Silver));
+        room.add(new RenderPart(this.spriteFile, room));
 
         room.setRadius(0);
 
