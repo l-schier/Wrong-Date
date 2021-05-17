@@ -45,7 +45,7 @@ public class ObstaclePlugin implements IGamePluginService {
 
         obstacle.add(new PositionPart(x, y));
         obstacle.add(new DeadZonePart(startX, startY, stopX, stopY));
-        
+        System.out.println(x);
         obstacle.setRadius(0);
         
         return obstacle;
