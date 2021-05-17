@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -64,9 +65,11 @@ public class Game implements ApplicationListener {
     private final List<IEntityPostProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
 
     private SpriteBatch batch;
-    private Texture img;
-    private TextureRegion[] animationFrames;
-    private Animation animation;
+    private final int textureHeight = 64; 
+    private final int textureWidth = 64;
+    private float elapsedTime; 
+    private Texture textureSheet; 
+    
 
     public Game() {
         init();
@@ -125,6 +128,7 @@ public class Game implements ApplicationListener {
         stage.getViewport().apply();
         skin = new Skin(Gdx.files.internal(Gdx.files.getLocalStoragePath() + "comic-ui.json"));
         batch = new SpriteBatch();
+        
         menu = new Menu(Width, gameWidth, Height, skin, stage, world);
 
         //Allows multiple inputprocessor
@@ -183,22 +187,42 @@ public class Game implements ApplicationListener {
                     continue;
                 }
 
-                try {
-                    Texture img = new Texture(Gdx.files.getLocalStoragePath() + render.getSpritePath());
+                if (entity.getPart(MovingPart.class) != null) {
+                    try {
 
-                    if (entity.getPart(MovingPart.class) != null) {
-                        TextureRegion[][] tmpFrames = TextureRegion.split(img, gameWidth, Height);
-                        animationFrames = new TextureRegion[4];
+                        textureSheet = new Texture(Gdx.files.getLocalStoragePath() + render.getSpritePath());
+                        
+                        Animation backWalk = getAnimationFromTextureRange(1);
+                        Animation frontWalk = getAnimationFromTextureRange(5);
+                        Animation leftWalk = getAnimationFromTextureRange(9);
+                        Animation rightWalk = getAnimationFromTextureRange(13);
+                        
+                        
+                        elapsedTime += Gdx.graphics.getDeltaTime(); 
 
+                        batch.setProjectionMatrix(vp.getCamera().combined);
+                        batch.begin();
+                        MovingPart entityMovingPart = entity.getPart(MovingPart.class);
+                        
+                        
+                        batch.draw((TextureRegion) backWalk.getKeyFrame(elapsedTime, true), pos.getX() - 16, pos.getY() - 16);
+                        batch.end();
+
+                    } catch (GdxRuntimeException e) {
+                        System.out.println("Image not found");
                     }
+                } else {
+                    try {
+                        Texture img = new Texture(Gdx.files.getLocalStoragePath() + render.getSpritePath());
 
-                    batch.setProjectionMatrix(vp.getCamera().combined);
-                    batch.begin();
-                    batch.draw(img, pos.getX() - 16, pos.getY() - 16);
-                    batch.end();
+                        batch.setProjectionMatrix(vp.getCamera().combined);
+                        batch.begin();
+                        batch.draw(img, pos.getX() - 16, pos.getY() - 16);
+                        batch.end();
 
-                } catch (GdxRuntimeException e) {
-                    System.out.println("Image not found");
+                    } catch (GdxRuntimeException e) {
+                        System.out.println("Image not found");
+                    }
                 }
 
                 continue;
@@ -295,5 +319,13 @@ public class Game implements ApplicationListener {
     public void removeGamePluginService(IGamePluginService plugin) {
         this.gamePluginList.remove(plugin);
         plugin.stop(gameData, world);
+    }
+    
+    private Animation getAnimationFromTextureRange(int col){
+        Array<TextureRegion> frames = new Array<>();
+        for (int i = col-1; i < col+3; i++){
+            frames.add(new TextureRegion(textureSheet, i*textureWidth, 0, textureWidth, textureWidth));
+        }
+        return new Animation(1f/4f, frames);
     }
 }
