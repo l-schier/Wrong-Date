@@ -4,7 +4,7 @@ import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.BlindPart;
-import dk.sdu.mmmi.common.data.entityparts.HelpPart;
+import dk.sdu.mmmi.common.data.entityparts.DescriptionPart;
 import dk.sdu.mmmi.common.data.entityparts.InteractPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.RenderPart;
@@ -17,7 +17,7 @@ import java.util.Random;
  */
 public class BubblegumPlugin implements IGamePluginService {
 
-    private final String spriteFile = "bubblegum.png", helpFile = "bubblegum.txt";
+    private final String spriteFile = "bubblegum.png", descriptionFile = "bubblegum.txt";
 
     @Override
     public void start(GameData gameData, World world) {
@@ -39,7 +39,7 @@ public class BubblegumPlugin implements IGamePluginService {
         bubblegum.add(new BlindPart(duration));
         bubblegum.add(new InteractPart(interactable));
         bubblegum.add(new RenderPart(this.spriteFile, bubblegum));
-        bubblegum.add(new HelpPart(helpFile, bubblegum));
+        bubblegum.add(new DescriptionPart(descriptionFile, bubblegum));
 
         return bubblegum;
     }

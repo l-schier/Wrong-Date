@@ -3,7 +3,7 @@ package dk.sdu.mmmi.weaponpan;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
-import dk.sdu.mmmi.common.data.entityparts.HelpPart;
+import dk.sdu.mmmi.common.data.entityparts.DescriptionPart;
 import dk.sdu.mmmi.common.data.entityparts.InteractPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.RenderPart;
@@ -16,7 +16,7 @@ import java.util.Random;
  * @author Kaan
  */
 public class PanPlugin implements IGamePluginService {
-    private final String spriteFile = "pan.png", helpFile = "pan.txt";
+    private final String spriteFile = "pan.png", descriptionFile = "pan.txt";
 
     @Override
     public void start(GameData gameData, World world) {
@@ -38,7 +38,7 @@ public class PanPlugin implements IGamePluginService {
         pan.add(new StunPart(duration));
         pan.add(new InteractPart(interactable));
         pan.add(new RenderPart(this.spriteFile, pan));
-        pan.add(new HelpPart(helpFile, pan));
+        pan.add(new DescriptionPart(descriptionFile, pan));
 
         return pan;
     }

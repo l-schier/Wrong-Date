@@ -4,7 +4,7 @@ import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.BlindPart;
-import dk.sdu.mmmi.common.data.entityparts.HelpPart;
+import dk.sdu.mmmi.common.data.entityparts.DescriptionPart;
 import dk.sdu.mmmi.common.data.entityparts.InteractPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.RenderPart;
@@ -16,7 +16,7 @@ import java.util.Random;
  * @author Kaan
  */
 public class FoundationPlugin implements IGamePluginService {
-    private final String spriteFile = "foundation.png", helpFile = "foundation.txt";
+    private final String spriteFile = "foundation.png", descriptionFile = "foundation.txt";
 
     @Override
     public void start(GameData gameData, World world) {
@@ -38,7 +38,7 @@ public class FoundationPlugin implements IGamePluginService {
         foundation.add(new BlindPart(duration));
         foundation.add(new InteractPart(interactable));
         foundation.add(new RenderPart(this.spriteFile, foundation));
-        foundation.add(new HelpPart(helpFile, foundation));
+        foundation.add(new DescriptionPart(descriptionFile, foundation));
 
         return foundation;
     }
