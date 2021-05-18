@@ -184,5 +184,36 @@ public class Collider implements IEntityPostProcessingService, ICollisionChecker
         }
         return false;
     }
-    
+
+    @Override
+    public void leavingRoom(GameData gameData, World world, Entity me, float newX, float newY) {
+        PositionPart mePos = me.getPart(PositionPart.class);
+        float x = mePos.getX();
+        float y = mePos.getY();
+        for (Entity room : world.getEntities()) {
+            if (room == me) {
+                continue;
+            }
+
+            if (room.getPart(WallPart.class) != null && room.getPart(DoorPart.class) != null) {
+                if (isInRoom(world, me, room)) {
+                    PositionPart roomPos = room.getPart(PositionPart.class);
+
+                    if (newX > roomPos.getX() + (gameData.getDisplayWidth() / 2f) - 32) {
+                        x += 65;
+                    } else if (newX < roomPos.getX() - (gameData.getDisplayWidth() / 2f) + 32) {
+                        x -= 65;
+                    }
+                    if (newY > roomPos.getY() + (gameData.getDisplayHeight() / 2f) - 32) {
+                        y += 65;
+                    } else if (newY < roomPos.getY() - (gameData.getDisplayHeight() / 2f) + 32) {
+                        y -= 65;
+                    }
+
+                }
+
+            }
+        }
+        mePos.setPosition(x, y);
+    }
 }
