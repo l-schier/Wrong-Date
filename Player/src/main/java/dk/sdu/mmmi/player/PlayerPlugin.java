@@ -53,4 +53,9 @@ public class PlayerPlugin implements IGamePluginService {
             world.removeEntity(player);
         }
     }
+
+    @Override
+    public String[] getSpritePaths() {
+        return new String[]{SpriteFile};
+    }
 }

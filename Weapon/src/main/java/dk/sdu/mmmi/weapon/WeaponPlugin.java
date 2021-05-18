@@ -52,5 +52,9 @@ public class WeaponPlugin implements IGamePluginService {
             world.removeEntity(weapon);
         }
     }
-    
+
+    @Override
+    public String[] getSpritePaths() {
+        return new String[]{spriteFile};
+    }
 }
