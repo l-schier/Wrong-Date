@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dk.sdu.mmmi.weaponbubblegum;
 
 import dk.sdu.mmmi.common.data.Entity;
@@ -22,7 +17,6 @@ public class BubblegumProcessor implements IEntityProcessingService, IInteractSe
      @Override
     public void process(GameData gameData, World world) {
         for (Entity bubblegum : world.getEntities(Bubblegum.class)) {
-            PositionPart positionPart = bubblegum.getPart(PositionPart.class);
             setShape(bubblegum);
         }
     }
