@@ -68,15 +68,17 @@ public class PlayerSystem implements IEntityProcessingService {
                 movingPart.setDown(false);
             }
 
-            if (gameData.getKeys().isDown(ENTER)) {
+            if (gameData.getKeys().isPressed(ENTER)) {
                 for (IInteractService interactService : interactServices) {
                     interactService.interact(player, world);
                 }
             }
 
             if (gameData.getKeys().isPressed(SPACE)) {
-                for (IItemService itemService : itemServices) {
-                    itemService.useItem(player, gameData);
+                System.out.println("Space pressed");
+                if(inventoryPart.getWeapon() != null){
+                    IItemService weapon = (IItemService) inventoryPart.getWeapon();
+                    weapon.useItem(player, gameData);
                 }
             }
 
