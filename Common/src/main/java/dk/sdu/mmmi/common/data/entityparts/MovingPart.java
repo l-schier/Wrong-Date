@@ -44,6 +44,9 @@ public class MovingPart implements EntityPart {
 
     private void reduceExpiration(float delta) {
         this.expiration -= delta;
+        if (this.expiration < 0) {
+            this.expiration = 0;
+        }
     }
 
     @Override
@@ -58,31 +61,47 @@ public class MovingPart implements EntityPart {
         float x = positionPart.getX();
         float y = positionPart.getY();
 
-        if (right) {
+        if (isRight()) {
             x += speed;
-        } else if (left) {
+        } else if (isLeft()) {
             x -= speed;
         }
 
-        if (up) {
+        if (isUp()) {
             y += speed;
-        } else if (down) {
+        } else if (isDown()) {
             y -= speed;
         }
-
-//        // set position
-//        if (x > gameData.getDisplayWidth()) {
-//            x = 0;
-//        } else if (x < 0) {
-//            x = gameData.getDisplayWidth();
-//        }
-//
-//        if (y > gameData.getDisplayHeight()) {
-//            y = 0;
-//        } else if (y < 0) {
-//            y = gameData.getDisplayHeight();
-//        }
+        
         positionPart.setX(x);
         positionPart.setY(y);
+    }
+
+    /**
+     * @return the left
+     */
+    public boolean isLeft() {
+        return left;
+    }
+
+    /**
+     * @return the right
+     */
+    public boolean isRight() {
+        return right;
+    }
+
+    /**
+     * @return the up
+     */
+    public boolean isUp() {
+        return up;
+    }
+
+    /**
+     * @return the down
+     */
+    public boolean isDown() {
+        return down;
     }
 }

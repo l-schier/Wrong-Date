@@ -10,3 +10,4 @@ ProfilePicture.png
 rocket.png
 squareFrame.png
 White-square.jpg
+floor.png

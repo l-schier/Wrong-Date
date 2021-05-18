@@ -29,8 +29,8 @@ public class KeyPlugin implements IGamePluginService {
         Entity key = new Key();
         Random random = new Random();
 
-        float x = (float) random.nextInt(gameData.getDisplayWidth());
-        float y = (float) random.nextInt(gameData.getDisplayHeight());
+        float x = (float) random.nextInt(gameData.getDisplayWidth() - 64) + 32;
+        float y = (float) random.nextInt(gameData.getDisplayHeight() - 64) + 32;
         key.add(new PositionPart(x, y));
         key.setRadius(8);
 
@@ -48,4 +48,8 @@ public class KeyPlugin implements IGamePluginService {
         }
     }
 
+    @Override
+    public String[] getSpritePaths() {
+        return new String[]{spriteFile};
+    }
 }

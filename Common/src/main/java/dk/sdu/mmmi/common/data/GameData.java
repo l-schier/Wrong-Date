@@ -10,10 +10,12 @@ public class GameData {
     private float delta;
     private int displayWidth;
     private int displayHeight;
+    private int menuWidth;
     private final GameKeys keys = new GameKeys();
     private List<Event> events = new CopyOnWriteArrayList<>();
     private int camX;
     private int camY;
+
 
     public int getCamX() {
         return camX;
@@ -70,6 +72,16 @@ public class GameData {
     public int getDisplayHeight() {
         return displayHeight;
     }
+
+    public void setMenuWidth(int menuWidth) {
+        this.menuWidth = menuWidth;
+    }
+
+    public int getMenuWidth() {
+        return menuWidth;
+    }
+    
+    
 
     public <E extends Event> List<Event> getEvents(Class<E> type, String sourceID) {
         List<Event> r = new ArrayList();
