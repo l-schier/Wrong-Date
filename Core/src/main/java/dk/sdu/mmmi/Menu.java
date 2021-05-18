@@ -44,20 +44,20 @@ public class Menu {
     private HashMap<String, CheckBox> components = null;
     private HashMap<String, Bundle> bundles = null;
 
-    private static int Width0 = -150;
-    private static int WidthWindow;
-    private static int WidthStart;
-    private static int WidthMenu;
-    private static int WidthGame;
-    private static int Height;
-    private static int spacing = 10;
+    private int Width0 = -150;
+    private int WidthWindow;
+    private int WidthStart;
+    private int WidthMenu;
+    private int WidthGame;
+    private int Height;
+    private int spacing = 10;
     private boolean pause, resume;
     private boolean pauseClicked, helpClicked, settingsClicked;
     Skin skin;
     Stage stage;
     World world;
 
-    Entity player, weapon;
+    Entity player, tempPlayer, weapon;
 
     //Menu
     String backgorundImageStr;
@@ -92,11 +92,6 @@ public class Menu {
         pauseButtonFunctionality();
         settingsButtonFunctionality();
 
-        for (Entity e : world.getEntities()) {
-            if (e.getPart(PlayerPart.class) != null) {
-                player = e;
-            }
-        }
     }
 
 
@@ -464,6 +459,45 @@ public class Menu {
     }
 
     public void update() {
+        
+        updatePlayer();
+        updateWeapon();
+        
+        
+    }
+    
+    private void updatePlayer(){
+
+        for (Entity e : world.getEntities()) {
+            if (e.getPart(PlayerPart.class) != null) {
+                tempPlayer = e;
+            }
+        }
+        
+        if(player == null || !player.equals(tempPlayer)){
+                player = tempPlayer;
+                RenderPart renderPart = player.getPart(RenderPart.class);
+            
+                Image playerImage = new Image(new Texture(renderPart.getSpritePath()));
+                playerImage.setSize(proPicImage.getWidth()/ 4 * 3, proPicImage.getHeight() / 4 * 3);
+                playerImage.setPosition(proPicImage.getX() + proPicImage.getWidth()/8, proPicImage.getY() + proPicImage.getHeight()/8);
+                
+                PlayerPart playerPart = player.getPart(PlayerPart.class);
+                
+                if(playerPart.getName() == null){
+                    proNameTextField.setText("No Name Chosen");
+                } else {
+                    proNameTextField.setText(playerPart.getName());
+                }
+                stage.getActors().add(playerImage); 
+            
+            
+   
+        }
+        
+    }
+    
+    private void updateWeapon(){
         InventoryPart inventoryPart = player.getPart(InventoryPart.class);
 
         if (inventoryPart.getWeapon() != null) {
@@ -479,7 +513,8 @@ public class Menu {
                 }
                 weaponImage = new Image(new Texture(renderPart.getSpritePath()));
                 weaponImage.setSize(weapImage.getImageWidth(), weapImage.getImageHeight());
-                weaponImage.setPosition(weapImage.getX(), weapImage.getY());
+                weaponImage.setPosition(weapImage.getX() , weapImage.getY());
+
                 weapDescArea.setText(fileToText(descriptionPart.getDescription()));
                 if (first) {
                     stage.getActors().add(weaponImage);

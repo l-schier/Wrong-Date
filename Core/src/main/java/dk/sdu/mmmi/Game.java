@@ -51,7 +51,7 @@ public class Game implements ApplicationListener {
     private Skin skin;
     private Menu menu;
 
-    private static boolean isPaused;
+    private boolean isPaused;
 
     private final GameData gameData = new GameData();
     private final World world = new World();
