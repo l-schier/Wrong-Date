@@ -38,8 +38,8 @@ public class NailsPlugin implements IGamePluginService {
         nails.add(new PositionPart(x, y));
         nails.add(new DamagePart(damage));
         nails.add(new InteractPart(interactable));
-        nails.add(new RenderPart(spriteFile, nails));
-        nails.add(new DescriptionPart(descriptionFile, nails));
+        //nails.add(new RenderPart(spriteFile, nails));
+        //nails.add(new DescriptionPart(descriptionFile, nails));
 
         return nails;
     }
