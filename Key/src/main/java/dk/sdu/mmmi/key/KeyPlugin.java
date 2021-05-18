@@ -48,4 +48,8 @@ public class KeyPlugin implements IGamePluginService {
         }
     }
 
+    @Override
+    public String[] getSpritePaths() {
+        return new String[]{spriteFile};
+    }
 }
