@@ -23,6 +23,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>4.3.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>dk.sdu.mmmi.build</groupId>
             <artifactId>Common</artifactId>
             <version>1.0-SNAPSHOT</version>
