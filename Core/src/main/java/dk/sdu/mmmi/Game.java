@@ -217,29 +217,60 @@ public class Game implements ApplicationListener {
         RenderPart render = entity.getPart(RenderPart.class);
 
         try {
-            Texture d = getTexture(doors.getSpritePath());
-            Texture w = getTexture(render.getSpritePath());
-            w.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+            Texture imgW = getTexture(render.getSpritePath());
+            imgW.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
             batch.setProjectionMatrix(vp.getCamera().combined);
             batch.begin();
-            batch.draw(w, wall.getStartX() - 32, wall.getStartY() - 32, 0, 0, w.getWidth(), (int) wall.getEndY());
-            batch.draw(w, wall.getStartX(), wall.getStartY() - 32, 0, 0, (int) wall.getEndX(), w.getHeight());
-            batch.draw(w, wall.getStartX() - 32, wall.getEndY(), 0, 0, (int) wall.getEndX(), w.getHeight());
-            batch.draw(w, wall.getEndX(), wall.getStartY(), 0, 0, w.getWidth(), (int) wall.getEndY());
-
+            
+            int fromX, fromY, toX, toY;
+            int wHeight = imgW.getHeight();
+            int wWidth = imgW.getWidth(); 
+            
+            // left wall
+            fromX = (int) wall.getStartX() - wWidth;
+            fromY = (int) wall.getStartY() - wHeight;
+            toX = (int) wWidth;
+            toY = (int) wall.getEndY()-fromY;
+            batch.draw(imgW, fromX, fromY, 0, 0, toX, toY);
+            
+            // right wall
+            fromX = (int) wall.getEndX();
+            fromY = (int) wall.getStartY();
+            toX = (int) wWidth;
+            toY = (int) wall.getEndY()-fromY + wHeight;
+            batch.draw(imgW, fromX, fromY, 0, 0, toX, toY);
+            
+            // top wall
+            fromX = (int) wall.getStartX() - wWidth;
+            fromY = (int) wall.getEndY();
+            toX = (int) wall.getEndX()-fromX;
+            toY = (int) wHeight;
+            batch.draw(imgW, fromX, fromY, 0, 0, toX, toY);
+            
+            // bottom wall
+            fromX = (int) wall.getStartX();
+            fromY = (int) wall.getStartY() - wHeight;
+            toX = (int) wall.getEndX()-fromX + wWidth;
+            toY = (int) wHeight;
+            batch.draw(imgW, fromX, fromY, 0, 0, toX, toY);
+            
+            Texture imgD = getTexture(doors.getSpritePath());
+            int dHeight = imgD.getHeight();
+            int dWidth = imgD.getWidth();            
+            
             for (float[] door : doors.getDoors()) {
                 float x = door[0];
                 float y = door[1];
 
                 if (door[0] == wall.getStartX()) { // left door
-                    batch.draw(d, x - 32, y, 0, 0, d.getWidth(), d.getHeight());
+                    batch.draw(imgD, x - 32, y, 0, 0, dWidth, dHeight);
                 } else if (door[0] == wall.getEndX()) { // right door                        
-                    batch.draw(d, x, y, 0, 0, d.getWidth(), d.getHeight());
+                    batch.draw(imgD, x, y, 0, 0, dWidth, dHeight);
                 } else if (door[1] == wall.getStartY()) { // bottom door
-                    batch.draw(d, x, y - 32, 0, 0, d.getWidth(), d.getHeight());
+                    batch.draw(imgD, x, y - 32, 0, 0, dWidth, dHeight);
                 } else if (door[1] == wall.getEndY()) { // top door
-                    batch.draw(d, x, y, 0, 0, d.getWidth(), d.getHeight());
+                    batch.draw(imgD, x, y, 0, 0, dWidth, dHeight);
                 }
             }
 
