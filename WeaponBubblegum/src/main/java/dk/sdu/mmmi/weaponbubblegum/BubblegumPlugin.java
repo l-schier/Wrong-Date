@@ -9,8 +9,10 @@ import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.BlindPart;
+import dk.sdu.mmmi.common.data.entityparts.HelpPart;
 import dk.sdu.mmmi.common.data.entityparts.InteractPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
+import dk.sdu.mmmi.common.data.entityparts.RenderPart;
 import dk.sdu.mmmi.common.services.IGamePluginService;
 import java.util.Random;
 
@@ -18,8 +20,11 @@ import java.util.Random;
  *
  * @author Kaan
  */
-public class BubblegumPlugin implements IGamePluginService{
-        @Override
+public class BubblegumPlugin implements IGamePluginService {
+
+    private final String spriteFile = "bubblegum.png", helpFile = "bubblegum.txt";
+
+    @Override
     public void start(GameData gameData, World world) {
         Entity bubblegum = createBubblegum(gameData);
         world.addEntity(bubblegum);
@@ -35,11 +40,12 @@ public class BubblegumPlugin implements IGamePluginService{
         boolean interactable = true;
         bubblegum.setRadius(8);
 
-        //bubblegum.add(new InformationPart("testWeapon.png", "description.txt", bubblegum));
         bubblegum.add(new PositionPart(x, y));
         bubblegum.add(new BlindPart(duration));
         bubblegum.add(new InteractPart(interactable));
-        
+        bubblegum.add(new RenderPart(this.spriteFile, bubblegum));
+        bubblegum.add(new HelpPart(helpFile, bubblegum));
+
         return bubblegum;
     }
 

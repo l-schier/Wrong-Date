@@ -59,7 +59,6 @@ public class BubblegumProcessor implements IEntityProcessingService, IInteractSe
             InteractPart interact = bubblegum.getPart(InteractPart.class);
             if (user.circleCollision(bubblegum) && interact.isInteractable() && bubblegum != currentWeapon) {
                 inventory.addItem(bubblegum);
-                System.out.println("Added bubblegum");
             }
         }
     }
