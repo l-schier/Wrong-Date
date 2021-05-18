@@ -10,4 +10,5 @@ import dk.sdu.mmmi.common.data.World;
 public interface ICollisionChecker {
 
     boolean isPositionFree(World world, Entity me, float x, float y);
+    boolean isInRoom(World world, Entity me, Entity room);
 }

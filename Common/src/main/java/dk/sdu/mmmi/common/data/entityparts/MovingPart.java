@@ -72,7 +72,16 @@ public class MovingPart implements EntityPart {
         } else if (down) {
             y -= speed;
         }
-
+        if (x > gameData.getCamX() + (gameData.getDisplayWidth() / 2f) - gameData.getMenuWidth() - 32f) {
+            x += 64;
+        } else if (x <  32f + gameData.getCamX() - (gameData.getDisplayWidth() / 2f) - gameData.getMenuWidth()) {
+            x -= 64;
+        }
+        if (y > gameData.getCamY() + gameData.getDisplayHeight() / 2f - 32f) {
+            y += 64;
+        } else if (y < gameData.getCamY() - gameData.getDisplayHeight() / 2f + 32f) {
+            y -= 64;
+        }
         positionPart.setX(x);
         positionPart.setY(y);
     }

@@ -46,7 +46,7 @@ public class Collider implements IEntityPostProcessingService, ICollisionChecker
                         e2l.takeLife(e1d.getDamage());
                     }
                 }
-                
+
                 if (e1.getPart(BlindPart.class) != null && e2.getPart(SightPart.class) != null) {
                     BlindPart e1b = e1.getPart(BlindPart.class);
                     SightPart e2s = e2.getPart(SightPart.class);
@@ -54,7 +54,7 @@ public class Collider implements IEntityPostProcessingService, ICollisionChecker
                         e2s.blindFor(e1b.getBlindDuration());
                     }
                 }
-                
+
                 if (e1.getPart(StunPart.class) != null && e2.getPart(MovingPart.class) != null) {
                     StunPart e1s = e1.getPart(StunPart.class);
                     MovingPart e2m = e2.getPart(MovingPart.class);
@@ -63,7 +63,7 @@ public class Collider implements IEntityPostProcessingService, ICollisionChecker
                     }
                 }
             }
-            
+
             // Disable all WeaponParts
             if (e1.getPart(DamagePart.class) != null) {
                 DamagePart e1d = e1.getPart(DamagePart.class);
@@ -122,8 +122,7 @@ public class Collider implements IEntityPostProcessingService, ICollisionChecker
                 PositionPart pos = me.getPart(PositionPart.class);
 
                 // entity is inside the box of walls!
-                if (wall.getStartX() <= pos.getX() && pos.getX() <= wall.getEndX()
-                        && wall.getStartY() <= pos.getY() && pos.getY() <= wall.getEndY()) {
+                if (isInRoom(world, me, e)) {
 
                     // is x:y on the outside of the wall?
                     boolean wallBool = x <= wall.getStartX() || wall.getEndX() <= x
@@ -172,4 +171,18 @@ public class Collider implements IEntityPostProcessingService, ICollisionChecker
 
         return true;
     }
+
+    @Override
+    public boolean isInRoom(World world, Entity me, Entity room) {
+        WallPart wall = room.getPart(WallPart.class);
+        PositionPart pos = me.getPart(PositionPart.class);
+
+        // entity is inside the box of walls!
+        if (wall.getStartX() <= pos.getX() && pos.getX() <= wall.getEndX()
+                && wall.getStartY() <= pos.getY() && pos.getY() <= wall.getEndY()) {
+            return true;
+        }
+        return false;
+    }
+    
 }
