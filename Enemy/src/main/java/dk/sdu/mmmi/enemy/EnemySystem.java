@@ -6,6 +6,7 @@ import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
+import dk.sdu.mmmi.common.data.entityparts.SightPart;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.common.services.IPathfinder;
 
@@ -32,6 +33,7 @@ public class EnemySystem implements IEntityProcessingService {
 
             PositionPart positionPart = enemy.getPart(PositionPart.class);
             MovingPart movingPart = enemy.getPart(MovingPart.class);
+            SightPart sightPart = enemy.getPart(SightPart.class);
             LifePart lifePart = enemy.getPart(LifePart.class);
 
             if (aStarPathfinder != null) {
@@ -46,6 +48,7 @@ public class EnemySystem implements IEntityProcessingService {
 
             movingPart.process(gameData, enemy);
             positionPart.process(gameData, enemy);
+            sightPart.process(gameData, enemy);
             lifePart.process(gameData, enemy);
 
             if (lifePart.getLife() <= 0) {
