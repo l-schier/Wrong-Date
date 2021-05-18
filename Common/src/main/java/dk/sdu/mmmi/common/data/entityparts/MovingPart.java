@@ -72,12 +72,12 @@ public class MovingPart implements EntityPart {
         } else if (isDown()) {
             y -= speed;
         }
-
+        
         positionPart.setX(x);
         positionPart.setY(y);
     }
-    
-        /**
+
+    /**
      * @return the left
      */
     public boolean isLeft() {

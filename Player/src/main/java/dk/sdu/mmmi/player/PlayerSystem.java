@@ -57,6 +57,7 @@ public class PlayerSystem implements IEntityProcessingService {
                 movingPart.setUp(gameData.getKeys().isDown(UP));
                 movingPart.setDown(gameData.getKeys().isDown(DOWN));
             } else if (collisionChecker.isPositionFree(world, player, newX, newY)) {
+                collisionChecker.leavingRoom(gameData, world, player, newX, newY);
                 movingPart.setRight(gameData.getKeys().isDown(RIGHT));
                 movingPart.setLeft(gameData.getKeys().isDown(LEFT));
                 movingPart.setUp(gameData.getKeys().isDown(UP));
@@ -76,11 +77,16 @@ public class PlayerSystem implements IEntityProcessingService {
 
             if (gameData.getKeys().isPressed(SPACE)) {
                 System.out.println("Space pressed");
-                if(inventoryPart.getWeapon() != null){
+                if (inventoryPart.getWeapon() != null) {
                     IItemService weapon = (IItemService) inventoryPart.getWeapon();
                     weapon.useItem(player, gameData);
                 }
             }
+
+            movingPart.process(gameData, player);
+            positionPart.process(gameData, player);
+            inventoryPart.process(gameData, player);
+            lifePart.process(gameData, player);
 
             int camX = gameData.getCamX();
             int camY = gameData.getCamY();
@@ -105,11 +111,6 @@ public class PlayerSystem implements IEntityProcessingService {
 
             gameData.setCamX(camX);
             gameData.setCamY(camY);
-
-            movingPart.process(gameData, player);
-            positionPart.process(gameData, player);
-            inventoryPart.process(gameData, player);
-            lifePart.process(gameData, player);
 
             if (lifePart.getLife() <= 0) {
                 world.removeEntity(player);
