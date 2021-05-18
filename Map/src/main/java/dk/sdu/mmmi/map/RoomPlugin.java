@@ -78,4 +78,9 @@ public class RoomPlugin implements IGamePluginService {
             world.removeEntity(room);
         }
     }
+
+    @Override
+    public String[] getSpritePaths() {
+        return new String[]{};
+    }
 }

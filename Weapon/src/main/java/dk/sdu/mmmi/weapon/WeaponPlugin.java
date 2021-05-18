@@ -6,7 +6,8 @@ import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.DamagePart;
 import dk.sdu.mmmi.common.data.entityparts.InteractPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
-import dk.sdu.mmmi.common.data.entityparts.InformationPart;
+import dk.sdu.mmmi.common.data.entityparts.DescriptionPart;
+import dk.sdu.mmmi.common.data.entityparts.RenderPart;
 import dk.sdu.mmmi.common.services.IGamePluginService;
 import java.util.Random;
 
@@ -15,6 +16,8 @@ import java.util.Random;
  * @author Jacob
  */
 public class WeaponPlugin implements IGamePluginService {
+    
+    private final String spriteFile = "weapon.png", descriptionFile = "WeaponsDesription.txt";
 
     @Override
     public void start(GameData gameData, World world) {
@@ -36,7 +39,8 @@ public class WeaponPlugin implements IGamePluginService {
         weapon.add(new PositionPart(x, y));
         weapon.add(new DamagePart(damage));
         weapon.add(new InteractPart(interactable));
-        weapon.add(new InformationPart("testWeapon.png", "description.txt", weapon));
+        weapon.add(new RenderPart(spriteFile, weapon));
+        weapon.add(new DescriptionPart(descriptionFile, weapon));
 
 
         return weapon;
@@ -48,5 +52,9 @@ public class WeaponPlugin implements IGamePluginService {
             world.removeEntity(weapon);
         }
     }
-    
+
+    @Override
+    public String[] getSpritePaths() {
+        return new String[]{spriteFile};
+    }
 }

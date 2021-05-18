@@ -37,6 +37,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import dk.sdu.mmmi.common.services.IEntityPostProcessingService;
+import java.util.HashMap;
 
 public class Game implements ApplicationListener {
 
@@ -52,7 +53,7 @@ public class Game implements ApplicationListener {
     private Skin skin;
     private Menu menu;
 
-    private static boolean isPaused;
+    private boolean isPaused;
 
     private final GameData gameData = new GameData();
     private final World world = new World();
@@ -61,12 +62,15 @@ public class Game implements ApplicationListener {
     private final List<IEntityProcessingService> entityProcessorList = new CopyOnWriteArrayList<>();
     private final List<IEntityPostProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
 
+    private final HashMap<String, Texture> entityTextures = new HashMap<String, Texture>();
+
     private SpriteBatch batch;
 
     public Game() {
         init();
         gameData.setDisplayWidth(gameWidth);
         gameData.setDisplayHeight(Height);
+        gameData.setMenuWidth(menuWidth);
     }
 
     private void init() {
@@ -132,6 +136,7 @@ public class Game implements ApplicationListener {
     @Override
     public void render() {
         if (!isPaused) {
+            vp.getCamera().position.set((float) gameData.getCamX(), (float) gameData.getCamY(), 0);
             vp.getCamera().update();
             Gdx.gl.glClearColor(0, 0, 0, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -166,6 +171,18 @@ public class Game implements ApplicationListener {
         for (IEntityPostProcessingService postEntityProcessorService : postEntityProcessorList) {
             postEntityProcessorService.process(gameData, world);
         }
+    }
+
+    private Texture getTexture(String spritePath) {
+        // reuse texture
+        if (this.entityTextures.containsKey(spritePath)) {
+            return this.entityTextures.get(spritePath);
+        }
+
+        // create new texture
+        Texture img = new Texture(Gdx.files.getLocalStoragePath() + spritePath);
+        this.entityTextures.put(spritePath, img);
+        return img;
     }
 
     private void drawBackground() {
@@ -247,7 +264,7 @@ public class Game implements ApplicationListener {
                 }
 
                 try {
-                    Texture img = new Texture(Gdx.files.getLocalStoragePath() + render.getSpritePath());
+                    Texture img = getTexture(render.getSpritePath());
 
                     batch.setProjectionMatrix(vp.getCamera().combined);
                     batch.begin();
@@ -353,5 +370,11 @@ public class Game implements ApplicationListener {
     public void removeGamePluginService(IGamePluginService plugin) {
         this.gamePluginList.remove(plugin);
         plugin.stop(gameData, world);
+        String[] sprites = plugin.getSpritePaths();
+        for (String sprite : sprites) {
+            if (this.entityTextures.containsKey(sprite)) {
+                this.entityTextures.remove(sprite);
+            }
+        }
     }
 }
