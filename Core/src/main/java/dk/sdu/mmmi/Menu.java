@@ -79,6 +79,8 @@ public class Menu {
     
     Image playerImage;
     Boolean playerAdded = false;
+    
+    int count = 0;
 
     public Menu(int WidthWindow, int gameWidth, int Height, Skin skin, Stage stage, World world) {
         this.WidthWindow = Width0 + WidthWindow;
@@ -529,20 +531,25 @@ public class Menu {
                 }
                 if(weapon.getPart(RenderPart.class) != null){
                     RenderPart renderPart = weapon.getPart(RenderPart.class);
+                    
+                    
+                    if(weaponImage != null){
+                        stage.getActors().removeValue(weaponImage, true);
+                    }
 
-                boolean first = false;
-                if (weaponImage == null) {
-                    first = true;
+                    weaponImage = null;
+                    weaponImage = new Image(new Texture(renderPart.getSpritePath()));
+                    
+                
+
                 }
-                weaponImage = new Image(new Texture(renderPart.getSpritePath()));
-                weaponImage.setSize(weapImage.getImageWidth(), weapImage.getImageHeight());
-                weaponImage.setPosition(weapImage.getX() , weapImage.getY());
+                
 
                 
-                if (first) {
+                if(!stage.getActors().contains(weaponImage, true)){
+                    weaponImage.setSize(weapImage.getImageWidth(), weapImage.getImageHeight());
+                    weaponImage.setPosition(weapImage.getX() , weapImage.getY());
                     stage.getActors().add(weaponImage);
-                    first = false;
-                }
                 }
                 
                 
