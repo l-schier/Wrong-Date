@@ -30,6 +30,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.RenderPart;
+import dk.sdu.mmmi.common.data.entityparts.SightPart;
 import dk.sdu.mmmi.common.data.entityparts.WallPart;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -273,7 +274,7 @@ public class Game implements ApplicationListener {
                     continue;
                 }
 
-                if (entity.getPart(MovingPart.class) != null) {
+                if (entity.getPart(SightPart.class) != null) {
                     try {
 
                         textureSheet = getTexture(render.getSpritePath());
