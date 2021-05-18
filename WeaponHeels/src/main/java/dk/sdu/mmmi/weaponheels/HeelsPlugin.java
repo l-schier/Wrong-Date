@@ -50,4 +50,9 @@ public class HeelsPlugin implements IGamePluginService {
             world.removeEntity(heels);
         }
     }
+
+    @Override
+    public String[] getSpritePaths() {
+        return new String[]{};
+    }
 }

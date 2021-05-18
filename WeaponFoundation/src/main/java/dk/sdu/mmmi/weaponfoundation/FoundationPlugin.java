@@ -51,4 +51,9 @@ public class FoundationPlugin implements IGamePluginService {
             world.removeEntity(foundation);
         }
     }
+
+    @Override
+    public String[] getSpritePaths() {
+        return new String[]{};
+    }
 }

@@ -64,4 +64,9 @@ public class EnemyPlugin implements IGamePluginService {
         } catch (Exception e) {
         }
     }
+
+    @Override
+    public String[] getSpritePaths() {
+        return new String[]{spriteFile};
+    }
 }

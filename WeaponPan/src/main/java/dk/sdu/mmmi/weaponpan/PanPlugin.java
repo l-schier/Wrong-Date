@@ -52,4 +52,9 @@ public class PanPlugin implements IGamePluginService {
             world.removeEntity(pan);
         }
     }
+
+    @Override
+    public String[] getSpritePaths() {
+        return new String[]{};
+    }
 }

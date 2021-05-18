@@ -49,4 +49,9 @@ public class BubblegumPlugin implements IGamePluginService{
             world.removeEntity(bubblegum);
         }
     }
+
+    @Override
+    public String[] getSpritePaths() {
+        return new String[]{};
+    }
 }

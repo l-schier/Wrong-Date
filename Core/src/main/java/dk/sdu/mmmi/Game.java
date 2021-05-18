@@ -36,6 +36,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import dk.sdu.mmmi.common.services.IEntityPostProcessingService;
+import java.util.HashMap;
 
 public class Game implements ApplicationListener {
 
@@ -59,6 +60,8 @@ public class Game implements ApplicationListener {
     private final List<IGamePluginService> gamePluginList = new CopyOnWriteArrayList<>();
     private final List<IEntityProcessingService> entityProcessorList = new CopyOnWriteArrayList<>();
     private final List<IEntityPostProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
+
+    private final HashMap<String, Texture> entityTextures = new HashMap<String, Texture>();
 
     private SpriteBatch batch;
 
@@ -169,6 +172,18 @@ public class Game implements ApplicationListener {
         }
     }
 
+    private Texture getTexture(String spritePath) {
+        // reuse texture
+        if (this.entityTextures.containsKey(spritePath)) {
+            return this.entityTextures.get(spritePath);
+        }
+
+        // create new texture
+        Texture img = new Texture(Gdx.files.getLocalStoragePath() + spritePath);
+        this.entityTextures.put(spritePath, img);
+        return img;
+    }
+
     private void draw() {
         for (Entity entity : world.getEntities()) {
             if (entity.getPart(RenderPart.class) != null && entity.getPart(PositionPart.class) != null) {
@@ -180,7 +195,7 @@ public class Game implements ApplicationListener {
                 }
 
                 try {
-                    Texture img = new Texture(Gdx.files.getLocalStoragePath() + render.getSpritePath());
+                    Texture img = getTexture(render.getSpritePath());
 
                     batch.setProjectionMatrix(vp.getCamera().combined);
                     batch.begin();
@@ -284,5 +299,11 @@ public class Game implements ApplicationListener {
     public void removeGamePluginService(IGamePluginService plugin) {
         this.gamePluginList.remove(plugin);
         plugin.stop(gameData, world);
+        String[] sprites = plugin.getSpritePaths();
+        for (String sprite : sprites) {
+            if (this.entityTextures.containsKey(sprite)) {
+                this.entityTextures.remove(sprite);
+            }
+        }
     }
 }
