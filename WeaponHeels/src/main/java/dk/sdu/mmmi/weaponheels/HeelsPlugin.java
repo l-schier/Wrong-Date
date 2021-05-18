@@ -1,15 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dk.sdu.mmmi.weaponheels;
 
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
+import dk.sdu.mmmi.common.data.entityparts.HelpPart;
 import dk.sdu.mmmi.common.data.entityparts.InteractPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
+import dk.sdu.mmmi.common.data.entityparts.RenderPart;
 import dk.sdu.mmmi.common.data.entityparts.StunPart;
 import dk.sdu.mmmi.common.services.IGamePluginService;
 import java.util.Random;
@@ -19,6 +16,7 @@ import java.util.Random;
  * @author Kaan
  */
 public class HeelsPlugin implements IGamePluginService {
+    private final String spriteFile = "heels.png", helpFile = "heels.txt";
 
     @Override
     public void start(GameData gameData, World world) {
@@ -36,10 +34,11 @@ public class HeelsPlugin implements IGamePluginService {
         boolean interactable = true;
         heels.setRadius(8);
 
-        //heels.add(new DescriptionPart("description.txt", heels));
         heels.add(new PositionPart(x, y));
         heels.add(new StunPart(duration));
         heels.add(new InteractPart(interactable));
+        heels.add(new RenderPart(this.spriteFile, heels));
+        heels.add(new HelpPart(helpFile, heels));
 
         return heels;
     }

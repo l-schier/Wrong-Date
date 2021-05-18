@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dk.sdu.mmmi.weaponheels;
 
 import dk.sdu.mmmi.common.data.Entity;
@@ -23,7 +18,6 @@ public class HeelsProcessor implements IEntityProcessingService, IInteractServic
     @Override
     public void process(GameData gameData, World world) {
         for (Entity heels : world.getEntities(Heels.class)) {
-            PositionPart positionPart = heels.getPart(PositionPart.class);
             setShape(heels);
         }
     }
