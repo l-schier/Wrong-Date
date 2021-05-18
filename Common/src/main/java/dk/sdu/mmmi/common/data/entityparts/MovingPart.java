@@ -74,7 +74,7 @@ public class MovingPart implements EntityPart {
         }
         if (x > gameData.getCamX() + (gameData.getDisplayWidth() / 2f) - gameData.getMenuWidth() - 32f) {
             x += 64;
-        } else if (x <  32f + gameData.getCamX() - (gameData.getDisplayWidth() / 2f) - gameData.getMenuWidth()) {
+        } else if (x < 32f + gameData.getCamX() - (gameData.getDisplayWidth() / 2f) - gameData.getMenuWidth()) {
             x -= 64;
         }
         if (y > gameData.getCamY() + gameData.getDisplayHeight() / 2f - 32f) {
@@ -85,8 +85,8 @@ public class MovingPart implements EntityPart {
         positionPart.setX(x);
         positionPart.setY(y);
     }
-    
-        /**
+
+    /**
      * @return the left
      */
     public boolean isLeft() {
