@@ -73,6 +73,10 @@ public class Menu {
     Image iteminfoImage;
     TextArea itemInfoArea;
     TextButton helpButton, settingsButton, pauseButton;
+    
+    //Inventory
+    int invW, invH, invX, invY, inv0 = 3, invC, invR, invS;
+    Array<Image> frames, items;
 
     File weaponDescFile;
     Image weaponImage = null;
@@ -89,6 +93,8 @@ public class Menu {
         this.skin = skin;
         this.stage = stage;
         this.world = world;
+        
+        frames = new Array<>();
 
         draw();
         helpButtonfunctionality();
@@ -152,14 +158,14 @@ public class Menu {
         stage.getActors().add(invTextField);
 
         //inventory pictures 
-        Image tempImage = new Image(new Texture(Gdx.files.internal(whiteSquare)));
-        tempImage.setPosition(x1, invTextField.getY() - spacing - 100);
-        tempImage.setSize(width3, 100);
-        stage.getActors().add(tempImage);
+        invW = width3; 
+        invH = invW / inv0;
+        invX = x1;
+        invY = (int) (invTextField.getY() - spacing - invH);   
 
         //Item Information Image
         iteminfoImage = new Image(new Texture(Gdx.files.internal(whiteSquare)));
-        iteminfoImage.setPosition(x1, tempImage.getY() - spacing - width1);
+        iteminfoImage.setPosition(x1, invY - spacing - width1);
         iteminfoImage.setSize(width1, width1);
         stage.getActors().add(iteminfoImage);
 
@@ -461,8 +467,68 @@ public class Menu {
         
         updatePlayer();
         updateWeapon();
+        updateInventory();
         
         
+    }
+    
+    private void updateInventory(){
+      
+        if(player == null){
+            addFrames(invX, invY, invW, invH, inv0); 
+        }else{
+            if(player.getPart(InventoryPart.class)!= null){
+                InventoryPart inventoryPart = player.getPart(InventoryPart.class);
+                ArrayList list = inventoryPart.getInventory();
+                
+                invC = inv0; 
+                invR = 1;
+                invS = invC * invR;
+                
+                if(list.isEmpty()){
+                    System.out.println("0");
+                    addFrames(invX, invY, invW/inv0, invH, invS);
+                } else {
+                    for(int i = invS; i <= items.size; i = invC * invR){
+                        System.out.println("1");
+                        invC += inv0;
+                        invR ++;
+                        System.out.println("2");
+                        if(i >= items.size){
+                            invS = i;
+                        }
+                    }
+                    System.out.println("3");
+                    addFrames(invX, invY + invH / invR, invW / invC, invH / invR, invS);
+                }
+   
+                if(items == null){
+                    
+                }
+            }
+        }
+    }
+    
+    private void addFrames(int x, int y, int w, int h, int s){
+        boolean up = frames.size <= s || frames.size < inv0, down = frames.size > s;
+     
+        if(up){
+            for(int i = frames.size; i < s; i++){
+                Image image = new Image(new Texture(whiteSquare));
+                frames.add(image);
+            }
+            for(Image image: frames){
+                image.setPosition(x, y);
+                image.setSize(w, h);
+                x += w;
+                if(frames.indexOf(image, true) + 1 % invC == 0){
+                    x = invX;
+                    y -= h;
+                }
+                
+            }
+            stage.getActors().addAll(frames);
+        }
     }
     
     private void updatePlayer(){
