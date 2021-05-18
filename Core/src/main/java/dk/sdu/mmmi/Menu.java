@@ -95,7 +95,7 @@ public class Menu {
     }
 
 
-    public void draw() {
+    private void draw() {
         int x1 = WidthStart + spacing;
         int width1 = 90;
         int x2 = x1 + width1 + spacing;
@@ -331,14 +331,14 @@ public class Menu {
        settingsClicked = true;
     }
     
-    public void removeSettings(){
+    private void removeSettings(){
         stage.getActors().removeAll(settingsActors, false);
         
         resume();
         settingsClicked = false;
     }
 
-    public void help() {
+    private void help() {
         pause();
         
         if(settingsClicked){
@@ -417,7 +417,7 @@ public class Menu {
         helpClicked = true;
     }
     
-    public void removeHelp(){
+    private void removeHelp(){
         if (pauseClicked) {
             pauseButton.setText("PAUSE");
             pauseClicked = false;
@@ -428,7 +428,7 @@ public class Menu {
         helpClicked = false;
     }
 
-    public String fileToText(File f) {
+    private String fileToText(File f) {
 
         Scanner scanner;
         ArrayList<String> a = new ArrayList<String>();
@@ -454,7 +454,7 @@ public class Menu {
         return text;
     }
 
-    public void setHelpFiles(ArrayList<File> helpFiles) {
+    private void setHelpFiles(ArrayList<File> helpFiles) {
         this.helpFiles = helpFiles;
     }
 
@@ -549,13 +549,13 @@ public class Menu {
                 || (!helpClicked & !pauseClicked & !settingsClicked);
     }
 
-    private void pause() {
+    public void pause() {
         if (canPause()) {
             pause = true;
         }
     }
 
-    private void resume() {
+    public void resume() {
         if (canResume()) {
             resume = true;
         }
