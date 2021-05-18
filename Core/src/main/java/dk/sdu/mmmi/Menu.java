@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.World;
@@ -78,6 +79,7 @@ public class Menu {
     int invW, invH, invX, invY, inv0 = 3, invC, invR, invS;
     Array<Image> frames;
     Map<Entity, Image> items;
+    Image clickedItem;
 
     File weaponDescFile;
     Image weaponImage = null;
@@ -501,19 +503,13 @@ public class Menu {
                     }
      
                     if(items == null){
-                        System.out.println("1");
                         items = new HashMap<>();
-                        System.out.println("2");
                         for(Entity e : list){
-                            System.out.println("3");
                             if(e.getPart(RenderPart.class) != null){
-                                System.out.println("4");
                                 RenderPart renderPart = e.getPart(RenderPart.class);
-                                System.out.println("4.1");
                                 items.put(e, new Image(new Texture(renderPart.getSpritePath())));
-                                System.out.println("4.2");
                                 stage.getActors().add(items.get(e));
-                                System.out.println("4.3");
+                                itemClicked(items.get(e), e);
                             }
                         }
                     }
@@ -521,7 +517,6 @@ public class Menu {
                     for(Map.Entry<Entity, Image> e: items.entrySet()){
                         Image item = e.getValue();
                         Image frame = frames.get(i);
-                        System.out.println("x - " +  frame.getX() + " y - " + frame.getY());
                         item.setPosition(frame.getX(), frame.getY());
                         item.setSize(frame.getWidth(), frame.getHeight());
                     }
@@ -555,6 +550,31 @@ public class Menu {
         }if(down){
             //ToDO implementation
         }
+    }
+    
+    private void itemClicked(Image img, Entity e){
+        img.addListener(new ClickListener(){
+            public void clicked(InputEvent event, float x, float y) {
+                if(e.getPart(RenderPart.class) != null){
+                    RenderPart renderPart = e.getPart(RenderPart.class);
+                    clickedItem = new Image( new Texture(renderPart.getSpritePath()));
+                    
+                    if(!stage.getActors().contains(clickedItem, true)){
+                        clickedItem.setPosition(iteminfoImage.getX(), iteminfoImage.getY());
+                        clickedItem.setSize(iteminfoImage.getWidth(), iteminfoImage.getHeight());
+                        stage.getActors().add(clickedItem);
+                    }
+                  
+                }
+                if(e.getPart(DescriptionPart.class) != null){
+                    DescriptionPart descriptionPart = e.getPart(DescriptionPart.class);
+                    itemInfoArea.setText(fileToText(descriptionPart.getDescription()));
+                }else{
+                    itemInfoArea.setText("No Information");
+                }
+                
+            }
+        });
     }
     
     private void updatePlayer(){
