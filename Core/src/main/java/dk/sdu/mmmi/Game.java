@@ -191,7 +191,7 @@ public class Game implements ApplicationListener {
         float fromY = gameData.getCamY() - (gameData.getDisplayHeight() / 2);
         float toY = fromY + gameData.getDisplayHeight();
 
-        Texture img = new Texture(Gdx.files.getLocalStoragePath() + "floor.png");
+        Texture img = getTexture("floor.png");
         img.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
         batch.setProjectionMatrix(vp.getCamera().combined);
@@ -206,16 +206,16 @@ public class Game implements ApplicationListener {
         RenderPart render = entity.getPart(RenderPart.class);
 
         try {
-            Texture d = new Texture(Gdx.files.getLocalStoragePath() + doors.getSpritePath());
-            Texture w = new Texture(Gdx.files.getLocalStoragePath() + render.getSpritePath());
+            Texture d = getTexture(doors.getSpritePath());
+            Texture w = getTexture(render.getSpritePath());
             w.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
             batch.setProjectionMatrix(vp.getCamera().combined);
             batch.begin();
             batch.draw(w, wall.getStartX() - 32, wall.getStartY() - 32, 0, 0, w.getWidth(), (int) wall.getEndY());
-            batch.draw(w, wall.getStartX(), wall.getStartY() - 32, 0, 0, (int) wall.getEndX() + 32, w.getHeight());
+            batch.draw(w, wall.getStartX(), wall.getStartY() - 32, 0, 0, (int) wall.getEndX(), w.getHeight());
             batch.draw(w, wall.getStartX() - 32, wall.getEndY(), 0, 0, (int) wall.getEndX(), w.getHeight());
-            batch.draw(w, wall.getEndX(), wall.getStartY(), 0, 0, w.getWidth(), (int) wall.getEndY() + 32);
+            batch.draw(w, wall.getEndX(), wall.getStartY(), 0, 0, w.getWidth(), (int) wall.getEndY());
 
             for (float[] door : doors.getDoors()) {
                 float x = door[0];

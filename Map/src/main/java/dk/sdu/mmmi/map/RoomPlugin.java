@@ -81,6 +81,6 @@ public class RoomPlugin implements IGamePluginService {
 
     @Override
     public String[] getSpritePaths() {
-        return new String[]{};
+        return new String[]{wallSpriteFile, doorSpriteFile};
     }
 }
