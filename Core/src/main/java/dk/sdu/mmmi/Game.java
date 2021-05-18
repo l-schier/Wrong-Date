@@ -20,10 +20,14 @@ import dk.sdu.mmmi.core.managers.GameInputProcessor;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.RenderPart;
 import dk.sdu.mmmi.common.data.entityparts.WallPart;
@@ -65,6 +69,11 @@ public class Game implements ApplicationListener {
     private final HashMap<String, Texture> entityTextures = new HashMap<String, Texture>();
 
     private SpriteBatch batch;
+    private final int textureHeight = 64; 
+    private final int textureWidth = 64;
+    private float elapsedTime; 
+    private Texture textureSheet; 
+    
 
     public Game() {
         init();
@@ -124,6 +133,7 @@ public class Game implements ApplicationListener {
         stage.getViewport().apply();
         skin = new Skin(Gdx.files.internal(Gdx.files.getLocalStoragePath() + "comic-ui.json"));
         batch = new SpriteBatch();
+        
         menu = new Menu(Width, gameWidth, Height, skin, stage, world);
 
         //Allows multiple inputprocessor
@@ -187,9 +197,9 @@ public class Game implements ApplicationListener {
 
     private void drawBackground() {
         float fromX = gameData.getCamX() - (gameData.getDisplayWidth() / 2 + menuWidth);
-        float toX = fromX + gameData.getDisplayWidth();
+        float toX = gameData.getDisplayWidth();
         float fromY = gameData.getCamY() - (gameData.getDisplayHeight() / 2);
-        float toY = fromY + gameData.getDisplayHeight();
+        float toY = gameData.getDisplayHeight();
 
         Texture img = getTexture("floor.png");
         img.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
@@ -263,15 +273,53 @@ public class Game implements ApplicationListener {
                     continue;
                 }
 
-                try {
-                    Texture img = getTexture(render.getSpritePath());
+                if (entity.getPart(MovingPart.class) != null) {
+                    try {
 
-                    batch.setProjectionMatrix(vp.getCamera().combined);
-                    batch.begin();
-                    batch.draw(img, pos.getX() - 16, pos.getY() - 16);
-                    batch.end();
-                } catch (GdxRuntimeException e) {
-                    System.out.println("Image not found");
+                        textureSheet = getTexture(render.getSpritePath());
+                        
+                        Animation backWalk = getAnimationFromTextureRange(1);
+                        Animation frontWalk = getAnimationFromTextureRange(5);
+                        Animation leftWalk = getAnimationFromTextureRange(9);
+                        Animation rightWalk = getAnimationFromTextureRange(13);
+                        
+                        MovingPart entityMovingPart = entity.getPart(MovingPart.class);
+                        
+                        elapsedTime += Gdx.graphics.getDeltaTime(); 
+
+                        batch.setProjectionMatrix(vp.getCamera().combined);
+                        batch.begin();
+                        
+                        if(entityMovingPart.isLeft()){
+                            batch.draw((TextureRegion) leftWalk.getKeyFrame(elapsedTime, true), pos.getX() - 16, pos.getY() - 16);
+                        }else if(entityMovingPart.isRight()){
+                            batch.draw((TextureRegion) rightWalk.getKeyFrame(elapsedTime, true), pos.getX() - 16, pos.getY() - 16);
+                        }else if(entityMovingPart.isUp()){
+                            batch.draw((TextureRegion) backWalk.getKeyFrame(elapsedTime, true), pos.getX() - 16, pos.getY() - 16);
+                        }else if(entityMovingPart.isDown()){
+                            batch.draw((TextureRegion) frontWalk.getKeyFrame(elapsedTime, true), pos.getX() - 16, pos.getY() - 16);
+                        }else{
+                            TextureRegion stand = new TextureRegion(textureSheet, 4*textureWidth, 0, textureWidth, textureWidth);
+                            batch.draw(stand, pos.getX() - 16, pos.getY() - 16);
+                        }
+                        
+                        batch.end();
+
+                    } catch (GdxRuntimeException e) {
+                        System.out.println("Image not found");
+                    }
+                } else {
+                    try {
+                        Texture img = getTexture(render.getSpritePath());
+
+                        batch.setProjectionMatrix(vp.getCamera().combined);
+                        batch.begin();
+                        batch.draw(img, pos.getX() - 16, pos.getY() - 16);
+                        batch.end();
+
+                    } catch (GdxRuntimeException e) {
+                        System.out.println("Image not found");
+                    }
                 }
 
                 continue;
@@ -376,5 +424,13 @@ public class Game implements ApplicationListener {
                 this.entityTextures.remove(sprite);
             }
         }
+    }
+    
+    private Animation getAnimationFromTextureRange(int col){
+        Array<TextureRegion> frames = new Array<>();
+        for (int i = col-1; i < col+3; i++){
+            frames.add(new TextureRegion(textureSheet, i*textureWidth, 0, textureWidth, textureWidth));
+        }
+        return new Animation(1f/4f, frames);
     }
 }

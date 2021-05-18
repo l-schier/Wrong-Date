@@ -61,15 +61,15 @@ public class MovingPart implements EntityPart {
         float x = positionPart.getX();
         float y = positionPart.getY();
 
-        if (right) {
+        if (isRight()) {
             x += speed;
-        } else if (left) {
+        } else if (isLeft()) {
             x -= speed;
         }
 
-        if (up) {
+        if (isUp()) {
             y += speed;
-        } else if (down) {
+        } else if (isDown()) {
             y -= speed;
         }
         if (x > gameData.getCamX() + (gameData.getDisplayWidth() / 2f) - gameData.getMenuWidth() - 32f) {
@@ -84,5 +84,33 @@ public class MovingPart implements EntityPart {
         }
         positionPart.setX(x);
         positionPart.setY(y);
+    }
+    
+        /**
+     * @return the left
+     */
+    public boolean isLeft() {
+        return left;
+    }
+
+    /**
+     * @return the right
+     */
+    public boolean isRight() {
+        return right;
+    }
+
+    /**
+     * @return the up
+     */
+    public boolean isUp() {
+        return up;
+    }
+
+    /**
+     * @return the down
+     */
+    public boolean isDown() {
+        return down;
     }
 }

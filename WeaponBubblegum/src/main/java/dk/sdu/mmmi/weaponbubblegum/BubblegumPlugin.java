@@ -29,8 +29,8 @@ public class BubblegumPlugin implements IGamePluginService{
         Entity bubblegum = new Bubblegum();
         Random random = new Random();
 
-        float x = (float)random.nextInt(gameData.getDisplayWidth());
-        float y = (float)random.nextInt(gameData.getDisplayHeight());
+        float x = (float) random.nextInt(gameData.getDisplayWidth() - 64) + 32;
+        float y = (float) random.nextInt(gameData.getDisplayHeight() - 64) + 32;
         float duration = 10;
         boolean interactable = true;
         bubblegum.setRadius(8);
