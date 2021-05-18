@@ -29,8 +29,8 @@ public class NailsPlugin implements IGamePluginService {
         Entity nails = new Nails();
         Random random = new Random();
 
-        float x = (float) random.nextInt(gameData.getDisplayWidth());
-        float y = (float) random.nextInt(gameData.getDisplayHeight());
+        float x = (float) random.nextInt(gameData.getDisplayWidth() - 64) + 32;
+        float y = (float) random.nextInt(gameData.getDisplayHeight() - 64) + 32;
         int damage = 1;
         boolean interactable = true;
         nails.setRadius(8);
