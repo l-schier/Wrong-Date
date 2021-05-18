@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="dk.sdu.mmmi.weaponheels.processor">
+    <implementation class="dk.sdu.mmmi.weaponheels.HeelsProcessor"/>
+    <service>
+        <provide interface="dk.sdu.mmmi.common.services.IEntityProcessingService"/>
+        <provide interface="dk.sdu.mmmi.common.services.IInteractService"/>
+    </service>
+</scr:component>

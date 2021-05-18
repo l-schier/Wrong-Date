@@ -44,6 +44,9 @@ public class MovingPart implements EntityPart {
 
     private void reduceExpiration(float delta) {
         this.expiration -= delta;
+        if (this.expiration < 0) {
+            this.expiration = 0;
+        }
     }
 
     @Override
