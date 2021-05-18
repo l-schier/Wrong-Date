@@ -187,9 +187,9 @@ public class Game implements ApplicationListener {
 
     private void drawBackground() {
         float fromX = gameData.getCamX() - (gameData.getDisplayWidth() / 2 + menuWidth);
-        float toX = fromX + gameData.getDisplayWidth();
+        float toX = gameData.getDisplayWidth();
         float fromY = gameData.getCamY() - (gameData.getDisplayHeight() / 2);
-        float toY = fromY + gameData.getDisplayHeight();
+        float toY = gameData.getDisplayHeight();
 
         Texture img = getTexture("floor.png");
         img.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
