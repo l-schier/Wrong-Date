@@ -19,7 +19,7 @@ public class SightPart implements EntityPart {
 
     public float getSightLimit() {
         if (expiration > 0) {
-            return this.sightLimit / 2;
+            return 0;
         }
 
         return this.sightLimit;
@@ -31,6 +31,9 @@ public class SightPart implements EntityPart {
 
     private void reduceExpiration(float delta) {
         this.expiration -= delta;
+        if (this.expiration < 0) {
+            this.expiration = 0;
+        }
     }
 
     @Override
