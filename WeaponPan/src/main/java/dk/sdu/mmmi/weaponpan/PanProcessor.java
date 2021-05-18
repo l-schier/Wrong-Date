@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dk.sdu.mmmi.weaponpan;
 
 import dk.sdu.mmmi.common.data.Entity;
@@ -23,7 +18,6 @@ public class PanProcessor implements IEntityProcessingService, IInteractService 
     @Override
     public void process(GameData gameData, World world) {
         for (Entity pan : world.getEntities(Pan.class)) {
-            PositionPart positionPart = pan.getPart(PositionPart.class);
             setShape(pan);
         }
     }

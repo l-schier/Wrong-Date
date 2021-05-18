@@ -1,14 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dk.sdu.mmmi.weaponfoundation;
 
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
-import dk.sdu.mmmi.common.data.entityparts.DamagePart;
 import dk.sdu.mmmi.common.data.entityparts.InteractPart;
 import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
@@ -24,7 +18,6 @@ public class FoundationProcessor implements IEntityProcessingService, IInteractS
     @Override
     public void process(GameData gameData, World world) {
         for (Entity foundation : world.getEntities(Foundation.class)) {
-            PositionPart positionPart = foundation.getPart(PositionPart.class);
             setShape(foundation);
         }
     }
@@ -61,7 +54,6 @@ public class FoundationProcessor implements IEntityProcessingService, IInteractS
             InteractPart interact = foundation.getPart(InteractPart.class);
             if (user.circleCollision(foundation) && interact.isInteractable() && foundation != currentWeapon) {
                 inventory.addItem(foundation);
-                System.out.println("Added foundation");
             }
         }
     }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dk.sdu.mmmi.weaponpan;
 
 import dk.sdu.mmmi.common.data.Entity;
@@ -21,7 +16,9 @@ import java.util.Random;
  * @author Kaan
  */
 public class PanPlugin implements IGamePluginService {
-     @Override
+    private final String spriteFile = "pan.png", descriptionFile = "pan.txt";
+
+    @Override
     public void start(GameData gameData, World world) {
         Entity pan = createPan(gameData);
         world.addEntity(pan);
@@ -37,12 +34,12 @@ public class PanPlugin implements IGamePluginService {
         boolean interactable = true;
         pan.setRadius(8);
 
-        //pan.add(new DescriptionPart("description.txt", pan));
         pan.add(new PositionPart(x, y));
         pan.add(new StunPart(duration));
         pan.add(new InteractPart(interactable));
-        //pan.add(new RenderPart("testWeapon.png", pan));
-        
+        pan.add(new RenderPart(this.spriteFile, pan));
+        pan.add(new DescriptionPart(descriptionFile, pan));
+
         return pan;
     }
 
