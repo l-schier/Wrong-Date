@@ -76,7 +76,8 @@ public class Menu {
     
     //Inventory
     int invW, invH, invX, invY, inv0 = 3, invC, invR, invS;
-    Array<Image> frames, items;
+    Array<Image> frames;
+    Map<Entity, Image> items;
 
     File weaponDescFile;
     Image weaponImage = null;
@@ -479,32 +480,55 @@ public class Menu {
         }else{
             if(player.getPart(InventoryPart.class)!= null){
                 InventoryPart inventoryPart = player.getPart(InventoryPart.class);
-                ArrayList list = inventoryPart.getInventory();
+                ArrayList<Entity> list = inventoryPart.getInventory();
                 
                 invC = inv0; 
                 invR = 1;
                 invS = invC * invR;
                 
                 if(list.isEmpty()){
-                    System.out.println("0");
                     addFrames(invX, invY, invW/inv0, invH, invS);
                 } else {
-                    for(int i = invS; i <= items.size; i = invC * invR){
+                    if(invS < list.size()){
+                        for(int i = invS; i <= items.size(); i = invC * invR){
+                            invC += inv0;
+                            invR ++;
+                            if(i >= items.size()){
+                                invS = i;
+                            }
+                        }
+                        addFrames(invX, invY + invH / invR, invW / invC, invH / invR, invS);
+                    }
+     
+                    if(items == null){
                         System.out.println("1");
-                        invC += inv0;
-                        invR ++;
+                        items = new HashMap<>();
                         System.out.println("2");
-                        if(i >= items.size){
-                            invS = i;
+                        for(Entity e : list){
+                            System.out.println("3");
+                            if(e.getPart(RenderPart.class) != null){
+                                System.out.println("4");
+                                RenderPart renderPart = e.getPart(RenderPart.class);
+                                System.out.println("4.1");
+                                items.put(e, new Image(new Texture(renderPart.getSpritePath())));
+                                System.out.println("4.2");
+                                stage.getActors().add(items.get(e));
+                                System.out.println("4.3");
+                            }
                         }
                     }
-                    System.out.println("3");
-                    addFrames(invX, invY + invH / invR, invW / invC, invH / invR, invS);
+                    int i = 0;
+                    for(Map.Entry<Entity, Image> e: items.entrySet()){
+                        Image item = e.getValue();
+                        Image frame = frames.get(i);
+                        System.out.println("x - " +  frame.getX() + " y - " + frame.getY());
+                        item.setPosition(frame.getX(), frame.getY());
+                        item.setSize(frame.getWidth(), frame.getHeight());
+                    }
+                   
                 }
    
-                if(items == null){
-                    
-                }
+               
             }
         }
     }
@@ -528,6 +552,8 @@ public class Menu {
                 
             }
             stage.getActors().addAll(frames);
+        }if(down){
+            //ToDO implementation
         }
     }
     
