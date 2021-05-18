@@ -480,21 +480,25 @@ public class Menu {
             removePlayer();
         } else if(player == null || !player.equals(tempPlayer)){
             player = tempPlayer;
-            RenderPart renderPart = player.getPart(RenderPart.class);
-            playerImage = new Image(new Texture(renderPart.getSpritePath()));
-            playerImage.setSize(proPicImage.getWidth()/ 4 * 3, proPicImage.getHeight() / 4 * 3);
-            playerImage.setPosition(proPicImage.getX() + proPicImage.getWidth()/8, proPicImage.getY() + proPicImage.getHeight()/8);
-
-            PlayerPart playerPart = player.getPart(PlayerPart.class);
-
-            if(playerPart.getName() == null){
-                proNameTextField.setText("No Name Chosen");
-            } else {
-                proNameTextField.setText(playerPart.getName());
+            if(player.getPart(RenderPart.class) != null){
+                RenderPart renderPart = player.getPart(RenderPart.class);
+                playerImage = new Image(new Texture(renderPart.getSpritePath()));
+                playerImage.setSize(proPicImage.getWidth()/ 4 * 3, proPicImage.getHeight() / 4 * 3);
+                playerImage.setPosition(proPicImage.getX() + proPicImage.getWidth()/8, proPicImage.getY() + proPicImage.getHeight()/8);
+            
+                addPlayer();
             }
-            addPlayer();
             
-            
+            if(player.getPart(PlayerPart.class) != null){
+                PlayerPart playerPart = player.getPart(PlayerPart.class);
+
+                if(playerPart.getName() == null){
+                    proNameTextField.setText("No Name Chosen");
+                } else {
+                    proNameTextField.setText(playerPart.getName());
+                }
+            }
+    
    
         }
         
