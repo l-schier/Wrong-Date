@@ -76,6 +76,9 @@ public class Menu {
 
     File weaponDescFile;
     Image weaponImage = null;
+    
+    Image playerImage;
+    Boolean playerAdded = false;
 
     public Menu(int WidthWindow, int gameWidth, int Height, Skin skin, Stage stage, World world) {
         this.WidthWindow = Width0 + WidthWindow;
@@ -454,10 +457,6 @@ public class Menu {
         return text;
     }
 
-    private void setHelpFiles(ArrayList<File> helpFiles) {
-        this.helpFiles = helpFiles;
-    }
-
     public void update() {
         
         updatePlayer();
@@ -467,32 +466,52 @@ public class Menu {
     }
     
     private void updatePlayer(){
+        
+        boolean exists = false;
 
         for (Entity e : world.getEntities()) {
             if (e.getPart(PlayerPart.class) != null) {
+                exists = true;
                 tempPlayer = e;
             }
         }
-        
-        if(player == null || !player.equals(tempPlayer)){
-                player = tempPlayer;
-                RenderPart renderPart = player.getPart(RenderPart.class);
-            
-                Image playerImage = new Image(new Texture(renderPart.getSpritePath()));
-                playerImage.setSize(proPicImage.getWidth()/ 4 * 3, proPicImage.getHeight() / 4 * 3);
-                playerImage.setPosition(proPicImage.getX() + proPicImage.getWidth()/8, proPicImage.getY() + proPicImage.getHeight()/8);
-                
-                PlayerPart playerPart = player.getPart(PlayerPart.class);
-                
-                if(playerPart.getName() == null){
-                    proNameTextField.setText("No Name Chosen");
-                } else {
-                    proNameTextField.setText(playerPart.getName());
-                }
-                stage.getActors().add(playerImage); 
+        if(!exists){
+            proNameTextField.setText("No Current Player");
+            removePlayer();
+        } else if(player == null || !player.equals(tempPlayer)){
+            player = tempPlayer;
+            RenderPart renderPart = player.getPart(RenderPart.class);
+            playerImage = new Image(new Texture(renderPart.getSpritePath()));
+            playerImage.setSize(proPicImage.getWidth()/ 4 * 3, proPicImage.getHeight() / 4 * 3);
+            playerImage.setPosition(proPicImage.getX() + proPicImage.getWidth()/8, proPicImage.getY() + proPicImage.getHeight()/8);
+
+            PlayerPart playerPart = player.getPart(PlayerPart.class);
+
+            if(playerPart.getName() == null){
+                proNameTextField.setText("No Name Chosen");
+            } else {
+                proNameTextField.setText(playerPart.getName());
+            }
+            addPlayer();
             
             
    
+        }
+        
+    }
+    
+    private void addPlayer(){
+        if(!playerAdded){
+           stage.getActors().add(playerImage);
+            playerAdded = true; 
+        }
+        
+    }
+    
+    private void removePlayer(){
+        if(playerAdded){
+            stage.getActors().removeValue(playerImage, true);
+            playerAdded = false;
         }
         
     }
