@@ -16,20 +16,10 @@ import java.awt.Image;
  * @author Kaan
  */
 public class Heels extends Entity implements IItemService {
-    
+
     @Override
     public void useItem(Entity me, GameData gameData) {
         StunPart stun = this.getPart(StunPart.class);
         stun.setIsStunning(true);
-    }
-
-    @Override
-    public String getDescription() {
-        return "Stun weapon";
-    }
-
-    @Override
-    public Image getSprite() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -6,7 +6,8 @@ import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.DamagePart;
 import dk.sdu.mmmi.common.data.entityparts.InteractPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
-import dk.sdu.mmmi.common.data.entityparts.InformationPart;
+import dk.sdu.mmmi.common.data.entityparts.DescriptionPart;
+import dk.sdu.mmmi.common.data.entityparts.RenderPart;
 import dk.sdu.mmmi.common.services.IGamePluginService;
 import java.util.Random;
 
@@ -16,26 +17,29 @@ import java.util.Random;
  */
 public class NailsPlugin implements IGamePluginService {
 
+    private final String spriteFile = "weapon.png", descriptionFile = "WeaponsDesription.txt";
+
     @Override
     public void start(GameData gameData, World world) {
         Entity nails = createWeapon(gameData);
         world.addEntity(nails);
     }
-    
+
     public Entity createWeapon(GameData gameData) {
         Entity nails = new Nails();
         Random random = new Random();
-        
-        float x = (float)random.nextInt(gameData.getDisplayWidth());
-        float y = (float)random.nextInt(gameData.getDisplayHeight());
+
+        float x = (float) random.nextInt(gameData.getDisplayWidth());
+        float y = (float) random.nextInt(gameData.getDisplayHeight());
         int damage = 1;
         boolean interactable = true;
         nails.setRadius(8);
-        
-        nails.add(new InformationPart("testWeapon.png", "description.txt", nails));
+
         nails.add(new PositionPart(x, y));
         nails.add(new DamagePart(damage));
         nails.add(new InteractPart(interactable));
+        nails.add(new RenderPart(spriteFile, nails));
+        nails.add(new DescriptionPart(descriptionFile, nails));
 
         return nails;
     }
@@ -46,5 +50,5 @@ public class NailsPlugin implements IGamePluginService {
             world.removeEntity(nails);
         }
     }
-    
+
 }

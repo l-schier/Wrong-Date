@@ -9,7 +9,6 @@ import dk.sdu.mmmi.common.data.entityparts.RenderPart;
 import dk.sdu.mmmi.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.common.services.IInteractService;
 import dk.sdu.mmmi.common.services.IItemService;
-import java.awt.Image;
 
 /**
  *
@@ -24,17 +23,6 @@ public class KeyProcessor implements IEntityProcessingService, IItemService, IIn
 
     public void useItem(Entity player, GameData gameData) {
         
-    }
-
-    @Override
-    public String getDescription() {
-        return "Key";
-    }
-
-    
-    @Override
-    public Image getSprite() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

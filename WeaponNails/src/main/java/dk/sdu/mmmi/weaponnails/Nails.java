@@ -10,20 +10,10 @@ import java.awt.Image;
  *
  * @author Jacob
  */
-public class Nails extends Entity implements IItemService{
-    
+public class Nails extends Entity implements IItemService {
+
     public void useItem(Entity shooter, GameData gameData) {
         DamagePart damage = this.getPart(DamagePart.class);
         damage.setWeaponUsed(true);
-    }
-
-    @Override
-    public String getDescription() {
-        return "Melee weapon";
-    }
-
-    @Override
-    public Image getSprite() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -116,7 +116,7 @@ public class Collider implements IEntityPostProcessingService, ICollisionChecker
             DoorPart doorPart = e.getPart(DoorPart.class);
             WallPart wall = e.getPart(WallPart.class);
 
-            if (wall != null || doorPart != null) {
+            if (wall != null && doorPart != null) {
 
                 float[][] doors = doorPart.getDoors();
                 PositionPart pos = me.getPart(PositionPart.class);
@@ -154,11 +154,7 @@ public class Collider implements IEntityPostProcessingService, ICollisionChecker
                     }
 
                     if (wallBool) {
-                        if (doorBool && hasKey) {
-                            return true;
-                        } else {
-                            return false;
-                        }
+                        return doorBool && hasKey;
                     }
                 }
             }

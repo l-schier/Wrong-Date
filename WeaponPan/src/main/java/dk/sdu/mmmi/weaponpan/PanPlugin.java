@@ -8,9 +8,10 @@ package dk.sdu.mmmi.weaponpan;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
-import dk.sdu.mmmi.common.data.entityparts.InformationPart;
+import dk.sdu.mmmi.common.data.entityparts.DescriptionPart;
 import dk.sdu.mmmi.common.data.entityparts.InteractPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
+import dk.sdu.mmmi.common.data.entityparts.RenderPart;
 import dk.sdu.mmmi.common.data.entityparts.StunPart;
 import dk.sdu.mmmi.common.services.IGamePluginService;
 import java.util.Random;
@@ -36,10 +37,11 @@ public class PanPlugin implements IGamePluginService {
         boolean interactable = true;
         pan.setRadius(8);
 
-        pan.add(new InformationPart("testWeapon.png", "description.txt", pan));
+        //pan.add(new DescriptionPart("description.txt", pan));
         pan.add(new PositionPart(x, y));
         pan.add(new StunPart(duration));
         pan.add(new InteractPart(interactable));
+        //pan.add(new RenderPart("testWeapon.png", pan));
         
         return pan;
     }

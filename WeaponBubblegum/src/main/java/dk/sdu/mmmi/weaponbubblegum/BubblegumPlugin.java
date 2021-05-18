@@ -9,7 +9,6 @@ import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.BlindPart;
-import dk.sdu.mmmi.common.data.entityparts.InformationPart;
 import dk.sdu.mmmi.common.data.entityparts.InteractPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.services.IGamePluginService;
@@ -36,7 +35,7 @@ public class BubblegumPlugin implements IGamePluginService{
         boolean interactable = true;
         bubblegum.setRadius(8);
 
-        bubblegum.add(new InformationPart("testWeapon.png", "description.txt", bubblegum));
+        //bubblegum.add(new InformationPart("testWeapon.png", "description.txt", bubblegum));
         bubblegum.add(new PositionPart(x, y));
         bubblegum.add(new BlindPart(duration));
         bubblegum.add(new InteractPart(interactable));

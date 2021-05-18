@@ -16,19 +16,9 @@ import java.awt.Image;
  * @author Kaan
  */
 public class Bubblegum extends Entity implements IItemService {
-        public void useItem(Entity shooter, GameData gameData) {
+
+    public void useItem(Entity shooter, GameData gameData) {
         BlindPart blind = this.getPart(BlindPart.class);
         blind.setIsBlinding(true);
     }
-
-    @Override
-    public String getDescription() {
-        return "Blind weapon";
-    }
-
-    @Override
-    public Image getSprite() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }

@@ -8,7 +8,7 @@
   </parent>
 
     <properties>
-        <libGDX.version>1.5.0</libGDX.version>
+        <libGDX.version>1.9.10</libGDX.version>
         <bundle.symbolicName>dk.sdu.mmmi.libgdx</bundle.symbolicName>
         <bundle.namespace>dk.sdu.mmmi</bundle.namespace>
     </properties>
