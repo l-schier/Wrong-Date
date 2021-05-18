@@ -26,6 +26,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.RenderPart;
+import dk.sdu.mmmi.common.data.entityparts.WallPart;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -184,8 +185,76 @@ public class Game implements ApplicationListener {
         return img;
     }
 
+    private void drawBackground() {
+        float fromX = gameData.getCamX() - (gameData.getDisplayWidth() / 2 + menuWidth);
+        float toX = fromX + gameData.getDisplayWidth();
+        float fromY = gameData.getCamY() - (gameData.getDisplayHeight() / 2);
+        float toY = fromY + gameData.getDisplayHeight();
+
+        Texture img = getTexture("floor.png");
+        img.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+
+        batch.setProjectionMatrix(vp.getCamera().combined);
+        batch.begin();
+        batch.draw(img, fromX, fromY, 0, 0, (int) toX, (int) toY);
+        batch.end();
+    }
+
+    private void drawWallsAndDoors(Entity entity) {
+        WallPart wall = entity.getPart(WallPart.class);
+        DoorPart doors = entity.getPart(DoorPart.class);
+        RenderPart render = entity.getPart(RenderPart.class);
+
+        try {
+            Texture d = getTexture(doors.getSpritePath());
+            Texture w = getTexture(render.getSpritePath());
+            w.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+
+            batch.setProjectionMatrix(vp.getCamera().combined);
+            batch.begin();
+            batch.draw(w, wall.getStartX() - 32, wall.getStartY() - 32, 0, 0, w.getWidth(), (int) wall.getEndY());
+            batch.draw(w, wall.getStartX(), wall.getStartY() - 32, 0, 0, (int) wall.getEndX(), w.getHeight());
+            batch.draw(w, wall.getStartX() - 32, wall.getEndY(), 0, 0, (int) wall.getEndX(), w.getHeight());
+            batch.draw(w, wall.getEndX(), wall.getStartY(), 0, 0, w.getWidth(), (int) wall.getEndY());
+
+            for (float[] door : doors.getDoors()) {
+                float x = door[0];
+                float y = door[1];
+
+                if (door[0] == wall.getStartX()) { // left door
+                    batch.draw(d, x - 32, y, 0, 0, d.getWidth(), d.getHeight());
+                } else if (door[0] == wall.getEndX()) { // right door                        
+                    batch.draw(d, x, y, 0, 0, d.getWidth(), d.getHeight());
+                } else if (door[1] == wall.getStartY()) { // bottom door
+                    batch.draw(d, x, y - 32, 0, 0, d.getWidth(), d.getHeight());
+                } else if (door[1] == wall.getEndY()) { // top door
+                    batch.draw(d, x, y, 0, 0, d.getWidth(), d.getHeight());
+                }
+            }
+
+            batch.end();
+        } catch (GdxRuntimeException e) {
+            System.out.println("Image not found");
+        }
+    }
+
     private void draw() {
+
+        // background
+        drawBackground();
+
+        // entities
         for (Entity entity : world.getEntities()) {
+
+            // walls and doors
+            if (entity.getPart(WallPart.class) != null
+                    && entity.getPart(DoorPart.class) != null
+                    && entity.getPart(RenderPart.class) != null) {
+                drawWallsAndDoors(entity);
+                continue;
+            }
+
+            // anything else
             if (entity.getPart(RenderPart.class) != null && entity.getPart(PositionPart.class) != null) {
                 PositionPart pos = entity.getPart(PositionPart.class);
                 RenderPart render = entity.getPart(RenderPart.class);
@@ -208,6 +277,7 @@ public class Game implements ApplicationListener {
                 continue;
             }
 
+            // shape render (vector) fallback
             sr.setColor(1, 1, 1, 1);
 
             sr.setProjectionMatrix(vp.getCamera().combined);
@@ -240,6 +310,7 @@ public class Game implements ApplicationListener {
             }
         }
 
+        // hardcoded obstacle
         float boxStartX = 100;
         float boxStopX = 200;
         float boxStartY = 100;

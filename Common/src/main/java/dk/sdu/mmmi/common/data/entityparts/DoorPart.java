@@ -12,12 +12,13 @@ import dk.sdu.mmmi.common.data.GameData;
  *
  * @author lasse
  */
-public class DoorPart implements EntityPart {
+public class DoorPart extends RenderPart {
 
     private float[][] doors;
     private KeyPart.KeyColor lockColor;
 
-    public DoorPart(float[][] doors, KeyPart.KeyColor lockColor) {
+    public DoorPart(float[][] doors, KeyPart.KeyColor lockColor, String spriteFile, Object component) {
+        super(spriteFile, component);
         this.doors = doors;
         this.lockColor = lockColor;
     }
