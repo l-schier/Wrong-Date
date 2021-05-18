@@ -55,7 +55,6 @@ public class NailsProcessor implements IEntityProcessingService, IInteractServic
             InteractPart interact = nails.getPart(InteractPart.class);
             if (user.circleCollision(nails) && interact.isInteractable() && nails != currentWeapon) {
                 inventory.addItem(nails);
-                System.out.println("Added nails");
             }
         }
     }
