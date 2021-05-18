@@ -521,10 +521,14 @@ public class Menu {
 
         if (inventoryPart.getWeapon() != null) {
 
-            if (weapon == null || !weapon.equals(inventoryPart.getWeapon())) {
+            if (weapon == null || !weapon.equals(inventoryPart.getWeapon())) {  
                 weapon = inventoryPart.getWeapon();
-                DescriptionPart descriptionPart = weapon.getPart(DescriptionPart.class);
-                RenderPart renderPart = weapon.getPart(RenderPart.class);
+                if(weapon.getPart(DescriptionPart.class) != null){
+                    DescriptionPart descriptionPart = weapon.getPart(DescriptionPart.class);
+                    weapDescArea.setText(fileToText(descriptionPart.getDescription()));
+                }
+                if(weapon.getPart(RenderPart.class) != null){
+                    RenderPart renderPart = weapon.getPart(RenderPart.class);
 
                 boolean first = false;
                 if (weaponImage == null) {
@@ -534,11 +538,14 @@ public class Menu {
                 weaponImage.setSize(weapImage.getImageWidth(), weapImage.getImageHeight());
                 weaponImage.setPosition(weapImage.getX() , weapImage.getY());
 
-                weapDescArea.setText(fileToText(descriptionPart.getDescription()));
+                
                 if (first) {
                     stage.getActors().add(weaponImage);
                     first = false;
                 }
+                }
+                
+                
             }
         }
     }

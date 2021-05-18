@@ -16,13 +16,6 @@ public class GameData {
     private int camX;
     private int camY;
 
-    public int getMenuWidth() {
-        return menuWidth;
-    }
-
-    public void setMenuWidth(int x) {
-        menuWidth = x;
-    }
 
     public int getCamX() {
         return camX;
@@ -79,6 +72,16 @@ public class GameData {
     public int getDisplayHeight() {
         return displayHeight;
     }
+
+    public void setMenuWidth(int menuWidth) {
+        this.menuWidth = menuWidth;
+    }
+
+    public int getMenuWidth() {
+        return menuWidth;
+    }
+    
+    
 
     public <E extends Event> List<Event> getEvents(Class<E> type, String sourceID) {
         List<Event> r = new ArrayList();
