@@ -70,11 +70,10 @@ public class Game implements ApplicationListener {
     private final HashMap<String, Texture> entityTextures = new HashMap<String, Texture>();
 
     private SpriteBatch batch;
-    private final int textureHeight = 64; 
+    private final int textureHeight = 64;
     private final int textureWidth = 64;
-    private float elapsedTime; 
-    private Texture textureSheet; 
-    
+    private float elapsedTime;
+    private Texture textureSheet;
 
     public Game() {
         init();
@@ -134,7 +133,7 @@ public class Game implements ApplicationListener {
         stage.getViewport().apply();
         skin = new Skin(Gdx.files.internal(Gdx.files.getLocalStoragePath() + "comic-ui.json"));
         batch = new SpriteBatch();
-        
+
         menu = new Menu(Width, gameWidth, Height, skin, stage, world);
 
         //Allows multiple inputprocessor
@@ -222,43 +221,43 @@ public class Game implements ApplicationListener {
 
             batch.setProjectionMatrix(vp.getCamera().combined);
             batch.begin();
-            
+
             int fromX, fromY, toX, toY;
             int wHeight = imgW.getHeight();
-            int wWidth = imgW.getWidth(); 
-            
+            int wWidth = imgW.getWidth();
+
             // left wall
             fromX = (int) wall.getStartX() - wWidth;
             fromY = (int) wall.getStartY() - wHeight;
             toX = (int) wWidth;
-            toY = (int) wall.getEndY()-fromY;
+            toY = (int) wall.getEndY() - fromY;
             batch.draw(imgW, fromX, fromY, 0, 0, toX, toY);
-            
+
             // right wall
             fromX = (int) wall.getEndX();
             fromY = (int) wall.getStartY();
             toX = (int) wWidth;
-            toY = (int) wall.getEndY()-fromY + wHeight;
+            toY = (int) wall.getEndY() - fromY + wHeight;
             batch.draw(imgW, fromX, fromY, 0, 0, toX, toY);
-            
+
             // top wall
             fromX = (int) wall.getStartX() - wWidth;
             fromY = (int) wall.getEndY();
-            toX = (int) wall.getEndX()-fromX;
+            toX = (int) wall.getEndX() - fromX;
             toY = (int) wHeight;
             batch.draw(imgW, fromX, fromY, 0, 0, toX, toY);
-            
+
             // bottom wall
             fromX = (int) wall.getStartX();
             fromY = (int) wall.getStartY() - wHeight;
-            toX = (int) wall.getEndX()-fromX + wWidth;
+            toX = (int) wall.getEndX() - fromX + wWidth;
             toY = (int) wHeight;
             batch.draw(imgW, fromX, fromY, 0, 0, toX, toY);
-            
+
             Texture imgD = getTexture(doors.getSpritePath());
             int dHeight = imgD.getHeight();
-            int dWidth = imgD.getWidth();            
-            
+            int dWidth = imgD.getWidth();
+
             for (float[] door : doors.getDoors()) {
                 float x = door[0];
                 float y = door[1];
@@ -309,32 +308,32 @@ public class Game implements ApplicationListener {
                     try {
 
                         textureSheet = getTexture(render.getSpritePath());
-                        
+
                         Animation backWalk = getAnimationFromTextureRange(1);
                         Animation frontWalk = getAnimationFromTextureRange(5);
                         Animation leftWalk = getAnimationFromTextureRange(9);
                         Animation rightWalk = getAnimationFromTextureRange(13);
-                        
+
                         MovingPart entityMovingPart = entity.getPart(MovingPart.class);
-                        
-                        elapsedTime += Gdx.graphics.getDeltaTime(); 
+
+                        elapsedTime += Gdx.graphics.getDeltaTime();
 
                         batch.setProjectionMatrix(vp.getCamera().combined);
                         batch.begin();
-                        
-                        if(entityMovingPart.isLeft()){
+
+                        if (entityMovingPart.isLeft()) {
                             batch.draw((TextureRegion) leftWalk.getKeyFrame(elapsedTime, true), pos.getX() - 16, pos.getY() - 16);
-                        }else if(entityMovingPart.isRight()){
+                        } else if (entityMovingPart.isRight()) {
                             batch.draw((TextureRegion) rightWalk.getKeyFrame(elapsedTime, true), pos.getX() - 16, pos.getY() - 16);
-                        }else if(entityMovingPart.isUp()){
+                        } else if (entityMovingPart.isUp()) {
                             batch.draw((TextureRegion) backWalk.getKeyFrame(elapsedTime, true), pos.getX() - 16, pos.getY() - 16);
-                        }else if(entityMovingPart.isDown()){
+                        } else if (entityMovingPart.isDown()) {
                             batch.draw((TextureRegion) frontWalk.getKeyFrame(elapsedTime, true), pos.getX() - 16, pos.getY() - 16);
-                        }else{
-                            TextureRegion stand = new TextureRegion(textureSheet, 4*textureWidth, 0, textureWidth, textureWidth);
+                        } else {
+                            TextureRegion stand = new TextureRegion(textureSheet, 4 * textureWidth, 0, textureWidth, textureWidth);
                             batch.draw(stand, pos.getX() - 16, pos.getY() - 16);
                         }
-                        
+
                         batch.end();
 
                     } catch (GdxRuntimeException e) {
@@ -457,12 +456,12 @@ public class Game implements ApplicationListener {
             }
         }
     }
-    
-    private Animation getAnimationFromTextureRange(int col){
+
+    private Animation getAnimationFromTextureRange(int col) {
         Array<TextureRegion> frames = new Array<>();
-        for (int i = col-1; i < col+3; i++){
-            frames.add(new TextureRegion(textureSheet, i*textureWidth, 0, textureWidth, textureWidth));
+        for (int i = col - 1; i < col + 3; i++) {
+            frames.add(new TextureRegion(textureSheet, i * textureWidth, 0, textureWidth, textureWidth));
         }
-        return new Animation(1f/4f, frames);
+        return new Animation(1f / 4f, frames);
     }
 }
