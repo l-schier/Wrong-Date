@@ -71,8 +71,8 @@ public class Game implements ApplicationListener {
     
     private final HashMap<String, Animation> enityAnimation = new HashMap<>();
     private SpriteBatch batch;
-    private final int textureHeight = 64;
-    private final int textureWidth = 64;
+    private final int humanTextureHeight = 64;
+    private final int humanTextureWidth = 64;
     private float elapsedTime;
     private Texture textureSheet;
 
@@ -210,7 +210,7 @@ public class Game implements ApplicationListener {
         batch.draw(img, fromX, fromY, 0, 0, (int) toX, (int) toY);
         batch.end();
     }
-
+    
     private void drawWallsAndDoors(Entity entity) {
         WallPart wall = entity.getPart(WallPart.class);
         DoorPart doors = entity.getPart(DoorPart.class);
@@ -279,6 +279,27 @@ public class Game implements ApplicationListener {
             System.out.println("Image not found");
         }
     }
+    
+    private Animation getAnimationFromTextureRange(String spritePath, int col) {
+        String id = "" + spritePath + col; 
+        if (this.enityAnimation.containsKey(id)) {
+            System.out.println("Animation already known");
+            return this.enityAnimation.get(id);
+        }else{
+            Array<TextureRegion> frames = new Array<>();
+            for (int i = col - 1; i < col + 3; i++) {
+                frames.add(new TextureRegion(textureSheet, i * humanTextureWidth, 0, humanTextureWidth, humanTextureHeight));
+            }
+            Animation newAnim = new Animation(1f / 4f, frames);
+            enityAnimation.put(id, newAnim);
+            return newAnim;
+        }
+    }
+    
+    private TextureRegion getTextureRegion(String spritePath, int col, int row, int width, int height){
+        TextureRegion region = new TextureRegion(getTexture(spritePath), col * humanTextureWidth - humanTextureWidth, row, width, height);
+        
+    }
 
     private void draw() {
 
@@ -304,7 +325,8 @@ public class Game implements ApplicationListener {
                 if (!render.isVisible()) {
                     continue;
                 }
-
+                
+                // for player and enemy
                 if (entity.getPart(MovingPart.class) != null) {
                     try {
 
@@ -331,7 +353,7 @@ public class Game implements ApplicationListener {
                         } else if (entityMovingPart.isDown()) {
                             batch.draw((TextureRegion) frontWalk.getKeyFrame(elapsedTime, true), pos.getX() - 32, pos.getY() - 32);
                         } else {
-                            TextureRegion stand = new TextureRegion(textureSheet, 4 * textureWidth, 0, textureWidth, textureWidth);
+                            TextureRegion stand = new TextureRegion(textureSheet, 4 * humanTextureWidth, 0, humanTextureWidth, humanTextureWidth);
                             batch.draw(stand, pos.getX() - 32, pos.getY() - 32);
                         }
 
@@ -340,6 +362,7 @@ public class Game implements ApplicationListener {
                     } catch (GdxRuntimeException e) {
                         System.out.println("Image not found");
                     }
+                // for everything else
                 } else {
                     try {
                         Texture img = getTexture(render.getSpritePath());
@@ -455,22 +478,6 @@ public class Game implements ApplicationListener {
             if (this.entityTextures.containsKey(sprite)) {
                 this.entityTextures.remove(sprite);
             }
-        }
-    }
-
-    private Animation getAnimationFromTextureRange(String spritePath, int col) {
-        String id = "" + spritePath + col; 
-        if (this.enityAnimation.containsKey(id)) {
-            System.out.println("Animation already known");
-            return this.enityAnimation.get(id);
-        }else{
-            Array<TextureRegion> frames = new Array<>();
-            for (int i = col - 1; i < col + 3; i++) {
-                frames.add(new TextureRegion(textureSheet, i * textureWidth, 0, textureWidth, textureWidth));
-            }
-            Animation newAnim = new Animation(1f / 4f, frames);
-            enityAnimation.put(id, newAnim);
-            return newAnim;
         }
     }
 }
