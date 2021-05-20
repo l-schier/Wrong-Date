@@ -68,7 +68,8 @@ public class Game implements ApplicationListener {
     private final List<IEntityPostProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
 
     private final HashMap<String, Texture> entityTextures = new HashMap<String, Texture>();
-
+    
+    private final HashMap<String, Animation> enityAnimation = new HashMap<>();
     private SpriteBatch batch;
     private final int textureHeight = 64;
     private final int textureWidth = 64;
@@ -304,15 +305,15 @@ public class Game implements ApplicationListener {
                     continue;
                 }
 
-                if (entity.getPart(SightPart.class) != null) {
+                if (entity.getPart(MovingPart.class) != null) {
                     try {
 
                         textureSheet = getTexture(render.getSpritePath());
 
-                        Animation backWalk = getAnimationFromTextureRange(1);
-                        Animation frontWalk = getAnimationFromTextureRange(5);
-                        Animation leftWalk = getAnimationFromTextureRange(9);
-                        Animation rightWalk = getAnimationFromTextureRange(13);
+                        Animation backWalk = getAnimationFromTextureRange(render.getSpritePath(), 1);
+                        Animation frontWalk = getAnimationFromTextureRange(render.getSpritePath(), 5);
+                        Animation leftWalk = getAnimationFromTextureRange(render.getSpritePath(), 9);
+                        Animation rightWalk = getAnimationFromTextureRange(render.getSpritePath(), 13);
 
                         MovingPart entityMovingPart = entity.getPart(MovingPart.class);
 
@@ -322,16 +323,16 @@ public class Game implements ApplicationListener {
                         batch.begin();
 
                         if (entityMovingPart.isLeft()) {
-                            batch.draw((TextureRegion) leftWalk.getKeyFrame(elapsedTime, true), pos.getX() - 16, pos.getY() - 16);
+                            batch.draw((TextureRegion) leftWalk.getKeyFrame(elapsedTime, true), pos.getX() - 32, pos.getY() - 32);
                         } else if (entityMovingPart.isRight()) {
-                            batch.draw((TextureRegion) rightWalk.getKeyFrame(elapsedTime, true), pos.getX() - 16, pos.getY() - 16);
+                            batch.draw((TextureRegion) rightWalk.getKeyFrame(elapsedTime, true), pos.getX() - 32, pos.getY() - 32);
                         } else if (entityMovingPart.isUp()) {
-                            batch.draw((TextureRegion) backWalk.getKeyFrame(elapsedTime, true), pos.getX() - 16, pos.getY() - 16);
+                            batch.draw((TextureRegion) backWalk.getKeyFrame(elapsedTime, true), pos.getX() - 32, pos.getY() - 32);
                         } else if (entityMovingPart.isDown()) {
-                            batch.draw((TextureRegion) frontWalk.getKeyFrame(elapsedTime, true), pos.getX() - 16, pos.getY() - 16);
+                            batch.draw((TextureRegion) frontWalk.getKeyFrame(elapsedTime, true), pos.getX() - 32, pos.getY() - 32);
                         } else {
                             TextureRegion stand = new TextureRegion(textureSheet, 4 * textureWidth, 0, textureWidth, textureWidth);
-                            batch.draw(stand, pos.getX() - 16, pos.getY() - 16);
+                            batch.draw(stand, pos.getX() - 32, pos.getY() - 32);
                         }
 
                         batch.end();
@@ -457,11 +458,19 @@ public class Game implements ApplicationListener {
         }
     }
 
-    private Animation getAnimationFromTextureRange(int col) {
-        Array<TextureRegion> frames = new Array<>();
-        for (int i = col - 1; i < col + 3; i++) {
-            frames.add(new TextureRegion(textureSheet, i * textureWidth, 0, textureWidth, textureWidth));
+    private Animation getAnimationFromTextureRange(String spritePath, int col) {
+        String id = "" + spritePath + col; 
+        if (this.enityAnimation.containsKey(id)) {
+            System.out.println("Animation already known");
+            return this.enityAnimation.get(id);
+        }else{
+            Array<TextureRegion> frames = new Array<>();
+            for (int i = col - 1; i < col + 3; i++) {
+                frames.add(new TextureRegion(textureSheet, i * textureWidth, 0, textureWidth, textureWidth));
+            }
+            Animation newAnim = new Animation(1f / 4f, frames);
+            enityAnimation.put(id, newAnim);
+            return newAnim;
         }
-        return new Animation(1f / 4f, frames);
     }
 }
