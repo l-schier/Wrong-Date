@@ -7,6 +7,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -68,8 +69,9 @@ public class Game implements ApplicationListener {
     private final List<IEntityPostProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
 
     private final HashMap<String, Texture> entityTextures = new HashMap<String, Texture>();
-    
     private final HashMap<String, Animation> enityAnimation = new HashMap<>();
+    private final HashMap<String, TextureRegion> entityTextureRegion = new HashMap<>();
+    
     private SpriteBatch batch;
     private final int humanTextureHeight = 64;
     private final int humanTextureWidth = 64;
@@ -218,46 +220,69 @@ public class Game implements ApplicationListener {
 
         try {
             Texture imgW = getTexture(render.getSpritePath());
-            imgW.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-
+            
             batch.setProjectionMatrix(vp.getCamera().combined);
             batch.begin();
 
             int fromX, fromY, toX, toY;
-            int wHeight = imgW.getHeight();
-            int wWidth = imgW.getWidth();
+            int wHeight = 32;
+            int wWidth = 32;
 
             // left wall
+            TextureRegion leftWall = getTextureRegion(render.getSpritePath(), 1, 3, wWidth, wHeight);
             fromX = (int) wall.getStartX() - wWidth;
             fromY = (int) wall.getStartY() - wHeight;
             toX = (int) wWidth;
             toY = (int) wall.getEndY() - fromY;
-            batch.draw(imgW, fromX, fromY, 0, 0, toX, toY);
-
+            for (int y = fromY; y < toY; y += 32){
+                batch.draw(leftWall, fromX, y);
+            }
+            
             // right wall
+            TextureRegion rightWall = getTextureRegion(render.getSpritePath(), 4, 2, wWidth, wHeight);
             fromX = (int) wall.getEndX();
             fromY = (int) wall.getStartY();
-            toX = (int) wWidth;
+            toX = (int) wall.getEndX() - fromX + wHeight;
             toY = (int) wall.getEndY() - fromY + wHeight;
-            batch.draw(imgW, fromX, fromY, 0, 0, toX, toY);
+            for(int y = fromY; y < toY; y += 32){
+                batch.draw(rightWall, fromX, y);
+            }
 
             // top wall
+            TextureRegion topWall = getTextureRegion(render.getSpritePath(), 2, 1, wWidth, wHeight);
             fromX = (int) wall.getStartX() - wWidth;
             fromY = (int) wall.getEndY();
             toX = (int) wall.getEndX() - fromX;
             toY = (int) wHeight;
-            batch.draw(imgW, fromX, fromY, 0, 0, toX, toY);
+            for(int x = fromX; x < toX; x += 32){
+                batch.draw(topWall, x, fromY);
+            }
+            
+            //top corners
+            TextureRegion topRightWall = getTextureRegion(render.getSpritePath(), 4, 1, wWidth, wHeight);
+            batch.draw(topRightWall, toX, fromY);
+            TextureRegion topLeftWall = getTextureRegion(render.getSpritePath(), 1, 1, wWidth, wHeight);
+            batch.draw(topLeftWall, fromX, fromY);
 
             // bottom wall
+            TextureRegion bottomWall = getTextureRegion(render.getSpritePath(), 2, 1, wWidth, wHeight);
             fromX = (int) wall.getStartX();
             fromY = (int) wall.getStartY() - wHeight;
             toX = (int) wall.getEndX() - fromX + wWidth;
             toY = (int) wHeight;
-            batch.draw(imgW, fromX, fromY, 0, 0, toX, toY);
+            for(int x = fromX; x < toX; x += 32){
+                batch.draw(bottomWall, x, fromY);
+            }
+            
+            //bottom cornerns
+            TextureRegion bottomRightWall = getTextureRegion(render.getSpritePath(), 4, 4, wWidth, wHeight);
+            batch.draw(bottomRightWall, toX, toY - wHeight);
+            TextureRegion bottomLeftWall = getTextureRegion(render.getSpritePath(), 1, 4, wWidth, wHeight);
+            batch.draw(bottomLeftWall, fromX - wWidth, fromY);
 
             Texture imgD = getTexture(doors.getSpritePath());
-            int dHeight = imgD.getHeight();
-            int dWidth = imgD.getWidth();
+            int dHeight = 32;
+            int dWidth = 32;
 
             for (float[] door : doors.getDoors()) {
                 float x = door[0];
@@ -265,12 +290,12 @@ public class Game implements ApplicationListener {
 
                 if (door[0] == wall.getStartX()) { // left door
                     batch.draw(imgD, x - 32, y, 0, 0, dWidth, dHeight);
-                } else if (door[0] == wall.getEndX()) { // right door                        
-                    batch.draw(imgD, x, y, 0, 0, dWidth, dHeight);
+                } else if (door[0] == wall.getEndX()) { // right door  
+                    batch.draw(imgD, x, y, 2*dWidth, 0, dWidth, dHeight);
                 } else if (door[1] == wall.getStartY()) { // bottom door
-                    batch.draw(imgD, x, y - 32, 0, 0, dWidth, dHeight);
+                    batch.draw(imgD, x, y - 32, 1*dWidth, 0, dWidth, dHeight);
                 } else if (door[1] == wall.getEndY()) { // top door
-                    batch.draw(imgD, x, y, 0, 0, dWidth, dHeight);
+                    batch.draw(imgD, x, y, 1*dWidth, 0, dWidth, dHeight);
                 }
             }
 
@@ -283,12 +308,11 @@ public class Game implements ApplicationListener {
     private Animation getAnimationFromTextureRange(String spritePath, int col) {
         String id = "" + spritePath + col; 
         if (this.enityAnimation.containsKey(id)) {
-            System.out.println("Animation already known");
             return this.enityAnimation.get(id);
         }else{
             Array<TextureRegion> frames = new Array<>();
             for (int i = col - 1; i < col + 3; i++) {
-                frames.add(new TextureRegion(textureSheet, i * humanTextureWidth, 0, humanTextureWidth, humanTextureHeight));
+                frames.add(new TextureRegion(getTexture(spritePath), i * humanTextureWidth, 0, humanTextureWidth, humanTextureHeight));
             }
             Animation newAnim = new Animation(1f / 4f, frames);
             enityAnimation.put(id, newAnim);
@@ -297,8 +321,14 @@ public class Game implements ApplicationListener {
     }
     
     private TextureRegion getTextureRegion(String spritePath, int col, int row, int width, int height){
-        TextureRegion region = new TextureRegion(getTexture(spritePath), col * humanTextureWidth - humanTextureWidth, row, width, height);
-        
+        String id = "" + spritePath + col + row; 
+        if(this.entityTextureRegion.containsKey(id)){
+            return this.entityTextureRegion.get(id);
+        }else{
+            TextureRegion region = new TextureRegion(getTexture(spritePath), (col * width) - width, (row * height) - height, width, height);
+            entityTextureRegion.put(id, region);
+            return region; 
+        }
     }
 
     private void draw() {
@@ -308,14 +338,6 @@ public class Game implements ApplicationListener {
 
         // entities
         for (Entity entity : world.getEntities()) {
-
-            // walls and doors
-            if (entity.getPart(WallPart.class) != null
-                    && entity.getPart(DoorPart.class) != null
-                    && entity.getPart(RenderPart.class) != null) {
-                drawWallsAndDoors(entity);
-                continue;
-            }
 
             // anything else
             if (entity.getPart(RenderPart.class) != null && entity.getPart(PositionPart.class) != null) {
@@ -363,7 +385,7 @@ public class Game implements ApplicationListener {
                         System.out.println("Image not found");
                     }
                 // for everything else
-                } else {
+                } else{
                     try {
                         Texture img = getTexture(render.getSpritePath());
 
@@ -375,6 +397,14 @@ public class Game implements ApplicationListener {
                     } catch (GdxRuntimeException e) {
                         System.out.println("Image not found");
                     }
+                }
+                
+                // all other walls and doors
+                if (entity.getPart(WallPart.class) != null
+                    && entity.getPart(DoorPart.class) != null
+                    && entity.getPart(RenderPart.class) != null) {
+                    drawWallsAndDoors(entity);
+                    continue;
                 }
 
                 continue;
