@@ -280,8 +280,8 @@ public class Menu {
         
         int x1 = Width0 + spacing,
                 checkHeight = 60,
-                x2 = x1 + spacing + checkHeight ,
-                y = Height - checkHeight,
+                x2 = x1 + spacing + checkHeight,
+                y = Height - checkHeight - spacing,
                 buttonHeight = 50;
 
         if (settingsActors == null) {
@@ -314,7 +314,7 @@ public class Menu {
             y -= (spacing + checkHeight);
 
             if (y <= buttonHeight) {
-                y = Height - checkHeight ;
+                y = Height - checkHeight - spacing;
                 x1 = WidthGame / 2 + Width0 + spacing;
                 x2 = x1 + spacing + checkHeight;
                 settingsActors.addAll(loadedStart(x1, y, x2, y));
@@ -328,8 +328,46 @@ public class Menu {
         for (Map.Entry<String, Bundle> e : bundles.entrySet()) {
             
             components.get(e.getKey())[1].setChecked(e.getValue().getState() == 32);
-            components.get(e.getKey())[0].setChecked(e.getValue().getState() == 32 || e.getValue().getState() == 4 || e.getValue().getState() == 2);
+            components.get(e.getKey())[0].setChecked((e.getValue().getState() == 32 || e.getValue().getState() == 4 || e.getValue().getState() == 2));
         }
+
+//        TextField bundleName = new TextField("TextField does not work :O Use install button...", skin);
+//        bundleName.setHeight(buttonHeight);
+//        bundleName.setWidth((WidthGame / 4) * 3);
+//        bundleName.setPosition(Width0 + (WidthGame / 4), buttonHeight);
+//        settingsActors.add(bundleName);
+//
+//        TextButton install = new TextButton("INSTALL", skin);
+//        install.setHeight(buttonHeight);
+//        install.setWidth(WidthGame / 4);
+//        install.setPosition(Width0, buttonHeight);
+//        settingsActors.add(install);
+
+//        install.addListener(new ClickListener() {
+//            public void clicked(InputEvent event, float x, float y) {
+//                String bundle = bundleName.getText();
+//                Gdx.input.getTextInput(new TextInputListener() {
+//                    @Override
+//                    public void input(String bundle) {
+//                        String installPath = "file:/D:/Git/Wrong-Date/runner/bundles/" + bundle;
+//                        try {
+//     -->                       Bundle b = context.installBundle(installPath);
+//                            b.start();
+//                            String name = b.getSymbolicName();
+//                            bundles.put(name, b);
+//                            components.put(name, new CheckBox(name, skin));
+//                            removeSettings();
+//                        } catch (BundleException ex) {
+//                            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void canceled() {
+//                    }
+//                }, "enter bundle jar name", "", "xxx_1.0.0.SNAPSHOT.jar");
+//            }
+//        });
 
         TextButton save = new TextButton("SAVE", skin);
         save.setHeight(buttonHeight);
@@ -341,36 +379,56 @@ public class Menu {
             public void clicked(InputEvent event, float x, float y) {
                 for (Map.Entry<String, CheckBox[]> e : components.entrySet()){
                     CheckBox check1 = e.getValue()[0];
-                    CheckBox check2 = e.getValue()[1];
+                    CheckBox check2 = e.getValue()[0];
                     String name = e.getKey();
                     Bundle b = bundles.get(name);
                     Boolean installed = b.getState() == 32 || b.getState() == 4 || b.getState() == 2;
                     Boolean started = b.getState() == 32;
-                    Boolean one = check1.isChecked(), two = check2.isChecked();
                     try{
-                    if(one && !installed){
-                        bundles.put(name, context.installBundle(b.getLocation()));
-                        installed = true;
-                        b = bundles.get(name);    
-                    } else if(!one && installed){
+                    if(check1.isChecked() && !installed){
+                        context.installBundle(b.getLocation());
+//                        FrameworkWiring frame = (FrameworkWiring) context.getBundle().adapt(FrameworkWiring.class);
+//                        System.out.println("here");
+//                        Collection<Bundle> collection = new ArrayList();
+//                        collection.add(b);
+//                        frame.resolveBundles(collection);
+//                        System.out.println("done");
+                    }else if(check1.isChecked() && installed){
+                        if(check2.isChecked() && !started){
+                            b.start();
+                        } else if(!check2.isChecked() && started){
+                            b.stop();
+                        }
+                    }else if(!check1.isChecked() && installed){
                         if(started){
                             b.stop();
-                            started = false;
                         }
+                        check2.setChecked(false);
                         b.uninstall();
-                        installed = false;;
-                    }                 
-                    if(two && installed && !started){
-                            b.start();                        
-                    }else if(!two && started){
-                        b.stop();
+                    }else if(!check1.isChecked() && !installed){
+                        check2.setChecked(false);
                     }
                     }catch (BundleException ex){
                         Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+
                     }
                     
+//                    if (check.isChecked() && !(b.getState() == 32)) {
+//
+//                        try {
+//                            b.start();
+//                        } catch (BundleException ex) {
+//                            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+//                        }
+//
+//                    } else if (!check.isChecked() && b.getState() == 32) {
+//                        try {
+//                            b.stop();
+//                        } catch (BundleException ex) {
+//                            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+//                        }
+//                    }
                 }
-                
                 for (Map.Entry<String, Bundle> e : bundles.entrySet()) {
             
                     components.get(e.getKey())[1].setChecked(e.getValue().getState() == 32);
@@ -380,8 +438,6 @@ public class Menu {
             }
             
         });
-        
-        
 
         stage.getActors().addAll(settingsActors);
 
