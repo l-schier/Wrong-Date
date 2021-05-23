@@ -227,7 +227,6 @@ public class Menu {
     }
 
     private void settingsButtonFunctionality() {
-        //https://stackoverflow.com/questions/6527306/best-technique-for-getting-the-osgi-bundle-context
         settingsButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 if (!settingsClicked) {
@@ -521,6 +520,7 @@ public class Menu {
 
     private void updateInventory() {
         if (player == null) {
+            System.out.println("2");
             addFrames(invX, invY, invW, invH, inv0);
         } else {
             if (player.getPart(InventoryPart.class) != null) {
@@ -530,10 +530,10 @@ public class Menu {
                 invC = inv0;
                 invR = 1;
                 invS = invC * invR;
-
-                if (list.isEmpty()) {
+                if(list.isEmpty() && items == null){
+                    items = new HashMap<>();
                     addFrames(invX, invY, invW / inv0, invH, invS);
-                } else {
+                } else if (items.size() != list.size()){
                     if (invS < list.size()) {
                         for (int i = invS; i <= items.size(); i = invC * invR) {
                             invC += inv0;
@@ -544,8 +544,8 @@ public class Menu {
                         }
                         addFrames(invX, invY + invH / invR, invW / invC, invH / invR, invS);
                     }
-                    if (items == null) {
-                        items = new HashMap<>();
+                    if (items.size() != list.size()) {
+                        items.clear();
                         for (Entity e : list) {
                             if (e.getPart(RenderPart.class) != null) {
                                 RenderPart renderPart = e.getPart(RenderPart.class);
@@ -565,6 +565,7 @@ public class Menu {
                 }
             }
         }
+        
     }
 
     private void addFrames(int x, int y, int w, int h, int s) {
@@ -574,21 +575,25 @@ public class Menu {
             for (int i = frames.size; i < s; i++) {
                 Image image = new Image(new Texture(whiteSquare));
                 frames.add(image);
+                stage.getActors().add(image);
             }
-            for (Image image : frames) {
-                image.setPosition(x, y);
-                image.setSize(w, h);
-                x += w;
-                if (frames.indexOf(image, true) + 1 % invC == 0) {
-                    x = invX;
-                    y -= h;
-                }
-            }
-            stage.getActors().addAll(frames);
         }
         if (down) {
-            //ToDO implementation
+            for(int i = frames.size -1; i > s - 1; i--){
+                stage.getActors().removeValue(frames.get(i), true);
+            }
         }
+        for(int i = 0; i < s; i++){
+            Image image = frames.get(i);
+            image.setPosition(x, y);
+            image.setSize(w, h);
+            x += w;
+            if (frames.indexOf(image, true) + 1 % invC == 0) {
+                x = invX;
+                y -= h;
+            }
+        }
+        
     }
 
     private void itemClicked(Image img, Entity e) {
