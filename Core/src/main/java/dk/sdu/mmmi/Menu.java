@@ -1,22 +1,16 @@
 package dk.sdu.mmmi;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.TextInputListener;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import dk.sdu.mmmi.common.data.Entity;
@@ -29,9 +23,7 @@ import dk.sdu.mmmi.common.data.entityparts.RenderPart;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -40,7 +32,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.wiring.FrameworkWiring;
 
 /**
  *
@@ -50,7 +41,7 @@ public class Menu {
 
     private ArrayList<File> helpFiles;
     private Array<Actor> helpActors, settingsActors = null;
-    private HashMap<String, CheckBox[]> components = null;
+    private HashMap<String, CheckBox> components = null;
     private HashMap<String, Bundle> bundles = null;
 
     private int Width0 = -150;
@@ -267,22 +258,13 @@ public class Menu {
                 }
             }
         }
-       
-        
 
         if (components == null) {
             components = new HashMap<>();
             for (Map.Entry<String, Bundle> e : bundles.entrySet()) {
-                CheckBox[] c = {new CheckBox("", skin), new CheckBox(e.getKey(), skin)};
-                components.put(e.getKey(), c);
+                components.put(e.getKey(), new CheckBox(e.getKey(), skin));
             }
         }
-        
-        int x1 = Width0 + spacing,
-                checkHeight = 60,
-                x2 = x1 + spacing + checkHeight ,
-                y = Height - checkHeight,
-                buttonHeight = 50;
 
         if (settingsActors == null) {
             settingsActors = new Array<>();
@@ -292,44 +274,81 @@ public class Menu {
             setBImage.setWidth(WidthGame);
             setBImage.setHeight(Height);
             settingsActors.add(setBImage);
-            
-           settingsActors.addAll(loadedStart(x1, y, x2, y));
-           y -= spacing + checkHeight;
-            
-            
         }
 
-        
+        int x = Width0 + spacing,
+                checkHeight = 60,
+                y = Height - spacing - checkHeight,
+                buttonHeight = 50;
 
-        for (Map.Entry<String, CheckBox[]> e : components.entrySet()) {
+        for (Map.Entry<String, CheckBox> e : components.entrySet()) {
+            TextButton uninstall = new TextButton("X", skin);
+            uninstall.setHeight(25);
+            uninstall.setWidth(25);
+            uninstall.setPosition(x, y + 25);
+            settingsActors.add(uninstall);
 
-            CheckBox check1 = e.getValue()[0];
-            check1.setHeight(checkHeight);
-            check1.setPosition(x1, y);
-            
-            CheckBox check2 = e.getValue()[1];
-            check2.setPosition(x2, y);
-            check2.setHeight(checkHeight);
-            
+            CheckBox check = e.getValue();
+            check.setHeight(checkHeight);
+            check.setPosition(x + 30, y);
             y -= (spacing + checkHeight);
 
             if (y <= buttonHeight) {
-                y = Height - checkHeight ;
-                x1 = WidthGame / 2 + Width0 + spacing;
-                x2 = x1 + spacing + checkHeight;
-                settingsActors.addAll(loadedStart(x1, y, x2, y));
-                y -= spacing + checkHeight;
+                y = Height - checkHeight - spacing;
+                x = WidthGame / 2 + Width0 + spacing;
             }
 
-            settingsActors.add(check1, check2);
+            settingsActors.add(check);
 
+            uninstall.addListener(new ClickListener() {
+                public void clicked(InputEvent event, float x, float y) {
+                    String name = e.getKey();
+                    Bundle b = bundles.get(name);
+                    try {
+                        b.uninstall();
+                        bundles.remove(name);
+                        components.remove(name);
+                        stage.getActors().removeValue(uninstall, false);
+                        stage.getActors().removeValue(check, false);
+                    } catch (BundleException ex) {
+                        Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            });
         }
 
         for (Map.Entry<String, Bundle> e : bundles.entrySet()) {
-            
-            components.get(e.getKey())[1].setChecked(e.getValue().getState() == 32);
-            components.get(e.getKey())[0].setChecked(e.getValue().getState() == 32 || e.getValue().getState() == 4 || e.getValue().getState() == 2);
+            components.get(e.getKey()).setChecked(e.getValue().getState() == 32);
         }
+
+        TextField bundleName = new TextField("xxx_1.0.0.SNAPSHOT.jar", skin);
+        bundleName.setHeight(buttonHeight);
+        bundleName.setWidth((WidthGame / 4) * 3);
+        bundleName.setPosition(Width0 + (WidthGame / 4), buttonHeight);
+        settingsActors.add(bundleName);
+
+        TextButton install = new TextButton("INSTALL", skin);
+        install.setHeight(buttonHeight);
+        install.setWidth(WidthGame / 4);
+        install.setPosition(Width0, buttonHeight);
+        settingsActors.add(install);
+
+        install.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                String bundle = bundleName.getText();
+                String installPath = "file:/D:/Git/Wrong-Date/runner/bundles/" + bundle;
+                try {
+                    Bundle b = context.installBundle(installPath);
+                    b.start();
+                    String name = b.getSymbolicName();
+                    bundles.put(name, b);
+                    components.put(name, new CheckBox(name, skin));
+                    removeSettings();
+                } catch (BundleException ex) {
+                    Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
 
         TextButton save = new TextButton("SAVE", skin);
         save.setHeight(buttonHeight);
@@ -339,67 +358,39 @@ public class Menu {
 
         save.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                for (Map.Entry<String, CheckBox[]> e : components.entrySet()){
-                    CheckBox check1 = e.getValue()[0];
-                    CheckBox check2 = e.getValue()[1];
+                for (Map.Entry<String, CheckBox> e : components.entrySet()) {
+                    CheckBox check = e.getValue();
                     String name = e.getKey();
                     Bundle b = bundles.get(name);
-                    Boolean installed = b.getState() == 32 || b.getState() == 4 || b.getState() == 2;
-                    Boolean started = b.getState() == 32;
-                    Boolean one = check1.isChecked(), two = check2.isChecked();
-                    try{
-                    if(one && !installed){
-                        bundles.put(name, context.installBundle(b.getLocation()));
-                        installed = true;
-                        b = bundles.get(name);    
-                    } else if(!one && installed){
-                        if(started){
-                            b.stop();
-                            started = false;
+                    if (check.isChecked() && !(b.getState() == 32)) {
+                        try {
+                            b.start();
+                        } catch (BundleException ex) {
+                            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        b.uninstall();
-                        installed = false;;
-                    }                 
-                    if(two && installed && !started){
-                            b.start();                        
-                    }else if(!two && started){
-                        b.stop();
-                    }
-                    }catch (BundleException ex){
-                        Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    
-                }
-                
-                for (Map.Entry<String, Bundle> e : bundles.entrySet()) {
-            
-                    components.get(e.getKey())[1].setChecked(e.getValue().getState() == 32);
-                    components.get(e.getKey())[0].setChecked((e.getValue().getState() == 32 || e.getValue().getState() == 4 || e.getValue().getState() == 2));
-                }
-                
-            }
-            
-        });
-        
-        
 
-        stage.getActors().addAll(settingsActors);
+                    } else if (!check.isChecked() && b.getState() == 32) {
+                        try {
+                            b.stop();
+                        } catch (BundleException ex) {
+                            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            }
+        });
+
+        for (Actor a : settingsActors) {
+            stage.addActor(a);
+        }
 
         settingsClicked = true;
     }
-    
-    private Actor[] loadedStart(int x1, int y1, int x2, int y2){
-        Label loaded = new Label("Loaded", skin);
-        loaded.setPosition(x1, y1);
-        
-        Label started = new Label("Started", skin);
-        started.setPosition(x2, y2);
-        
-        return new Actor[]{loaded, started};
-    }
 
     private void removeSettings() {
-        stage.getActors().removeAll(settingsActors, false);
+        for (Actor a : settingsActors) {
+            a.remove();
+        }
         settingsActors.removeRange(1, settingsActors.size - 1);
 
         resume();
@@ -444,7 +435,6 @@ public class Menu {
         }
 
         int buttonWidth;
-
         int buttonHeight = 50;
         int buttonX = Width0;
         int buttonY = Height - buttonHeight;
@@ -552,7 +542,6 @@ public class Menu {
                         }
                         addFrames(invX, invY + invH / invR, invW / invC, invH / invR, invS);
                     }
-
                     if (items == null) {
                         items = new HashMap<>();
                         for (Entity e : list) {
@@ -646,7 +635,6 @@ public class Menu {
 
                 addPlayer();
             }
-
             if (player.getPart(PlayerPart.class) != null) {
                 PlayerPart playerPart = player.getPart(PlayerPart.class);
 
@@ -677,7 +665,6 @@ public class Menu {
         InventoryPart inventoryPart = player.getPart(InventoryPart.class);
 
         if (inventoryPart.getWeapon() != null) {
-
             if (weapon == null || !weapon.equals(inventoryPart.getWeapon())) {
                 weapon = inventoryPart.getWeapon();
                 if (weapon.getPart(DescriptionPart.class) != null) {
@@ -695,7 +682,6 @@ public class Menu {
                     weaponImage = new Image(new Texture(renderPart.getSpritePath()));
 
                 }
-
                 if (!stage.getActors().contains(weaponImage, true)) {
                     weaponImage.setSize(weapImage.getImageWidth(), weapImage.getImageHeight());
                     weaponImage.setPosition(weapImage.getX(), weapImage.getY());
