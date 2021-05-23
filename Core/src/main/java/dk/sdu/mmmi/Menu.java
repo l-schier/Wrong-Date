@@ -227,7 +227,6 @@ public class Menu {
     }
 
     private void settingsButtonFunctionality() {
-        //https://stackoverflow.com/questions/6527306/best-technique-for-getting-the-osgi-bundle-context
         settingsButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 if (!settingsClicked) {
@@ -413,6 +412,7 @@ public class Menu {
                 helpFiles.add(e1.getFile());
             }
         }
+        helpFiles.add(new File(Gdx.files.getLocalStoragePath() + "Core.txt"));
 
         //Background
         Image helpBImage = new Image(new Texture(Gdx.files.internal(backgorundImageStr)));
