@@ -413,6 +413,7 @@ public class Menu {
                 helpFiles.add(e1.getFile());
             }
         }
+        helpFiles.add(new File(Gdx.files.getLocalStoragePath() + "Core.txt"));
 
         //Background
         Image helpBImage = new Image(new Texture(Gdx.files.internal(backgorundImageStr)));
@@ -454,6 +455,7 @@ public class Menu {
 
             for (Map.Entry<String, TextButton> e : buttons.entrySet()) {
                 TextButton b = e.getValue();
+                System.out.println(b.getText());
                 b.setWidth(buttonWidth);
                 b.setHeight(buttonHeight);
                 b.setPosition(buttonX, buttonY);

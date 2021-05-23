@@ -13,6 +13,7 @@ import dk.sdu.mmmi.common.data.entityparts.KeyPart;
 
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.RenderPart;
+import dk.sdu.mmmi.common.data.entityparts.HelpPart;
 import dk.sdu.mmmi.common.data.entityparts.WallPart;
 import dk.sdu.mmmi.common.services.IGamePluginService;
 
@@ -71,6 +72,7 @@ public class RoomPlugin implements IGamePluginService {
         room.add(new WallPart(startX, startY, endX, endY));
         room.add(new DoorPart(doors, KeyPart.KeyColor.Silver, doorSpriteFile, room));
         room.add(new RenderPart(wallSpriteFile, room));
+        room.add(new HelpPart("Map.txt", room));
 
         room.setRadius(0);
 
