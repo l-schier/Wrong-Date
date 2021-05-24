@@ -335,7 +335,7 @@ public class Menu {
         install.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 String bundle = bundleName.getText();
-                String installPath = "file:/D:/Git/Wrong-Date/runner/bundles/" + bundle;
+                String installPath = "file:/" + Gdx.files.getLocalStoragePath() + "bundles/" + bundle;
                 try {
                     Bundle b = context.installBundle(installPath);
                     b.start();
