@@ -7,7 +7,6 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -28,10 +27,12 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
+import dk.sdu.mmmi.common.data.entityparts.KeyPart;
 import dk.sdu.mmmi.common.data.entityparts.MovingPart;
+import dk.sdu.mmmi.common.data.entityparts.PlayerPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.RenderPart;
-import dk.sdu.mmmi.common.data.entityparts.SightPart;
 import dk.sdu.mmmi.common.data.entityparts.WallPart;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -43,6 +44,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import dk.sdu.mmmi.common.services.IEntityPostProcessingService;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Game implements ApplicationListener {
@@ -278,9 +280,40 @@ public class Game implements ApplicationListener {
             int dHeight = 32;
             int dWidth = 32;
 
+            Entity player = null;
+            for (Entity e : world.getEntities()) {
+                if (e.getPart(PlayerPart.class) != null) {
+                    player = e;
+                    break;
+                }
+            }
+            ArrayList<KeyPart> keys = null;
+            if (player != null) {
+                InventoryPart inv = player.getPart(InventoryPart.class);
+                if (inv != null) {
+                    keys = inv.getKeyParts();
+                }
+            }
+            KeyPart.KeyColor doorColor = doors.getLockColor();
             for (float[] door : doors.getDoors()) {
                 float x = door[0];
                 float y = door[1];
+
+                if (keys != null) {
+                    boolean hasKey = false;
+                    for (KeyPart k : keys) {
+                        if (k.getColor() == doorColor) {
+                            hasKey = true;
+                        }
+                    }
+                    if (hasKey) {
+                        // Draw open door
+                    } else {
+                        // Default door color thing
+                    }
+                } else {
+                    // Default door color thing
+                }
 
                 if (door[0] == wall.getStartX()) { // left door
                     batch.draw(imgD, x - 32, y, 0, 0, dWidth, dHeight);
@@ -291,6 +324,7 @@ public class Game implements ApplicationListener {
                 } else if (door[1] == wall.getEndY()) { // top door
                     batch.draw(imgD, x, y, 1 * dWidth, 0, dWidth, dHeight);
                 }
+
             }
 
             batch.end();
