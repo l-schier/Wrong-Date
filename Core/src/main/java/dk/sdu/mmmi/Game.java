@@ -139,7 +139,7 @@ public class Game implements ApplicationListener {
         skin = new Skin(Gdx.files.internal(Gdx.files.getLocalStoragePath() + "comic-ui.json"));
         batch = new SpriteBatch();
 
-        menu = new Menu(Width, gameWidth, Height, skin, stage, world);
+        menu = new Menu(Width, gameWidth, Height, skin, stage, world, this);
 
         //Allows multiple inputprocessor
         InputMultiplexer multiplexer = new InputMultiplexer();
@@ -380,7 +380,7 @@ public class Game implements ApplicationListener {
         }
     }
 
-    private TextureRegion getTextureRegion(String spritePath, int col, int row, int width, int height) {
+    public TextureRegion getTextureRegion(String spritePath, int col, int row, int width, int height) {
         String id = "" + spritePath + col + row;
         if (this.entityTextureRegion.containsKey(id)) {
             return this.entityTextureRegion.get(id);

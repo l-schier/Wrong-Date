@@ -76,7 +76,6 @@ public class PlayerSystem implements IEntityProcessingService {
             }
 
             if (gameData.getKeys().isPressed(SPACE)) {
-                System.out.println("Space pressed");
                 if (inventoryPart.getWeapon() != null) {
                     IItemService weapon = (IItemService) inventoryPart.getWeapon();
                     weapon.useItem(player, gameData);

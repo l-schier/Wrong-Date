@@ -38,7 +38,8 @@ import org.osgi.framework.FrameworkUtil;
  * @author tes_7
  */
 public class Menu {
-
+    private Game game;
+    
     private ArrayList<File> helpFiles;
     private Array<Actor> helpActors, settingsActors = null;
     private HashMap<String, CheckBox> components = null;
@@ -88,7 +89,7 @@ public class Menu {
 
     int count = 0;
 
-    public Menu(int WidthWindow, int gameWidth, int Height, Skin skin, Stage stage, World world) {
+    public Menu(int WidthWindow, int gameWidth, int Height, Skin skin, Stage stage, World world, Game game) {
         this.WidthWindow = Width0 + WidthWindow;
         this.WidthStart = Width0 + gameWidth;
         this.WidthGame = gameWidth;
@@ -97,6 +98,7 @@ public class Menu {
         this.skin = skin;
         this.stage = stage;
         this.world = world;
+        this.game = game;
 
         frames = new Array<>();
 
@@ -636,7 +638,7 @@ public class Menu {
             player = tempPlayer;
             if (player.getPart(RenderPart.class) != null) {
                 RenderPart renderPart = player.getPart(RenderPart.class);
-                playerImage = new Image(new Texture(renderPart.getSpritePath()));
+                playerImage = new Image(game.getTextureRegion(renderPart.getSpritePath(), 5, 1, 64, 64));
                 playerImage.setSize(proPicImage.getWidth() / 4 * 3, proPicImage.getHeight() / 4 * 3);
                 playerImage.setPosition(proPicImage.getX() + proPicImage.getWidth() / 8, proPicImage.getY() + proPicImage.getHeight() / 8);
 
