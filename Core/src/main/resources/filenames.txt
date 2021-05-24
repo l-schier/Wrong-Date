@@ -1,13 +1,11 @@
 comic-ui.atlas
 comic-ui.json
 comic-ui.png
-filenames.txt
+Core.txt
 font-button-export.fnt
 font-export.fnt
 font-title-export.fnt
+floor.png
 PinkSquare.jpg
 ProfilePicture.png
-rocket.png
 squareFrame.png
-White-square.jpg
-floor.png

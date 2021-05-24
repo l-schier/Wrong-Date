@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.World;
@@ -39,7 +38,8 @@ import org.osgi.framework.FrameworkUtil;
  * @author tes_7
  */
 public class Menu {
-
+    private Game game;
+    
     private ArrayList<File> helpFiles;
     private Array<Actor> helpActors, settingsActors = null;
     private HashMap<String, CheckBox> components = null;
@@ -74,7 +74,7 @@ public class Menu {
     Image iteminfoImage;
     TextArea itemInfoArea;
     TextButton helpButton, settingsButton, pauseButton;
-    
+
     //Inventory
     int invW, invH, invX, invY, inv0 = 3, invC, invR, invS;
     Array<Image> frames;
@@ -83,13 +83,13 @@ public class Menu {
 
     File weaponDescFile;
     Image weaponImage = null;
-    
+
     Image playerImage;
     Boolean playerAdded = false;
-    
+
     int count = 0;
 
-    public Menu(int WidthWindow, int gameWidth, int Height, Skin skin, Stage stage, World world) {
+    public Menu(int WidthWindow, int gameWidth, int Height, Skin skin, Stage stage, World world, Game game) {
         this.WidthWindow = Width0 + WidthWindow;
         this.WidthStart = Width0 + gameWidth;
         this.WidthGame = gameWidth;
@@ -98,16 +98,15 @@ public class Menu {
         this.skin = skin;
         this.stage = stage;
         this.world = world;
-        
+        this.game = game;
+
         frames = new Array<>();
 
         draw();
         helpButtonfunctionality();
         pauseButtonFunctionality();
         settingsButtonFunctionality();
-
     }
-
 
     private void draw() {
         int x1 = WidthStart + spacing;
@@ -163,10 +162,10 @@ public class Menu {
         stage.getActors().add(invTextField);
 
         //inventory pictures 
-        invW = width3; 
+        invW = width3;
         invH = invW / inv0;
         invX = x1;
-        invY = (int) (invTextField.getY() - spacing - invH);   
+        invY = (int) (invTextField.getY() - spacing - invH);
 
         //Item Information Image
         iteminfoImage = new Image(new Texture(Gdx.files.internal(whiteSquare)));
@@ -207,9 +206,7 @@ public class Menu {
                 if (!helpClicked) {
                     help();
                 } else if (helpClicked) {
-
                     removeHelp();
-                    
                 }
             }
         });
@@ -230,105 +227,150 @@ public class Menu {
             }
         });
     }
-    
-    private void settingsButtonFunctionality(){
-        //https://stackoverflow.com/questions/6527306/best-technique-for-getting-the-osgi-bundle-context
+
+    private void settingsButtonFunctionality() {
         settingsButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                if (!settingsClicked){
+                if (!settingsClicked) {
                     Settings();
-                    
                 } else {
                     removeSettings();
                 }
-                
-              
             }
         });
     }
-    
-    private void Settings(){
+
+    private void Settings() {
         pause();
-        
+
         BundleContext context = FrameworkUtil.getBundle(Entity.class).getBundleContext();
-        
-        if(bundles == null ){
+
+        if (helpClicked) {
+            removeHelp();
+        }
+
+        if (bundles == null) {
             bundles = new HashMap<>();
-            for ( Bundle b: context.getBundles()){
+            for (Bundle b : context.getBundles()) {
                 String name = b.getSymbolicName();
-                if(name.contains(".") || name.equals("Core")){       
-                }else{
+                if (name.contains(".") || name.equals("Core")) {
+                } else {
                     bundles.put(name, b);
                 }
             }
         }
-        
-        if(helpClicked){
-            removeHelp();
+
+        if (components == null) {
+            components = new HashMap<>();
+            for (Map.Entry<String, Bundle> e : bundles.entrySet()) {
+                components.put(e.getKey(), new CheckBox(e.getKey(), skin));
+            }
         }
-        
-        int x = Width0 + spacing, checkHeight = 60, y = Height - spacing - checkHeight, buttonHeight = 50;
-                
-        if (settingsActors == null){
+
+        if (settingsActors == null) {
             settingsActors = new Array<>();
-            
-            
+
             Image setBImage = new Image(new Texture(Gdx.files.internal(backgorundImageStr)));
             setBImage.setPosition(Width0, 0);
             setBImage.setWidth(WidthGame);
             setBImage.setHeight(Height);
             settingsActors.add(setBImage);
         }
-        
-        if(components == null){
-            components = new HashMap<>();
-            for(Map.Entry<String, Bundle> e: bundles.entrySet()){
-                components.put(e.getKey(),new CheckBox(e.getKey(), skin));
-            }
-        }
-        
-        
-        for (Map.Entry<String, CheckBox> e : components.entrySet()){
+
+        int x = Width0 + spacing,
+                checkHeight = 60,
+                y = Height - spacing - checkHeight,
+                buttonHeight = 50;
+
+        for (Map.Entry<String, CheckBox> e : components.entrySet()) {
+            TextButton uninstall = new TextButton("X", skin);
+            uninstall.setHeight(25);
+            uninstall.setWidth(25);
+            uninstall.setPosition(x, y + 25);
+            settingsActors.add(uninstall);
+
             CheckBox check = e.getValue();
             check.setHeight(checkHeight);
-            check.setPosition(x, y);
+            check.setPosition(x + 30, y);
             y -= (spacing + checkHeight);
-            
-            if (y <= buttonHeight){
+
+            if (y <= buttonHeight) {
                 y = Height - checkHeight - spacing;
-                x = WidthGame/2 + Width0 + spacing;
+                x = WidthGame / 2 + Width0 + spacing;
             }
-            
+
             settingsActors.add(check);
-            
+
+            uninstall.addListener(new ClickListener() {
+                public void clicked(InputEvent event, float x, float y) {
+                    String name = e.getKey();
+                    Bundle b = bundles.get(name);
+                    try {
+                        b.uninstall();
+                        bundles.remove(name);
+                        components.remove(name);
+                        stage.getActors().removeValue(uninstall, false);
+                        stage.getActors().removeValue(check, false);
+                    } catch (BundleException ex) {
+                        Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            });
         }
-        
-        for(Map.Entry<String, Bundle> e: bundles.entrySet()){
-            components.get(e.getKey()).setChecked(e.getValue().getState() == 32);     
+
+        for (Map.Entry<String, Bundle> e : bundles.entrySet()) {
+            components.get(e.getKey()).setChecked(e.getValue().getState() == 32);
         }
-        
-        
+
+        TextField bundleName = new TextField("xxx_1.0.0.SNAPSHOT.jar", skin);
+        bundleName.setHeight(buttonHeight);
+        bundleName.setWidth((WidthGame / 4) * 3);
+        bundleName.setPosition(Width0 + (WidthGame / 4), buttonHeight);
+        settingsActors.add(bundleName);
+
+        TextButton install = new TextButton("INSTALL", skin);
+        install.setHeight(buttonHeight);
+        install.setWidth(WidthGame / 4);
+        install.setPosition(Width0, buttonHeight);
+        settingsActors.add(install);
+
+        install.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                String bundle = bundleName.getText();
+                String installPath = "file:/" + Gdx.files.getLocalStoragePath() + "bundles/" + bundle;
+                try {
+                    Bundle b = context.installBundle(installPath);
+                    b.start();
+                    String name = b.getSymbolicName();
+                    bundles.put(name, b);
+                    components.put(name, new CheckBox(name, skin));
+                    removeSettings();
+                } catch (BundleException ex) {
+                    Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+
         TextButton save = new TextButton("SAVE", skin);
         save.setHeight(buttonHeight);
         save.setWidth(WidthGame);
         save.setPosition(Width0, 0);
         settingsActors.add(save);
-        
+
         save.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                for(Map.Entry<String, CheckBox> e: components.entrySet()){
+                for (Map.Entry<String, CheckBox> e : components.entrySet()) {
                     CheckBox check = e.getValue();
                     String name = e.getKey();
                     Bundle b = bundles.get(name);
-                    if(check.isChecked() && !(b.getState() == 32) ){
-                        
+                    if (check.isChecked() && !(b.getState() == 32)) {
                         try {
                             b.start();
                         } catch (BundleException ex) {
                             Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        
-                    } else if( !check.isChecked() && b.getState() == 32){
+
+                    } else if (!check.isChecked() && b.getState() == 32) {
                         try {
                             b.stop();
                         } catch (BundleException ex) {
@@ -338,27 +380,31 @@ public class Menu {
                 }
             }
         });
-        
-        stage.getActors().addAll(settingsActors);
-        
 
-       settingsClicked = true;
+        for (Actor a : settingsActors) {
+            stage.addActor(a);
+        }
+
+        settingsClicked = true;
     }
-    
-    private void removeSettings(){
-        stage.getActors().removeAll(settingsActors, false);
-        
+
+    private void removeSettings() {
+        for (Actor a : settingsActors) {
+            a.remove();
+        }
+        settingsActors.removeRange(1, settingsActors.size - 1);
+
         resume();
         settingsClicked = false;
     }
 
     private void help() {
         pause();
-        
-        if(settingsClicked){
+
+        if (settingsClicked) {
             removeSettings();
         }
-        
+
         helpActors = new Array<>();
         helpFiles = new ArrayList();
 
@@ -368,6 +414,7 @@ public class Menu {
                 helpFiles.add(e1.getFile());
             }
         }
+        helpFiles.add(new File(Gdx.files.getLocalStoragePath() + "Core.txt"));
 
         //Background
         Image helpBImage = new Image(new Texture(Gdx.files.internal(backgorundImageStr)));
@@ -390,7 +437,6 @@ public class Menu {
         }
 
         int buttonWidth;
-
         int buttonHeight = 50;
         int buttonX = Width0;
         int buttonY = Height - buttonHeight;
@@ -410,6 +456,7 @@ public class Menu {
 
             for (Map.Entry<String, TextButton> e : buttons.entrySet()) {
                 TextButton b = e.getValue();
+                System.out.println(b.getText());
                 b.setWidth(buttonWidth);
                 b.setHeight(buttonHeight);
                 b.setPosition(buttonX, buttonY);
@@ -418,7 +465,7 @@ public class Menu {
                 b.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                    textArea.setText(fileToText(files.get((e.getKey()))));
+                        textArea.setText(fileToText(files.get((e.getKey()))));
                     }
                 });
             }
@@ -427,11 +474,11 @@ public class Menu {
         for (Actor a : helpActors) {
             stage.getActors().add(a);
         }
-        
+
         helpClicked = true;
     }
-    
-    private void removeHelp(){
+
+    private void removeHelp() {
         if (pauseClicked) {
             pauseButton.setText("PAUSE");
             pauseClicked = false;
@@ -443,7 +490,6 @@ public class Menu {
     }
 
     private String fileToText(File f) {
-
         Scanner scanner;
         ArrayList<String> a = new ArrayList<String>();
         String text = "";
@@ -469,45 +515,41 @@ public class Menu {
     }
 
     public void update() {
-        
         updatePlayer();
         updateWeapon();
         updateInventory();
-        
-        
     }
-    
-    private void updateInventory(){
-      
-        if(player == null){
-            addFrames(invX, invY, invW, invH, inv0); 
-        }else{
-            if(player.getPart(InventoryPart.class)!= null){
+
+    private void updateInventory() {
+        if (player == null) {
+            System.out.println("2");
+            addFrames(invX, invY, invW, invH, inv0);
+        } else {
+            if (player.getPart(InventoryPart.class) != null) {
                 InventoryPart inventoryPart = player.getPart(InventoryPart.class);
                 ArrayList<Entity> list = inventoryPart.getInventory();
-                
-                invC = inv0; 
+
+                invC = inv0;
                 invR = 1;
                 invS = invC * invR;
-                
-                if(list.isEmpty()){
-                    addFrames(invX, invY, invW/inv0, invH, invS);
-                } else {
-                    if(invS < list.size()){
-                        for(int i = invS; i <= items.size(); i = invC * invR){
+                if(list.isEmpty() && items == null){
+                    items = new HashMap<>();
+                    addFrames(invX, invY, invW / inv0, invH, invS);
+                } else if (items.size() != list.size()){
+                    if (invS < list.size()) {
+                        for (int i = invS; i <= items.size(); i = invC * invR) {
                             invC += inv0;
-                            invR ++;
-                            if(i >= items.size()){
+                            invR++;
+                            if (i >= items.size()) {
                                 invS = i;
                             }
                         }
                         addFrames(invX, invY + invH / invR, invW / invC, invH / invR, invS);
                     }
-     
-                    if(items == null){
-                        items = new HashMap<>();
-                        for(Entity e : list){
-                            if(e.getPart(RenderPart.class) != null){
+                    if (items.size() != list.size()) {
+                        items.clear();
+                        for (Entity e : list) {
+                            if (e.getPart(RenderPart.class) != null) {
                                 RenderPart renderPart = e.getPart(RenderPart.class);
                                 items.put(e, new Image(new Texture(renderPart.getSpritePath())));
                                 stage.getActors().add(items.get(e));
@@ -516,71 +558,71 @@ public class Menu {
                         }
                     }
                     int i = 0;
-                    for(Map.Entry<Entity, Image> e: items.entrySet()){
+                    for (Map.Entry<Entity, Image> e : items.entrySet()) {
                         Image item = e.getValue();
                         Image frame = frames.get(i);
                         item.setPosition(frame.getX(), frame.getY());
                         item.setSize(frame.getWidth(), frame.getHeight());
                     }
-                   
                 }
-   
-               
             }
         }
+        
     }
-    
-    private void addFrames(int x, int y, int w, int h, int s){
+
+    private void addFrames(int x, int y, int w, int h, int s) {
         boolean up = frames.size <= s || frames.size < inv0, down = frames.size > s;
-     
-        if(up){
-            for(int i = frames.size; i < s; i++){
+
+        if (up) {
+            for (int i = frames.size; i < s; i++) {
                 Image image = new Image(new Texture(whiteSquare));
                 frames.add(image);
+                stage.getActors().add(image);
             }
-            for(Image image: frames){
-                image.setPosition(x, y);
-                image.setSize(w, h);
-                x += w;
-                if(frames.indexOf(image, true) + 1 % invC == 0){
-                    x = invX;
-                    y -= h;
-                }
-                
-            }
-            stage.getActors().addAll(frames);
-        }if(down){
-            //ToDO implementation
         }
+        if (down) {
+            for(int i = frames.size -1; i > s - 1; i--){
+                stage.getActors().removeValue(frames.get(i), true);
+            }
+        }
+        for(int i = 0; i < s; i++){
+            Image image = frames.get(i);
+            image.setPosition(x, y);
+            image.setSize(w, h);
+            x += w;
+            if (frames.indexOf(image, true) + 1 % invC == 0) {
+                x = invX;
+                y -= h;
+            }
+        }
+        
     }
-    
-    private void itemClicked(Image img, Entity e){
-        img.addListener(new ClickListener(){
+
+    private void itemClicked(Image img, Entity e) {
+        img.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                if(e.getPart(RenderPart.class) != null){
+                if (e.getPart(RenderPart.class) != null) {
                     RenderPart renderPart = e.getPart(RenderPart.class);
-                    clickedItem = new Image( new Texture(renderPart.getSpritePath()));
-                    
-                    if(!stage.getActors().contains(clickedItem, true)){
+                    clickedItem = new Image(new Texture(renderPart.getSpritePath()));
+
+                    if (!stage.getActors().contains(clickedItem, true)) {
                         clickedItem.setPosition(iteminfoImage.getX(), iteminfoImage.getY());
                         clickedItem.setSize(iteminfoImage.getWidth(), iteminfoImage.getHeight());
                         stage.getActors().add(clickedItem);
                     }
-                  
+
                 }
-                if(e.getPart(DescriptionPart.class) != null){
+                if (e.getPart(DescriptionPart.class) != null) {
                     DescriptionPart descriptionPart = e.getPart(DescriptionPart.class);
                     itemInfoArea.setText(fileToText(descriptionPart.getDescription()));
-                }else{
+                } else {
                     itemInfoArea.setText("No Information");
                 }
-                
             }
         });
     }
-    
-    private void updatePlayer(){
-        
+
+    private void updatePlayer() {
         boolean exists = false;
 
         for (Entity e : world.getEntities()) {
@@ -589,86 +631,71 @@ public class Menu {
                 tempPlayer = e;
             }
         }
-        if(!exists){
+        if (!exists) {
             proNameTextField.setText("No Current Player");
             removePlayer();
-        } else if(player == null || !player.equals(tempPlayer)){
+        } else if (player == null || !player.equals(tempPlayer)) {
             player = tempPlayer;
-            if(player.getPart(RenderPart.class) != null){
+            if (player.getPart(RenderPart.class) != null) {
                 RenderPart renderPart = player.getPart(RenderPart.class);
-                playerImage = new Image(new Texture(renderPart.getSpritePath()));
-                playerImage.setSize(proPicImage.getWidth()/ 4 * 3, proPicImage.getHeight() / 4 * 3);
-                playerImage.setPosition(proPicImage.getX() + proPicImage.getWidth()/8, proPicImage.getY() + proPicImage.getHeight()/8);
-            
+                playerImage = new Image(game.getTextureRegion(renderPart.getSpritePath(), 5, 1, 64, 64));
+                playerImage.setSize(proPicImage.getWidth() / 4 * 3, proPicImage.getHeight() / 4 * 3);
+                playerImage.setPosition(proPicImage.getX() + proPicImage.getWidth() / 8, proPicImage.getY() + proPicImage.getHeight() / 8);
+
                 addPlayer();
             }
-            
-            if(player.getPart(PlayerPart.class) != null){
+            if (player.getPart(PlayerPart.class) != null) {
                 PlayerPart playerPart = player.getPart(PlayerPart.class);
 
-                if(playerPart.getName() == null){
+                if (playerPart.getName() == null) {
                     proNameTextField.setText("No Name Chosen");
                 } else {
                     proNameTextField.setText(playerPart.getName());
                 }
             }
-    
-   
         }
-        
     }
-    
-    private void addPlayer(){
-        if(!playerAdded){
-           stage.getActors().add(playerImage);
-            playerAdded = true; 
+
+    private void addPlayer() {
+        if (!playerAdded) {
+            stage.getActors().add(playerImage);
+            playerAdded = true;
         }
-        
     }
-    
-    private void removePlayer(){
-        if(playerAdded){
+
+    private void removePlayer() {
+        if (playerAdded) {
             stage.getActors().removeValue(playerImage, true);
             playerAdded = false;
         }
-        
     }
-    
-    private void updateWeapon(){
+
+    private void updateWeapon() {
         InventoryPart inventoryPart = player.getPart(InventoryPart.class);
 
         if (inventoryPart.getWeapon() != null) {
-
-            if (weapon == null || !weapon.equals(inventoryPart.getWeapon())) {  
+            if (weapon == null || !weapon.equals(inventoryPart.getWeapon())) {
                 weapon = inventoryPart.getWeapon();
-                if(weapon.getPart(DescriptionPart.class) != null){
+                if (weapon.getPart(DescriptionPart.class) != null) {
                     DescriptionPart descriptionPart = weapon.getPart(DescriptionPart.class);
                     weapDescArea.setText(fileToText(descriptionPart.getDescription()));
                 }
-                if(weapon.getPart(RenderPart.class) != null){
+                if (weapon.getPart(RenderPart.class) != null) {
                     RenderPart renderPart = weapon.getPart(RenderPart.class);
-                    
-                    
-                    if(weaponImage != null){
+
+                    if (weaponImage != null) {
                         stage.getActors().removeValue(weaponImage, true);
                     }
 
                     weaponImage = null;
                     weaponImage = new Image(new Texture(renderPart.getSpritePath()));
-                    
-                
 
                 }
-                
-
-                
-                if(!stage.getActors().contains(weaponImage, true)){
+                if (!stage.getActors().contains(weaponImage, true)) {
                     weaponImage.setSize(weapImage.getImageWidth(), weapImage.getImageHeight());
-                    weaponImage.setPosition(weapImage.getX() , weapImage.getY());
+                    weaponImage.setPosition(weapImage.getX(), weapImage.getY());
                     stage.getActors().add(weaponImage);
                 }
-                
-                
             }
         }
     }

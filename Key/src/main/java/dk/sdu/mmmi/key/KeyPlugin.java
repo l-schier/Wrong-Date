@@ -8,6 +8,7 @@ import dk.sdu.mmmi.common.data.entityparts.KeyPart.KeyColor;
 import dk.sdu.mmmi.common.data.entityparts.InteractPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.RenderPart;
+import dk.sdu.mmmi.common.data.entityparts.DescriptionPart;
 import dk.sdu.mmmi.common.services.IGamePluginService;
 import java.util.Random;
 
@@ -17,7 +18,7 @@ import java.util.Random;
  */
 public class KeyPlugin implements IGamePluginService {
     
-    private final String spriteFile = "silver.png";
+    private final String spriteFile = "silverKey.png";
     
     @Override
     public void start(GameData gameData, World world) {
@@ -37,6 +38,8 @@ public class KeyPlugin implements IGamePluginService {
         key.add(new InteractPart(true));
         key.add(new KeyPart(KeyColor.Silver));
         key.add(new RenderPart(this.spriteFile, key));
+        key.add(new DescriptionPart("Key.txt", key));
+        
 
         return key;
     }
