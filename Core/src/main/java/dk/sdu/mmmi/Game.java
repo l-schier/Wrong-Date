@@ -295,6 +295,10 @@ public class Game implements ApplicationListener {
                 }
             }
             KeyPart.KeyColor doorColor = doors.getLockColor();
+            int leftX = 0; 
+            int rightX = 2; 
+            int topBottomX = 1;
+            int colorY = 0; 
             for (float[] door : doors.getDoors()) {
                 float x = door[0];
                 float y = door[1];
@@ -307,22 +311,50 @@ public class Game implements ApplicationListener {
                         }
                     }
                     if (hasKey) {
-                        // Draw open door
+                        colorY = 0; 
                     } else {
-                        // Default door color thing
+                        if(null == doorColor){
+                            
+                        }else switch (doorColor) {
+                            case Gold:
+                                colorY = 1;
+                                break;
+                            case Silver:
+                                colorY = 2; 
+                                break;
+                            case Bronze:
+                                colorY = 3; 
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 } else {
-                    // Default door color thing
+                    if(null == doorColor){
+                            
+                        }else switch (doorColor) {
+                            case Gold:
+                                colorY = 1;
+                                break;
+                            case Silver:
+                                colorY = 2; 
+                                break;
+                            case Bronze:
+                                colorY = 3; 
+                                break;
+                            default:
+                                break;
+                        }
                 }
 
                 if (door[0] == wall.getStartX()) { // left door
-                    batch.draw(imgD, x - 32, y, 0, 0, dWidth, dHeight);
+                    batch.draw(imgD, x - 32, y, leftX, colorY * dHeight, dWidth, dHeight);
                 } else if (door[0] == wall.getEndX()) { // right door  
-                    batch.draw(imgD, x, y, 2 * dWidth, 0, dWidth, dHeight);
-                } else if (door[1] == wall.getStartY()) { // bottom door
-                    batch.draw(imgD, x, y - 32, 1 * dWidth, 0, dWidth, dHeight);
+                    batch.draw(imgD, x, y, rightX * dWidth, colorY * dHeight, dWidth, dHeight);
+                } else if (door[1] == wall.getStartY()) { // ottom door
+                    batch.draw(imgD, x, y - 32, topBottomX * dWidth, colorY * dHeight, dWidth, dHeight);
                 } else if (door[1] == wall.getEndY()) { // top door
-                    batch.draw(imgD, x, y, 1 * dWidth, 0, dWidth, dHeight);
+                    batch.draw(imgD, x, y, topBottomX * dWidth, colorY * dHeight, dWidth, dHeight);
                 }
 
             }
@@ -394,10 +426,10 @@ public class Game implements ApplicationListener {
                         batch.setProjectionMatrix(vp.getCamera().combined);
                         batch.begin();
 
-                        if (entityMovingPart.isLeft()) {
-                            batch.draw((TextureRegion) leftWalk.getKeyFrame(elapsedTime, true), pos.getX() - 32, pos.getY() - 32);
-                        } else if (entityMovingPart.isRight()) {
+                        if (entityMovingPart.isRight()) {
                             batch.draw((TextureRegion) rightWalk.getKeyFrame(elapsedTime, true), pos.getX() - 32, pos.getY() - 32);
+                        } else if (entityMovingPart.isLeft()) {
+                            batch.draw((TextureRegion) leftWalk.getKeyFrame(elapsedTime, true), pos.getX() - 32, pos.getY() - 32);
                         } else if (entityMovingPart.isUp()) {
                             batch.draw((TextureRegion) backWalk.getKeyFrame(elapsedTime, true), pos.getX() - 32, pos.getY() - 32);
                         } else if (entityMovingPart.isDown()) {
