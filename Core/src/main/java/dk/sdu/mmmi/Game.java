@@ -71,7 +71,7 @@ public class Game implements ApplicationListener {
     private final HashMap<String, Texture> entityTextures = new HashMap<String, Texture>();
     private final HashMap<String, Animation> enityAnimation = new HashMap<>();
     private final HashMap<String, TextureRegion> entityTextureRegion = new HashMap<>();
-    
+
     private SpriteBatch batch;
     private final int humanTextureHeight = 64;
     private final int humanTextureWidth = 64;
@@ -212,7 +212,7 @@ public class Game implements ApplicationListener {
         batch.draw(img, fromX, fromY, 0, 0, (int) toX, (int) toY);
         batch.end();
     }
-    
+
     private void drawWallsAndDoors(Entity entity) {
         WallPart wall = entity.getPart(WallPart.class);
         DoorPart doors = entity.getPart(DoorPart.class);
@@ -231,16 +231,16 @@ public class Game implements ApplicationListener {
             fromX = (int) wall.getStartX() - wWidth;
             fromY = (int) wall.getStartY();
             toY = (int) wall.getEndY();
-            for (int y = fromY; y < toY; y += wHeight){
+            for (int y = fromY; y < toY; y += wHeight) {
                 batch.draw(leftWall, fromX, y);
             }
-            
+
             // right wall
             TextureRegion rightWall = getTextureRegion(render.getSpritePath(), 4, 2, wWidth, wHeight);
             fromX = (int) wall.getEndX();
             fromY = (int) wall.getStartY();
-            toY = (int) wall.getEndY() - fromY + wHeight;
-            for(int y = fromY; y < toY; y += wHeight){
+            toY = (int) wall.getEndY();
+            for (int y = fromY; y < toY; y += wHeight) {
                 batch.draw(rightWall, fromX, y);
             }
 
@@ -249,10 +249,10 @@ public class Game implements ApplicationListener {
             fromX = (int) wall.getStartX();
             fromY = (int) wall.getEndY();
             toX = (int) wall.getEndX();
-            for(int x = fromX; x < toX; x += wWidth){
+            for (int x = fromX; x < toX; x += wWidth) {
                 batch.draw(topWall, x, fromY);
             }
-            
+
             //top corners
             TextureRegion topRightWall = getTextureRegion(render.getSpritePath(), 4, 1, wWidth, wHeight);
             batch.draw(topRightWall, toX, fromY);
@@ -263,15 +263,14 @@ public class Game implements ApplicationListener {
             TextureRegion bottomWall = getTextureRegion(render.getSpritePath(), 2, 1, wWidth, wHeight);
             fromX = (int) wall.getStartX();
             fromY = (int) wall.getStartY() - wHeight;
-            toX = (int) wall.getEndX() - fromX + wWidth;
-            toY = (int) wHeight;
-            for(int x = fromX; x < toX; x += wWidth){
+            toX = (int) wall.getEndX();
+            for (int x = fromX; x < toX; x += wWidth) {
                 batch.draw(bottomWall, x, fromY);
             }
-            
+
             //bottom cornerns
             TextureRegion bottomRightWall = getTextureRegion(render.getSpritePath(), 4, 4, wWidth, wHeight);
-            batch.draw(bottomRightWall, toX, toY - wHeight);
+            batch.draw(bottomRightWall, toX, fromY);
             TextureRegion bottomLeftWall = getTextureRegion(render.getSpritePath(), 1, 4, wWidth, wHeight);
             batch.draw(bottomLeftWall, fromX - wWidth, fromY);
 
@@ -286,11 +285,11 @@ public class Game implements ApplicationListener {
                 if (door[0] == wall.getStartX()) { // left door
                     batch.draw(imgD, x - 32, y, 0, 0, dWidth, dHeight);
                 } else if (door[0] == wall.getEndX()) { // right door  
-                    batch.draw(imgD, x, y, 2*dWidth, 0, dWidth, dHeight);
+                    batch.draw(imgD, x, y, 2 * dWidth, 0, dWidth, dHeight);
                 } else if (door[1] == wall.getStartY()) { // bottom door
-                    batch.draw(imgD, x, y - 32, 1*dWidth, 0, dWidth, dHeight);
+                    batch.draw(imgD, x, y - 32, 1 * dWidth, 0, dWidth, dHeight);
                 } else if (door[1] == wall.getEndY()) { // top door
-                    batch.draw(imgD, x, y, 1*dWidth, 0, dWidth, dHeight);
+                    batch.draw(imgD, x, y, 1 * dWidth, 0, dWidth, dHeight);
                 }
             }
 
@@ -299,12 +298,12 @@ public class Game implements ApplicationListener {
             System.out.println("Image not found");
         }
     }
-    
+
     private Animation getAnimationFromTextureRange(String spritePath, int col) {
-        String id = "" + spritePath + col; 
+        String id = "" + spritePath + col;
         if (this.enityAnimation.containsKey(id)) {
             return this.enityAnimation.get(id);
-        }else{
+        } else {
             Array<TextureRegion> frames = new Array<>();
             for (int i = col - 1; i < col + 3; i++) {
                 frames.add(new TextureRegion(getTexture(spritePath), i * humanTextureWidth, 0, humanTextureWidth, humanTextureHeight));
@@ -314,15 +313,15 @@ public class Game implements ApplicationListener {
             return newAnim;
         }
     }
-    
-    private TextureRegion getTextureRegion(String spritePath, int col, int row, int width, int height){
-        String id = "" + spritePath + col + row; 
-        if(this.entityTextureRegion.containsKey(id)){
+
+    private TextureRegion getTextureRegion(String spritePath, int col, int row, int width, int height) {
+        String id = "" + spritePath + col + row;
+        if (this.entityTextureRegion.containsKey(id)) {
             return this.entityTextureRegion.get(id);
-        }else{
+        } else {
             TextureRegion region = new TextureRegion(getTexture(spritePath), (col * width) - width, (row * height) - height, width, height);
             entityTextureRegion.put(id, region);
-            return region; 
+            return region;
         }
     }
 
@@ -342,7 +341,7 @@ public class Game implements ApplicationListener {
                 if (!render.isVisible()) {
                     continue;
                 }
-                
+
                 // for player and enemy
                 if (entity.getPart(MovingPart.class) != null) {
                     try {
@@ -379,10 +378,10 @@ public class Game implements ApplicationListener {
                     } catch (GdxRuntimeException e) {
                         System.out.println("Image not found");
                     }
-                // for everything else
-                } else{
+                    // for everything else
+                } else {
                     try {
-                        if(entity.getPart(WallPart.class) == null){
+                        if (entity.getPart(WallPart.class) == null) {
                             Texture img = getTexture(render.getSpritePath());
 
                             batch.setProjectionMatrix(vp.getCamera().combined);
@@ -390,17 +389,16 @@ public class Game implements ApplicationListener {
                             batch.draw(img, pos.getX() - 16, pos.getY() - 16);
                             batch.end();
                         }
-                        
 
                     } catch (GdxRuntimeException e) {
                         System.out.println("Image not found");
                     }
                 }
-                
+
                 // all other walls and doors
                 if (entity.getPart(WallPart.class) != null
-                    && entity.getPart(DoorPart.class) != null
-                    && entity.getPart(RenderPart.class) != null) {
+                        && entity.getPart(DoorPart.class) != null
+                        && entity.getPart(RenderPart.class) != null) {
                     drawWallsAndDoors(entity);
                     continue;
                 }
