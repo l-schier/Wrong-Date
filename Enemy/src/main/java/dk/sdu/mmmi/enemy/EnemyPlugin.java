@@ -20,7 +20,7 @@ import java.nio.file.Files;
  */
 public class EnemyPlugin implements IGamePluginService {
 
-    private final String spriteFile = "enemy.png";
+    private final String spriteFile = "enemy.png", helpFile = "Enemy.txt";
 
     public EnemyPlugin() {
 
@@ -43,7 +43,7 @@ public class EnemyPlugin implements IGamePluginService {
         enemy.add(new SightPart(200));
         enemy.add(new PositionPart(x, y));
         enemy.add(new RenderPart(this.spriteFile, enemy));
-        enemy.add(new HelpPart("Enemy.txt", enemy));
+        enemy.add(new HelpPart(helpFile, enemy));
 
         enemy.setRadius(8);
 
@@ -63,5 +63,10 @@ public class EnemyPlugin implements IGamePluginService {
             Files.delete(temp.toPath());
         } catch (Exception e) {
         }
+    }
+
+    @Override
+    public String[] getSpritePaths() {
+        return new String[]{spriteFile};
     }
 }

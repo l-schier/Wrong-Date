@@ -8,6 +8,8 @@
     <reference bind="addPathfinder" cardinality="0..n"
                interface="dk.sdu.mmmi.common.services.IPathfinder"
                name="IPathfinder" policy="dynamic" unbind="removePathfinder"/>
-    
+    <reference bind="addCollisionChecker" cardinality="0..n"
+               interface="dk.sdu.mmmi.common.services.ICollisionChecker"
+               name="ICollisionChecker" policy="dynamic" unbind="removeCollisionChecker"/>
     
 </scr:component>

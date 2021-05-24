@@ -8,6 +8,7 @@ import dk.sdu.mmmi.common.data.entityparts.KeyPart.KeyColor;
 import dk.sdu.mmmi.common.data.entityparts.InteractPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.RenderPart;
+import dk.sdu.mmmi.common.data.entityparts.DescriptionPart;
 import dk.sdu.mmmi.common.services.IGamePluginService;
 import java.util.Random;
 
@@ -29,14 +30,16 @@ public class KeyPlugin implements IGamePluginService {
         Entity key = new Key();
         Random random = new Random();
 
-        float x = (float) random.nextInt(gameData.getDisplayWidth());
-        float y = (float) random.nextInt(gameData.getDisplayHeight());
+        float x = (float) random.nextInt(gameData.getDisplayWidth() - 64) + 32;
+        float y = (float) random.nextInt(gameData.getDisplayHeight() - 64) + 32;
         key.add(new PositionPart(x, y));
         key.setRadius(8);
 
         key.add(new InteractPart(true));
         key.add(new KeyPart(KeyColor.Silver));
         key.add(new RenderPart(this.spriteFile, key));
+        key.add(new DescriptionPart("Key.txt", key));
+        
 
         return key;
     }
@@ -48,4 +51,8 @@ public class KeyPlugin implements IGamePluginService {
         }
     }
 
+    @Override
+    public String[] getSpritePaths() {
+        return new String[]{spriteFile};
+    }
 }

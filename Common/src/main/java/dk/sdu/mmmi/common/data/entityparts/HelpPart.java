@@ -5,7 +5,6 @@
  */
 package dk.sdu.mmmi.common.data.entityparts;
 
-import com.badlogic.gdx.Gdx;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import java.io.File;
@@ -22,24 +21,24 @@ import java.nio.file.StandardCopyOption;
  */
 public class HelpPart implements EntityPart {
     
-    private String helpFile; 
+    private File helpFile; 
     private Object component; 
     
     public HelpPart(String helpFile, Object component){
         this.component = component; 
-        this.helpFile = getFile(helpFile);
+        helpFile = getFile(helpFile);
     }
     
     private String getFile(String spriteFile) {
         // Get module sprites
         InputStream inputStream = this.component.getClass().getClassLoader().getResourceAsStream(spriteFile);
-        File temp = new File(spriteFile);
+        helpFile = new File(spriteFile);
 
         // Copy module sprites to runner folder
         try {
             // Reconsider replacing existing
             // Or giving unique name to file during copy
-            Files.copy(inputStream, temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(inputStream, helpFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             return spriteFile;
         } catch (IOException e) {
         }
@@ -48,7 +47,7 @@ public class HelpPart implements EntityPart {
     }
     
     public File getFile(){
-        return new File(Gdx.files.getLocalStoragePath() + helpFile);
+        return helpFile;
     }
 
     @Override

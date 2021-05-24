@@ -9,10 +9,14 @@ import dk.sdu.mmmi.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.PlayerPart;
+import dk.sdu.mmmi.common.data.entityparts.RenderPart;
+import dk.sdu.mmmi.common.data.entityparts.HelpPart;
 import dk.sdu.mmmi.common.services.IGamePluginService;
 
 public class PlayerPlugin implements IGamePluginService {
 
+    private String SpriteFile = "player.png";
+    
     public PlayerPlugin() {
 
     }
@@ -36,6 +40,8 @@ public class PlayerPlugin implements IGamePluginService {
         player.add(new InteractPart());
         player.add(new InventoryPart());
         player.add(new PlayerPart());
+        player.add(new RenderPart(SpriteFile, player));
+        player.add(new HelpPart("Player.txt", player));
 
         player.setRadius(8);
 
@@ -48,5 +54,10 @@ public class PlayerPlugin implements IGamePluginService {
         for (Entity player : world.getEntities(Player.class)) {
             world.removeEntity(player);
         }
+    }
+
+    @Override
+    public String[] getSpritePaths() {
+        return new String[]{SpriteFile};
     }
 }
