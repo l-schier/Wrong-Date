@@ -17,7 +17,7 @@ import java.util.Random;
  */
 public class KeyPlugin implements IGamePluginService {
     
-    private final String spriteFile = "SilverKey.png";
+    private final String spriteFile = "silverKey.png";
     
     @Override
     public void start(GameData gameData, World world) {
