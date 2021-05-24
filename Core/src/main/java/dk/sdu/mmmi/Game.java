@@ -219,8 +219,6 @@ public class Game implements ApplicationListener {
         RenderPart render = entity.getPart(RenderPart.class);
 
         try {
-            Texture imgW = getTexture(render.getSpritePath());
-            
             batch.setProjectionMatrix(vp.getCamera().combined);
             batch.begin();
 
@@ -231,10 +229,9 @@ public class Game implements ApplicationListener {
             // left wall
             TextureRegion leftWall = getTextureRegion(render.getSpritePath(), 1, 3, wWidth, wHeight);
             fromX = (int) wall.getStartX() - wWidth;
-            fromY = (int) wall.getStartY() - wHeight;
-            toX = (int) wWidth;
-            toY = (int) wall.getEndY() - fromY;
-            for (int y = fromY; y < toY; y += 32){
+            fromY = (int) wall.getStartY();
+            toY = (int) wall.getEndY();
+            for (int y = fromY; y < toY; y += wHeight){
                 batch.draw(leftWall, fromX, y);
             }
             
@@ -242,19 +239,17 @@ public class Game implements ApplicationListener {
             TextureRegion rightWall = getTextureRegion(render.getSpritePath(), 4, 2, wWidth, wHeight);
             fromX = (int) wall.getEndX();
             fromY = (int) wall.getStartY();
-            toX = (int) wall.getEndX() - fromX + wHeight;
             toY = (int) wall.getEndY() - fromY + wHeight;
-            for(int y = fromY; y < toY; y += 32){
+            for(int y = fromY; y < toY; y += wHeight){
                 batch.draw(rightWall, fromX, y);
             }
 
             // top wall
             TextureRegion topWall = getTextureRegion(render.getSpritePath(), 2, 1, wWidth, wHeight);
-            fromX = (int) wall.getStartX() - wWidth;
+            fromX = (int) wall.getStartX();
             fromY = (int) wall.getEndY();
-            toX = (int) wall.getEndX() - fromX;
-            toY = (int) wHeight;
-            for(int x = fromX; x < toX; x += 32){
+            toX = (int) wall.getEndX();
+            for(int x = fromX; x < toX; x += wWidth){
                 batch.draw(topWall, x, fromY);
             }
             
@@ -262,7 +257,7 @@ public class Game implements ApplicationListener {
             TextureRegion topRightWall = getTextureRegion(render.getSpritePath(), 4, 1, wWidth, wHeight);
             batch.draw(topRightWall, toX, fromY);
             TextureRegion topLeftWall = getTextureRegion(render.getSpritePath(), 1, 1, wWidth, wHeight);
-            batch.draw(topLeftWall, fromX, fromY);
+            batch.draw(topLeftWall, fromX - wWidth, fromY);
 
             // bottom wall
             TextureRegion bottomWall = getTextureRegion(render.getSpritePath(), 2, 1, wWidth, wHeight);
@@ -270,7 +265,7 @@ public class Game implements ApplicationListener {
             fromY = (int) wall.getStartY() - wHeight;
             toX = (int) wall.getEndX() - fromX + wWidth;
             toY = (int) wHeight;
-            for(int x = fromX; x < toX; x += 32){
+            for(int x = fromX; x < toX; x += wWidth){
                 batch.draw(bottomWall, x, fromY);
             }
             
@@ -387,12 +382,15 @@ public class Game implements ApplicationListener {
                 // for everything else
                 } else{
                     try {
-                        Texture img = getTexture(render.getSpritePath());
+                        if(entity.getPart(WallPart.class) == null){
+                            Texture img = getTexture(render.getSpritePath());
 
-                        batch.setProjectionMatrix(vp.getCamera().combined);
-                        batch.begin();
-                        batch.draw(img, pos.getX() - 16, pos.getY() - 16);
-                        batch.end();
+                            batch.setProjectionMatrix(vp.getCamera().combined);
+                            batch.begin();
+                            batch.draw(img, pos.getX() - 16, pos.getY() - 16);
+                            batch.end();
+                        }
+                        
 
                     } catch (GdxRuntimeException e) {
                         System.out.println("Image not found");
