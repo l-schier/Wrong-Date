@@ -27,10 +27,12 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
+import dk.sdu.mmmi.common.data.entityparts.KeyPart;
 import dk.sdu.mmmi.common.data.entityparts.MovingPart;
+import dk.sdu.mmmi.common.data.entityparts.PlayerPart;
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.RenderPart;
-import dk.sdu.mmmi.common.data.entityparts.SightPart;
 import dk.sdu.mmmi.common.data.entityparts.WallPart;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -42,6 +44,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import dk.sdu.mmmi.common.services.IEntityPostProcessingService;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Game implements ApplicationListener {
@@ -68,10 +71,12 @@ public class Game implements ApplicationListener {
     private final List<IEntityPostProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
 
     private final HashMap<String, Texture> entityTextures = new HashMap<String, Texture>();
+    private final HashMap<String, Animation> enityAnimation = new HashMap<>();
+    private final HashMap<String, TextureRegion> entityTextureRegion = new HashMap<>();
 
     private SpriteBatch batch;
-    private final int textureHeight = 64;
-    private final int textureWidth = 64;
+    private final int humanTextureHeight = 64;
+    private final int humanTextureWidth = 64;
     private float elapsedTime;
     private Texture textureSheet;
 
@@ -216,66 +221,173 @@ public class Game implements ApplicationListener {
         RenderPart render = entity.getPart(RenderPart.class);
 
         try {
-            Texture imgW = getTexture(render.getSpritePath());
-            imgW.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-
             batch.setProjectionMatrix(vp.getCamera().combined);
             batch.begin();
 
             int fromX, fromY, toX, toY;
-            int wHeight = imgW.getHeight();
-            int wWidth = imgW.getWidth();
+            int wHeight = 32;
+            int wWidth = 32;
 
             // left wall
+            TextureRegion leftWall = getTextureRegion(render.getSpritePath(), 1, 3, wWidth, wHeight);
             fromX = (int) wall.getStartX() - wWidth;
-            fromY = (int) wall.getStartY() - wHeight;
-            toX = (int) wWidth;
-            toY = (int) wall.getEndY() - fromY;
-            batch.draw(imgW, fromX, fromY, 0, 0, toX, toY);
+            fromY = (int) wall.getStartY();
+            toY = (int) wall.getEndY();
+            for (int y = fromY; y < toY; y += wHeight) {
+                batch.draw(leftWall, fromX, y);
+            }
 
             // right wall
+            TextureRegion rightWall = getTextureRegion(render.getSpritePath(), 4, 2, wWidth, wHeight);
             fromX = (int) wall.getEndX();
             fromY = (int) wall.getStartY();
-            toX = (int) wWidth;
-            toY = (int) wall.getEndY() - fromY + wHeight;
-            batch.draw(imgW, fromX, fromY, 0, 0, toX, toY);
+            toY = (int) wall.getEndY();
+            for (int y = fromY; y < toY; y += wHeight) {
+                batch.draw(rightWall, fromX, y);
+            }
 
             // top wall
-            fromX = (int) wall.getStartX() - wWidth;
+            TextureRegion topWall = getTextureRegion(render.getSpritePath(), 2, 1, wWidth, wHeight);
+            fromX = (int) wall.getStartX();
             fromY = (int) wall.getEndY();
-            toX = (int) wall.getEndX() - fromX;
-            toY = (int) wHeight;
-            batch.draw(imgW, fromX, fromY, 0, 0, toX, toY);
+            toX = (int) wall.getEndX();
+            for (int x = fromX; x < toX; x += wWidth) {
+                batch.draw(topWall, x, fromY);
+            }
+
+            //top corners
+            TextureRegion topRightWall = getTextureRegion(render.getSpritePath(), 4, 1, wWidth, wHeight);
+            batch.draw(topRightWall, toX, fromY);
+            TextureRegion topLeftWall = getTextureRegion(render.getSpritePath(), 1, 1, wWidth, wHeight);
+            batch.draw(topLeftWall, fromX - wWidth, fromY);
 
             // bottom wall
+            TextureRegion bottomWall = getTextureRegion(render.getSpritePath(), 2, 1, wWidth, wHeight);
             fromX = (int) wall.getStartX();
             fromY = (int) wall.getStartY() - wHeight;
-            toX = (int) wall.getEndX() - fromX + wWidth;
-            toY = (int) wHeight;
-            batch.draw(imgW, fromX, fromY, 0, 0, toX, toY);
+            toX = (int) wall.getEndX();
+            for (int x = fromX; x < toX; x += wWidth) {
+                batch.draw(bottomWall, x, fromY);
+            }
+
+            //bottom cornerns
+            TextureRegion bottomRightWall = getTextureRegion(render.getSpritePath(), 4, 4, wWidth, wHeight);
+            batch.draw(bottomRightWall, toX, fromY);
+            TextureRegion bottomLeftWall = getTextureRegion(render.getSpritePath(), 1, 4, wWidth, wHeight);
+            batch.draw(bottomLeftWall, fromX - wWidth, fromY);
 
             Texture imgD = getTexture(doors.getSpritePath());
-            int dHeight = imgD.getHeight();
-            int dWidth = imgD.getWidth();
+            int dHeight = 32;
+            int dWidth = 32;
 
+            Entity player = null;
+            for (Entity e : world.getEntities()) {
+                if (e.getPart(PlayerPart.class) != null) {
+                    player = e;
+                    break;
+                }
+            }
+            ArrayList<KeyPart> keys = null;
+            if (player != null) {
+                InventoryPart inv = player.getPart(InventoryPart.class);
+                if (inv != null) {
+                    keys = inv.getKeyParts();
+                }
+            }
+            KeyPart.KeyColor doorColor = doors.getLockColor();
+            int leftX = 0; 
+            int rightX = 2; 
+            int topBottomX = 1;
+            int colorY = 0; 
             for (float[] door : doors.getDoors()) {
                 float x = door[0];
                 float y = door[1];
 
-                if (door[0] == wall.getStartX()) { // left door
-                    batch.draw(imgD, x - 32, y, 0, 0, dWidth, dHeight);
-                } else if (door[0] == wall.getEndX()) { // right door                        
-                    batch.draw(imgD, x, y, 0, 0, dWidth, dHeight);
-                } else if (door[1] == wall.getStartY()) { // bottom door
-                    batch.draw(imgD, x, y - 32, 0, 0, dWidth, dHeight);
-                } else if (door[1] == wall.getEndY()) { // top door
-                    batch.draw(imgD, x, y, 0, 0, dWidth, dHeight);
+                if (keys != null) {
+                    boolean hasKey = false;
+                    for (KeyPart k : keys) {
+                        if (k.getColor() == doorColor) {
+                            hasKey = true;
+                        }
+                    }
+                    if (hasKey) {
+                        colorY = 0; 
+                    } else {
+                        if(null == doorColor){
+                            
+                        }else switch (doorColor) {
+                            case Gold:
+                                colorY = 1;
+                                break;
+                            case Silver:
+                                colorY = 2; 
+                                break;
+                            case Bronze:
+                                colorY = 3; 
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                } else {
+                    if(null == doorColor){
+                            
+                        }else switch (doorColor) {
+                            case Gold:
+                                colorY = 1;
+                                break;
+                            case Silver:
+                                colorY = 2; 
+                                break;
+                            case Bronze:
+                                colorY = 3; 
+                                break;
+                            default:
+                                break;
+                        }
                 }
+
+                if (door[0] == wall.getStartX()) { // left door
+                    batch.draw(imgD, x - 32, y, leftX, colorY * dHeight, dWidth, dHeight);
+                } else if (door[0] == wall.getEndX()) { // right door  
+                    batch.draw(imgD, x, y, rightX * dWidth, colorY * dHeight, dWidth, dHeight);
+                } else if (door[1] == wall.getStartY()) { // ottom door
+                    batch.draw(imgD, x, y - 32, topBottomX * dWidth, colorY * dHeight, dWidth, dHeight);
+                } else if (door[1] == wall.getEndY()) { // top door
+                    batch.draw(imgD, x, y, topBottomX * dWidth, colorY * dHeight, dWidth, dHeight);
+                }
+
             }
 
             batch.end();
         } catch (GdxRuntimeException e) {
             System.out.println("Image not found");
+        }
+    }
+
+    private Animation getAnimationFromTextureRange(String spritePath, int col) {
+        String id = "" + spritePath + col;
+        if (this.enityAnimation.containsKey(id)) {
+            return this.enityAnimation.get(id);
+        } else {
+            Array<TextureRegion> frames = new Array<>();
+            for (int i = col - 1; i < col + 3; i++) {
+                frames.add(new TextureRegion(getTexture(spritePath), i * humanTextureWidth, 0, humanTextureWidth, humanTextureHeight));
+            }
+            Animation newAnim = new Animation(1f / 4f, frames);
+            enityAnimation.put(id, newAnim);
+            return newAnim;
+        }
+    }
+
+    private TextureRegion getTextureRegion(String spritePath, int col, int row, int width, int height) {
+        String id = "" + spritePath + col + row;
+        if (this.entityTextureRegion.containsKey(id)) {
+            return this.entityTextureRegion.get(id);
+        } else {
+            TextureRegion region = new TextureRegion(getTexture(spritePath), (col * width) - width, (row * height) - height, width, height);
+            entityTextureRegion.put(id, region);
+            return region;
         }
     }
 
@@ -287,14 +399,6 @@ public class Game implements ApplicationListener {
         // entities
         for (Entity entity : world.getEntities()) {
 
-            // walls and doors
-            if (entity.getPart(WallPart.class) != null
-                    && entity.getPart(DoorPart.class) != null
-                    && entity.getPart(RenderPart.class) != null) {
-                drawWallsAndDoors(entity);
-                continue;
-            }
-
             // anything else
             if (entity.getPart(RenderPart.class) != null && entity.getPart(PositionPart.class) != null) {
                 PositionPart pos = entity.getPart(PositionPart.class);
@@ -304,15 +408,16 @@ public class Game implements ApplicationListener {
                     continue;
                 }
 
-                if (entity.getPart(SightPart.class) != null) {
+                // for player and enemy
+                if (entity.getPart(MovingPart.class) != null) {
                     try {
 
                         textureSheet = getTexture(render.getSpritePath());
 
-                        Animation backWalk = getAnimationFromTextureRange(1);
-                        Animation frontWalk = getAnimationFromTextureRange(5);
-                        Animation leftWalk = getAnimationFromTextureRange(9);
-                        Animation rightWalk = getAnimationFromTextureRange(13);
+                        Animation backWalk = getAnimationFromTextureRange(render.getSpritePath(), 1);
+                        Animation frontWalk = getAnimationFromTextureRange(render.getSpritePath(), 5);
+                        Animation leftWalk = getAnimationFromTextureRange(render.getSpritePath(), 9);
+                        Animation rightWalk = getAnimationFromTextureRange(render.getSpritePath(), 13);
 
                         MovingPart entityMovingPart = entity.getPart(MovingPart.class);
 
@@ -321,17 +426,17 @@ public class Game implements ApplicationListener {
                         batch.setProjectionMatrix(vp.getCamera().combined);
                         batch.begin();
 
-                        if (entityMovingPart.isLeft()) {
-                            batch.draw((TextureRegion) leftWalk.getKeyFrame(elapsedTime, true), pos.getX() - 16, pos.getY() - 16);
-                        } else if (entityMovingPart.isRight()) {
-                            batch.draw((TextureRegion) rightWalk.getKeyFrame(elapsedTime, true), pos.getX() - 16, pos.getY() - 16);
+                        if (entityMovingPart.isRight()) {
+                            batch.draw((TextureRegion) rightWalk.getKeyFrame(elapsedTime, true), pos.getX() - 32, pos.getY() - 32);
+                        } else if (entityMovingPart.isLeft()) {
+                            batch.draw((TextureRegion) leftWalk.getKeyFrame(elapsedTime, true), pos.getX() - 32, pos.getY() - 32);
                         } else if (entityMovingPart.isUp()) {
-                            batch.draw((TextureRegion) backWalk.getKeyFrame(elapsedTime, true), pos.getX() - 16, pos.getY() - 16);
+                            batch.draw((TextureRegion) backWalk.getKeyFrame(elapsedTime, true), pos.getX() - 32, pos.getY() - 32);
                         } else if (entityMovingPart.isDown()) {
-                            batch.draw((TextureRegion) frontWalk.getKeyFrame(elapsedTime, true), pos.getX() - 16, pos.getY() - 16);
+                            batch.draw((TextureRegion) frontWalk.getKeyFrame(elapsedTime, true), pos.getX() - 32, pos.getY() - 32);
                         } else {
-                            TextureRegion stand = new TextureRegion(textureSheet, 4 * textureWidth, 0, textureWidth, textureWidth);
-                            batch.draw(stand, pos.getX() - 16, pos.getY() - 16);
+                            TextureRegion stand = new TextureRegion(textureSheet, 4 * humanTextureWidth, 0, humanTextureWidth, humanTextureWidth);
+                            batch.draw(stand, pos.getX() - 32, pos.getY() - 32);
                         }
 
                         batch.end();
@@ -339,18 +444,29 @@ public class Game implements ApplicationListener {
                     } catch (GdxRuntimeException e) {
                         System.out.println("Image not found");
                     }
+                    // for everything else
                 } else {
                     try {
-                        Texture img = getTexture(render.getSpritePath());
+                        if (entity.getPart(WallPart.class) == null) {
+                            Texture img = getTexture(render.getSpritePath());
 
-                        batch.setProjectionMatrix(vp.getCamera().combined);
-                        batch.begin();
-                        batch.draw(img, pos.getX() - 16, pos.getY() - 16);
-                        batch.end();
+                            batch.setProjectionMatrix(vp.getCamera().combined);
+                            batch.begin();
+                            batch.draw(img, pos.getX() - 16, pos.getY() - 16);
+                            batch.end();
+                        }
 
                     } catch (GdxRuntimeException e) {
                         System.out.println("Image not found");
                     }
+                }
+
+                // all other walls and doors
+                if (entity.getPart(WallPart.class) != null
+                        && entity.getPart(DoorPart.class) != null
+                        && entity.getPart(RenderPart.class) != null) {
+                    drawWallsAndDoors(entity);
+                    continue;
                 }
 
                 continue;
@@ -455,13 +571,5 @@ public class Game implements ApplicationListener {
                 this.entityTextures.remove(sprite);
             }
         }
-    }
-
-    private Animation getAnimationFromTextureRange(int col) {
-        Array<TextureRegion> frames = new Array<>();
-        for (int i = col - 1; i < col + 3; i++) {
-            frames.add(new TextureRegion(textureSheet, i * textureWidth, 0, textureWidth, textureWidth));
-        }
-        return new Animation(1f / 4f, frames);
     }
 }
