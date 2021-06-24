@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dk.sdu.mmmi.map;
 
 import dk.sdu.mmmi.common.data.Entity;
@@ -10,7 +5,6 @@ import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
 import dk.sdu.mmmi.common.data.entityparts.DoorPart;
 import dk.sdu.mmmi.common.data.entityparts.KeyPart;
-
 import dk.sdu.mmmi.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.common.data.entityparts.RenderPart;
 import dk.sdu.mmmi.common.data.entityparts.HelpPart;

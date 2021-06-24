@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dk.sdu.mmmi.common.data.entityparts;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
@@ -16,7 +11,6 @@ import java.nio.file.StandardCopyOption;
  * @author tes_7
  */
 public class DescriptionPart implements EntityPart{
-    
 
     private File description; 
     private final Object component; 
@@ -27,7 +21,7 @@ public class DescriptionPart implements EntityPart{
     }
     
     private void renderFile(String fileName) {
-       InputStream inputStream = component.getClass().getClassLoader().getResourceAsStream(fileName);
+        InputStream inputStream = component.getClass().getClassLoader().getResourceAsStream(fileName);
         description = new File(fileName);
 
         // copy module sprites to runner folder
@@ -45,5 +39,4 @@ public class DescriptionPart implements EntityPart{
     public void process(GameData gameData, Entity entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
 }

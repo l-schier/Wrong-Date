@@ -92,7 +92,6 @@ public class Game implements ApplicationListener {
         cfg.title = "Wrong-Date";
         cfg.width = Width;
         cfg.height = Height;
-        //cfg.useGL30 = false;
         cfg.resizable = false;
 
         new LwjglApplication(this, cfg);
@@ -110,7 +109,6 @@ public class Game implements ApplicationListener {
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     private void copyFile(String fileName) {
@@ -134,7 +132,7 @@ public class Game implements ApplicationListener {
         cam.translate(gameData.getCamX(), gameData.getCamY(), 0);
 
         sr = new ShapeRenderer();
-        stage = new Stage(new ScreenViewport()); // new StretchViewport(gameData.getDisplayWidth(), gameData.getDisplayHeight())
+        stage = new Stage(new ScreenViewport());
         stage.getViewport().apply();
         skin = new Skin(Gdx.files.internal(Gdx.files.getLocalStoragePath() + "comic-ui.json"));
         batch = new SpriteBatch();
@@ -356,7 +354,6 @@ public class Game implements ApplicationListener {
                 } else if (door[1] == wall.getEndY()) { // top door
                     batch.draw(imgD, x, y, topBottomX * dWidth, colorY * dHeight, dWidth, dHeight);
                 }
-
             }
 
             batch.end();
@@ -411,7 +408,6 @@ public class Game implements ApplicationListener {
                 // for player and enemy
                 if (entity.getPart(MovingPart.class) != null) {
                     try {
-
                         textureSheet = getTexture(render.getSpritePath());
 
                         Animation backWalk = getAnimationFromTextureRange(render.getSpritePath(), 1);
@@ -470,38 +466,6 @@ public class Game implements ApplicationListener {
                 }
 
                 continue;
-            }
-
-            // shape render (vector) fallback
-            sr.setColor(1, 1, 1, 1);
-
-            sr.setProjectionMatrix(vp.getCamera().combined);
-            sr.begin(ShapeRenderer.ShapeType.Line);
-
-            float[] shapex = entity.getShapeX();
-            float[] shapey = entity.getShapeY();
-
-            for (int i = 0, j = shapex.length - 1;
-                    i < shapex.length;
-                    j = i++) {
-
-                sr.line(shapex[i], shapey[i], shapex[j], shapey[j]);
-            }
-
-            sr.end();
-
-            if (entity.getPart(DoorPart.class) != null) {
-                sr.setColor(1, 0, 0, 1);
-
-                DoorPart doorPart = entity.getPart(DoorPart.class);
-                float[][] doors = doorPart.getDoors();
-                for (int i = 0; i < 4; i++) {
-                    sr.setProjectionMatrix(vp.getCamera().combined);
-                    sr.begin(ShapeRenderer.ShapeType.Line);
-                    sr.line(doors[i][0], doors[i][1], doors[i][2], doors[i][3]);
-                    sr.end();
-                }
-
             }
         }
 

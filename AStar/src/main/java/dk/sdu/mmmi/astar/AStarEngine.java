@@ -95,7 +95,6 @@ public class AStarEngine {
             }
 
             s.parent = node;
-            s.depth = node.depth + 1;
             s.cost = node.cost + 1;
             s.f = f(s, goalState);
 

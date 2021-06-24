@@ -39,7 +39,6 @@ public class KeyPlugin implements IGamePluginService {
         key.add(new KeyPart(KeyColor.Silver));
         key.add(new RenderPart(this.spriteFile, key));
         key.add(new DescriptionPart("Key.txt", key));
-        
 
         return key;
     }

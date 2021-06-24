@@ -11,7 +11,6 @@ public class Node {
 
     public PositionPart state;
     public Node parent;
-    public int depth;
     public int cost;
     public double f;
 

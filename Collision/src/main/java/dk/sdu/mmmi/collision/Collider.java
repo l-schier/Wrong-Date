@@ -32,6 +32,7 @@ public class Collider implements IEntityPostProcessingService, ICollisionChecker
                 if (e1.getID().equals(e2.getID())) {
                     continue;
                 }
+                
                 if (e2.getPart(InventoryPart.class) != null) {
                     InventoryPart inventoryPart = e2.getPart(InventoryPart.class);
                     if (inventoryPart.getWeapon() != null && inventoryPart.getWeapon().equals(e1)) {
@@ -119,7 +120,6 @@ public class Collider implements IEntityPostProcessingService, ICollisionChecker
             if (wall != null && doorPart != null) {
 
                 float[][] doors = doorPart.getDoors();
-                PositionPart pos = me.getPart(PositionPart.class);
 
                 // entity is inside the box of walls!
                 if (isInRoom(world, me, e)) {
@@ -209,9 +209,7 @@ public class Collider implements IEntityPostProcessingService, ICollisionChecker
                     } else if (newY < roomPos.getY() - (gameData.getDisplayHeight() / 2f) + 32) {
                         y -= 65;
                     }
-
                 }
-
             }
         }
         mePos.setPosition(x, y);

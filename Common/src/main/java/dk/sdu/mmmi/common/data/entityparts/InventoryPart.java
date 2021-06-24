@@ -29,7 +29,7 @@ public class InventoryPart implements EntityPart {
             PositionPart pos = item.getPart(PositionPart.class);
             pos.setPosition(playerPos.getX(), playerPos.getY());
         }
-        
+
         currentWeapon = weapon;
     }
 
@@ -49,7 +49,9 @@ public class InventoryPart implements EntityPart {
     }
 
     public void addItem(Entity item) {
-        if (item.getPart(DamagePart.class) != null || item.getPart(StunPart.class) != null || item.getPart(BlindPart.class) != null) {
+        if (item.getPart(DamagePart.class) != null
+                || item.getPart(StunPart.class) != null
+                || item.getPart(BlindPart.class) != null) {
             weapon = item;
         } else {
             inventory.add(item);
@@ -63,5 +65,4 @@ public class InventoryPart implements EntityPart {
     public Entity getCurrentWeapon() {
         return currentWeapon;
     }
-
 }

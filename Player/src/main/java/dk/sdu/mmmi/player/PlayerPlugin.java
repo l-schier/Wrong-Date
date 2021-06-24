@@ -3,7 +3,6 @@ package dk.sdu.mmmi.player;
 import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.World;
-import dk.sdu.mmmi.common.data.entityparts.InteractPart;
 import dk.sdu.mmmi.common.data.entityparts.InventoryPart;
 import dk.sdu.mmmi.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.common.data.entityparts.MovingPart;
@@ -37,7 +36,6 @@ public class PlayerPlugin implements IGamePluginService {
         player.add(new LifePart(1));
         player.add(new MovingPart(2));
         player.add(new PositionPart(x, y));
-        player.add(new InteractPart());
         player.add(new InventoryPart());
         player.add(new PlayerPart());
         player.add(new RenderPart(SpriteFile, player));

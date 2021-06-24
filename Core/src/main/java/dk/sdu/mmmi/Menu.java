@@ -594,8 +594,7 @@ public class Menu {
                 x = invX;
                 y -= h;
             }
-        }
-        
+        }        
     }
 
     private void itemClicked(Image img, Entity e) {
@@ -610,7 +609,6 @@ public class Menu {
                         clickedItem.setSize(iteminfoImage.getWidth(), iteminfoImage.getHeight());
                         stage.getActors().add(clickedItem);
                     }
-
                 }
                 if (e.getPart(DescriptionPart.class) != null) {
                     DescriptionPart descriptionPart = e.getPart(DescriptionPart.class);
@@ -689,7 +687,6 @@ public class Menu {
 
                     weaponImage = null;
                     weaponImage = new Image(new Texture(renderPart.getSpritePath()));
-
                 }
                 if (!stage.getActors().contains(weaponImage, true)) {
                     weaponImage.setSize(weapImage.getImageWidth(), weapImage.getImageHeight());

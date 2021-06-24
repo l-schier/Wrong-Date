@@ -53,6 +53,6 @@ public class BubblegumPlugin implements IGamePluginService {
 
     @Override
     public String[] getSpritePaths() {
-        return new String[]{};
+        return new String[]{spriteFile};
     }
 }

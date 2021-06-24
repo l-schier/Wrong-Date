@@ -81,8 +81,6 @@ public class GameData {
         return menuWidth;
     }
     
-    
-
     public <E extends Event> List<Event> getEvents(Class<E> type, String sourceID) {
         List<Event> r = new ArrayList();
         for (Event event : events) {

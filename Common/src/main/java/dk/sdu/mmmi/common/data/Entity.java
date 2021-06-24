@@ -11,10 +11,6 @@ public class Entity implements Serializable {
 
     private final UUID ID = UUID.randomUUID();
     
-    private float[] color = new float[3];
-    private float[] shapeX = new float[4];
-    private float[] shapeY = new float[4];
-    
     private String spriteFile;
     
     private float radius;
@@ -57,30 +53,6 @@ public class Entity implements Serializable {
 
     public void setSpriteFile(String spriteFile) {
         this.spriteFile = spriteFile;
-    }
-
-    public float[] getShapeX() {
-        return shapeX;
-    }
-
-    public void setShapeX(float[] shapeX) {
-        this.shapeX = shapeX;
-    }
-
-    public float[] getShapeY() {
-        return shapeY;
-    }
-
-    public void setShapeY(float[] shapeY) {
-        this.shapeY = shapeY;
-    }
-
-    public float[] getColor() {
-        return color;
-    }
-
-    public void setColor(float[] color) {
-        this.color = color;
     }
 
     public float getBoundingCircleX() {

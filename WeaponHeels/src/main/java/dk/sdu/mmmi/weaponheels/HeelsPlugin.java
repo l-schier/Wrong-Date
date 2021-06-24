@@ -52,6 +52,6 @@ public class HeelsPlugin implements IGamePluginService {
 
     @Override
     public String[] getSpritePaths() {
-        return new String[]{};
+        return new String[]{spriteFile};
     }
 }

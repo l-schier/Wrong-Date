@@ -8,8 +8,6 @@ import dk.sdu.mmmi.common.data.GameData;
  * @author Jacob
  */
 public class InteractPart implements EntityPart{
-    //Is the player or enemy interacting?
-    private boolean interacting;
     
     //Can you interact with the item or door?
     private boolean interactable;
@@ -40,5 +38,4 @@ public class InteractPart implements EntityPart{
     public void setInteractable(boolean interactable) {
         this.interactable = interactable;
     }
-    
 }

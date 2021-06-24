@@ -4,7 +4,6 @@ import dk.sdu.mmmi.common.data.Entity;
 import dk.sdu.mmmi.common.data.GameData;
 import dk.sdu.mmmi.common.data.entityparts.DamagePart;
 import dk.sdu.mmmi.common.services.IItemService;
-import java.awt.Image;
 
 /**
  *

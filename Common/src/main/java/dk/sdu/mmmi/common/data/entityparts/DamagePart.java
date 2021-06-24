@@ -49,5 +49,4 @@ public class DamagePart implements EntityPart {
     public void setWeaponUsed(boolean weaponUsed) {
         this.weaponUsed = weaponUsed;
     }
- 
 }
