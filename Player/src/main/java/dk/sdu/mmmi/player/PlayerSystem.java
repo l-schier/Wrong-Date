@@ -22,7 +22,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PlayerSystem implements IEntityProcessingService {
 
-    private final List<IItemService> itemServices = new CopyOnWriteArrayList<>();
     private final List<IInteractService> interactServices = new CopyOnWriteArrayList<>();
     private ICollisionChecker collisionChecker;
 
@@ -115,14 +114,6 @@ public class PlayerSystem implements IEntityProcessingService {
                 world.removeEntity(player);
             }
         }
-    }
-
-    public void setItemService(IItemService itemService) {
-        this.itemServices.add(itemService);
-    }
-
-    public void removeItemService(IItemService itemService) {
-        this.itemServices.remove(itemService);
     }
 
     public void setInteractService(IInteractService interactService) {
